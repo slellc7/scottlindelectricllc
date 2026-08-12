@@ -1,0 +1,14 @@
+{
+  "name": "scottlind-electric",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scott Lind Electric LLC — static marketing site, built from the Claude Design source.",
+  "scripts": {
+    "build": "node build.js",
+    "serve": "node build.js && node --run _serve",
+    "_serve": "cd dist && python3 -m http.server 4321"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

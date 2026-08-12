@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{canonical}}">
+
+<meta name="theme-color" content="#1d2d3d">
+<meta name="format-detection" content="telephone=yes">
+
+<meta property="og:site_name" content="{{site.legalName}}">
+<meta property="og:type" content="{{ogType}}">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{site.url}}images/sle-logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/sle-logo.png">
+<link rel="apple-touch-icon" href="/images/sle-logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&amp;family=Barlow+Condensed:wght@400;600&amp;display=swap">
+
+<link rel="stylesheet" href="/assets/css/design-system.css">
+<link rel="stylesheet" href="/assets/css/site.css">
+
+<script type="application/ld+json">
+{{jsonld}}
+</script>
+</head>
+<body class="{{bodyClass}}">
+<div class="page">
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+{{> header}}
+
+<main id="main">
+{{content}}
+</main>
+
+{{> footer}}
+
+</div>
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

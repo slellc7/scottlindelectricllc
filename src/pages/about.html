@@ -1,0 +1,114 @@
+<!--{
+  "slug": "about",
+  "navLabel": "About",
+  "breadcrumb": "About",
+  "priority": "0.7",
+  "title": "About | Scott Lind Electric, Idaho Falls",
+  "description": "Scott Lind Electric LLC is a licensed, insured electrical contractor on Taylor Avenue in Idaho Falls, working residential, commercial and industrial jobs."
+}-->
+
+<nav class="crumb" aria-label="Breadcrumb">
+  <div class="crumb-inner">
+    <a href="/">Home</a><span class="crumb-sep">/</span>About
+  </div>
+</nav>
+
+<section class="section section--page">
+  <div class="grid-lead--even grid-lead">
+    <div>
+      <p class="eyebrow eyebrow--sub">
+        <span class="eyebrow-rule" aria-hidden="true"></span>
+        <span class="eyebrow-text">{{site.legalName}}</span>
+      </p>
+      <h1 class="h-page">The name on the van answers the phone</h1>
+      <p class="lead lead--narrow">Scott Lind Electric is a state-licensed electrical contractor based on Taylor Avenue in Idaho Falls, working across residential, commercial and industrial jobs throughout eastern Idaho.</p>
+      <p class="prose">The whole company is built on one decision: take the small jobs. Most electricians won't drive across town for a single dead outlet — there is a subdivision to wire and the math doesn't work. We took the other view. Fix the small thing well, and when something serious happens in that house or that building, there is no question who gets the call.</p>
+      <p class="prose">That is also why there is no service-call fee inside 30 miles, why estimates are free, and why the phone gets answered after hours. Not marketing — just the only way the promise holds up.</p>
+    </div>
+
+    <figure class="fig">
+      <div class="blueprint duotone fig-frame fig-frame--xtall">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div class="fig-ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1.5A5.5 5.5 0 0 1 9.5 14h5a5.5 5.5 0 0 1 5.5 5.5V21"/></svg>
+          Photo — Scott / the crew
+        </div>
+      </div>
+      <figcaption>Fig. 05 — Scott Lind, Idaho Falls, ID</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section section--sub">
+  <div class="rule-head rule-head--sub">
+    <h2>How we work</h2>
+    <span class="rule-line" aria-hidden="true"></span>
+  </div>
+  <div class="u-grid cell-grid cell-grid--4">
+    <div class="cell">
+      <div class="u-num">01</div>
+      <h3>Diagnose first</h3>
+      <p>We find out what actually failed before quoting a repair. Guessing is expensive for both of us.</p>
+    </div>
+    <div class="cell">
+      <div class="u-num">02</div>
+      <h3>Price before tools</h3>
+      <p>You know the scope and the number before anything is opened up.</p>
+    </div>
+    <div class="cell">
+      <div class="u-num">03</div>
+      <h3>Say the honest thing</h3>
+      <p>Including "that can wait", "you don't need us for that", or "today isn't realistic".</p>
+    </div>
+    <div class="cell">
+      <div class="u-num">04</div>
+      <h3>Leave it to code</h3>
+      <p>Permitted and inspected where required, and correct where nobody will ever look.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--sub">
+  <div class="blueprint panel-split panel-split--compact">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <div class="panel-half">
+      <div class="u-num">Credentials</div>
+      <h2>Licensed, insured, local</h2>
+      <table class="table">
+        <caption class="visually-hidden">Business credentials</caption>
+        <tbody>
+          <tr><td class="t-label">Business</td><td class="t-val">{{site.legalName}}</td></tr>
+          <!-- PLACEHOLDER: replace with the real Idaho contractor licence number. -->
+          <tr><td class="t-label">Idaho contractor license</td><td class="t-todo">Add license number</td></tr>
+          <tr><td class="t-label">Insurance</td><td class="t-val">Carried — certificate on request</td></tr>
+          <tr><td class="t-label">Based in</td><td class="t-val">{{site.address.city}}, {{site.address.region}} {{site.address.postalCode}}</td></tr>
+          <tr><td class="t-label">Serving</td><td class="t-val">Idaho Falls, Ammon &amp; 30 miles</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel-half panel-half--tint">
+      <div class="u-num">Who calls us</div>
+      <h2>Three kinds of customer</h2>
+      <div class="who-list">
+        <p><strong>Homeowners</strong><br>who have been told their job is too small, or who need it fixed today.</p>
+        <p><strong>Business &amp; property owners</strong><br>who cannot afford a dark lot, a dead circuit or a failed inspection.</p>
+        <p><strong>General contractors</strong><br>who need an electrical sub that holds the schedule and answers the phone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band cta-band">
+  <div class="cta-inner">
+    <div class="cta-copy">
+      <h2>Try us on something small.</h2>
+      <p>That's the whole pitch.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="{{site.telHref}}" class="btn btn-primary blueprint btn-lg"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Call {{site.phone}}</a>
+      <a href="/contact.html" class="btn btn-on-dark btn-lg">Free estimate</a>
+    </div>
+  </div>
+</section>

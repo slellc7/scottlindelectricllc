@@ -1,0 +1,42 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="foot-grid">
+
+      <div class="foot-brand">
+        <img src="/images/sle-logo.png" alt="" width="275" height="75">
+        <address class="foot-addr">
+          <strong>{{site.legalName}}</strong><br>
+          {{site.address.street}}<br>
+          {{site.address.city}}, {{site.address.region}} {{site.address.postalCode}}<br>
+          <a class="foot-tel" href="{{site.telHref}}">{{site.phone}}</a>
+        </address>
+      </div>
+
+      <div>
+        <h2 class="u-num">Services</h2>
+        <nav class="foot-links" aria-label="Services">
+            {{footServices}}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="u-num">Company</h2>
+        <nav class="foot-links" aria-label="Company">
+            {{footCompany}}
+        </nav>
+      </div>
+
+      <div class="foot-area">
+        <h2 class="u-num">Service area</h2>
+        <p>Idaho Falls, Ammon, Ucon, Iona, Shelley, Rigby, Ririe, Roberts and everywhere within 30 miles — no service-call fee.</p>
+        <div class="foot-badge">Licensed &amp; insured in Idaho</div>
+      </div>
+
+    </div>
+
+    <div class="foot-bottom">
+      <span>© {{year}} {{site.legalName}}</span>
+      <span>Idaho Falls electrician · Residential, commercial &amp; industrial · Same-day service</span>
+    </div>
+  </div>
+</footer>

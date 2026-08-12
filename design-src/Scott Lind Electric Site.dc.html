@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-74407e64-8de0-4203-a027-c1afea116a14/styles.css">
+<script src="_ds/industry-74407e64-8de0-4203-a027-c1afea116a14/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+  body { margin: 0; background: var(--color-bg); }
+  a { color: var(--color-accent-700); }
+  a:hover { color: var(--color-accent-900); }
+  .u-grid { display: grid; gap: 1px; background: var(--color-divider); }
+  .u-grid > * { background: var(--color-bg); }
+  .u-num { font-family: var(--font-heading); font-size: 12px; letter-spacing: .16em; color: var(--color-accent-700); }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Electrician",
+  "name": "Scott Lind Electric LLC",
+  "url": "https://scottlindelectric.com/",
+  "telephone": "+1-208-716-1240",
+  "address": { "@type": "PostalAddress", "streetAddress": "1302 Taylor Avenue", "addressLocality": "Idaho Falls", "addressRegion": "ID", "postalCode": "83404", "addressCountry": "US" },
+  "areaServed": [ { "@type": "City", "name": "Idaho Falls" }, { "@type": "City", "name": "Ammon" } ],
+  "description": "Licensed Idaho Falls electrician offering same-day residential, commercial and after-hours electrical service. Free estimates and no service-call fee within 30 miles.",
+  "makesOffer": [
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Residential electrical repair" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Commercial electrical contracting" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "After-hours emergency electrical service" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Parking lot light repair" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "LED conversion" } }
+  ]
+}
+</script>
+</helmet>
+
+<div style="font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);min-height:100vh">
+
+  <sc-if value="{{ emergencyBanner }}" hint-placeholder-val="{{ true }}">
+    <div style="background:var(--color-accent-900);color:var(--color-bg)">
+      <div style="max-width:1240px;margin:0 auto;padding:9px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:20px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--font-heading)">
+        <span style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;background:var(--color-accent-300)"></span>After-hours electrical emergency? We answer the phone.</span>
+        <span style="margin-left:auto;opacity:.75">Idaho Falls &amp; Ammon &middot; No service-call fee within 30 miles</span>
+        <a href="tel:2087161240" style="color:var(--color-accent-200);text-decoration:none;letter-spacing:.06em">208.716.1240</a>
+      </div>
+    </div>
+  </sc-if>
+
+  <header style="position:sticky;top:0;z-index:40;background:color-mix(in srgb, var(--color-bg) 93%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--color-divider)">
+    <div style="max-width:1240px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:28px">
+      <a href="#" onClick="{{ goHome }}" style="display:flex;align-items:center;gap:12px;text-decoration:none;flex:none">
+        <img src="images/sle-logo.png" alt="Scott Lind Electric LLC" style="height:34px;width:auto">
+      </a>
+      <nav style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-left:auto;font-family:var(--font-heading);font-size:14px;letter-spacing:.06em;text-transform:uppercase">
+        <a href="#" onClick="{{ goRes }}" style="color:var(--color-text);text-decoration:none;white-space:nowrap" style-hover="color:var(--color-accent)">Residential</a>
+        <a href="#" onClick="{{ goCom }}" style="color:var(--color-text);text-decoration:none;white-space:nowrap" style-hover="color:var(--color-accent)">Commercial</a>
+        <a href="#" onClick="{{ goEmg }}" style="color:var(--color-text);text-decoration:none;white-space:nowrap" style-hover="color:var(--color-accent)">After Hours</a>
+        <a href="#" onClick="{{ goAnswers }}" style="color:var(--color-text);text-decoration:none;white-space:nowrap" style-hover="color:var(--color-accent)">Answers</a>
+        <a href="#" onClick="{{ goAmmon }}" style="color:var(--color-text);text-decoration:none;white-space:nowrap" style-hover="color:var(--color-accent)">Service Area</a>
+        <a href="#" onClick="{{ goAbout }}" style="color:var(--color-text);text-decoration:none;white-space:nowrap" style-hover="color:var(--color-accent)">About</a>
+        <a href="#" onClick="{{ goReviews }}" style="color:var(--color-text);text-decoration:none;white-space:nowrap" style-hover="color:var(--color-accent)">Reviews</a>
+      </nav>
+      <a href="tel:2087161240" class="btn btn-primary blueprint" style="flex:none;font-size:15px;letter-spacing:.06em;padding:11px 18px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        Call 208.716.1240
+      </a>
+    </div>
+  </header>
+
+  <main>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <div>
+    <section style="max-width:1240px;margin:0 auto;padding:72px 24px 0">
+      <div style="display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:end">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:26px">
+            <span style="width:34px;height:1px;background:var(--color-accent)"></span>
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700)">Idaho Falls electrician &middot; Licensed &amp; insured</span>
+          </div>
+          <h1 style="font-size:clamp(48px,6.6vw,104px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 24px">No job too small.<br>Same-day repair.</h1>
+          <p style="font-size:19px;line-height:1.55;max-width:56ch;margin:0 0 32px;color:color-mix(in srgb, var(--color-text) 80%, transparent)">Scott Lind Electric is a state-licensed electrical contractor serving Idaho Falls, Ammon and everywhere within 30 miles &mdash; residential, commercial and industrial. One dead outlet or a full build-out, you get the same answer: we&rsquo;ll come fix it.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:44px">
+            <a href="tel:2087161240" class="btn btn-primary blueprint" style="font-size:16px;padding:14px 24px;letter-spacing:.05em">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              Call 208.716.1240
+            </a>
+            <a href="#" onClick="{{ goContact }}" class="btn btn-secondary" style="font-size:16px;padding:14px 24px;letter-spacing:.05em">Request a free estimate</a>
+          </div>
+        </div>
+        <figure style="margin:0;min-width:0">
+          <div class="blueprint duotone" style="min-width:0;height:340px">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <image-slot id="sle-hero-van" shape="rect" fit="cover" placeholder="Drop the service van photo"></image-slot>
+          </div>
+          <figcaption style="margin-top:10px">Fig. 01 &mdash; Scott Lind Electric service van, Idaho Falls, ID</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:56px auto 0;padding:0 24px">
+      <div class="u-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--color-divider)">
+        <div style="padding:26px 24px">
+          <div class="u-num">01</div>
+          <div style="font-family:var(--font-heading);font-size:27px;text-transform:uppercase;line-height:1.05;margin-top:8px">Same-day<br>service</div>
+          <p style="margin:8px 0 0;font-size:13px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Call in the morning, fixed the same day in most cases.</p>
+        </div>
+        <div style="padding:26px 24px">
+          <div class="u-num">02</div>
+          <div style="font-family:var(--font-heading);font-size:27px;text-transform:uppercase;line-height:1.05;margin-top:8px">No service<br>call fee</div>
+          <p style="margin:8px 0 0;font-size:13px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Within a 30-mile radius of Idaho Falls. You pay for the work, not the drive.</p>
+        </div>
+        <div style="padding:26px 24px">
+          <div class="u-num">03</div>
+          <div style="font-family:var(--font-heading);font-size:27px;text-transform:uppercase;line-height:1.05;margin-top:8px">Free<br>estimates</div>
+          <p style="margin:8px 0 0;font-size:13px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Scope and price before anyone picks up a tool.</p>
+        </div>
+        <div style="padding:26px 24px">
+          <div class="u-num">04</div>
+          <div style="font-family:var(--font-heading);font-size:27px;text-transform:uppercase;line-height:1.05;margin-top:8px">After hours<br>available</div>
+          <p style="margin:8px 0 0;font-size:13px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Electrical problems don&rsquo;t keep business hours. Neither do we.</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:96px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:36px">
+        <h2 style="font-size:44px;text-transform:uppercase;margin:0">What we do</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+        <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Three ways to work with us</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px">
+        <div class="blueprint" style="padding:28px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">01 / Homeowners</div>
+          <h3 style="font-size:30px;text-transform:uppercase;margin:10px 0 12px">Residential</h3>
+          <p style="font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Outlets, switches, breakers that keep tripping, fixtures, remodels and additions. The small jobs other electricians are too busy for are the ones we take.</p>
+          <ul style="list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:8px;font-size:14px">
+            <li style="display:flex;gap:10px"><span style="color:var(--color-accent)">&mdash;</span>Outlet, switch &amp; fixture repair</li>
+            <li style="display:flex;gap:10px"><span style="color:var(--color-accent)">&mdash;</span>Breaker &amp; panel trouble</li>
+            <li style="display:flex;gap:10px"><span style="color:var(--color-accent)">&mdash;</span>Remodels &amp; added circuits</li>
+          </ul>
+          <a href="#" onClick="{{ goRes }}" style="font-family:var(--font-heading);font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--color-accent-700);border-bottom:1px solid var(--color-accent)">Residential service &rarr;</a>
+        </div>
+        <div class="blueprint" style="padding:28px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">02 / Business</div>
+          <h3 style="font-size:30px;text-transform:uppercase;margin:10px 0 12px">Commercial</h3>
+          <p style="font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">New construction, tenant remodels, service work, parking lot lights and LED conversions &mdash; scheduled around your hours, not ours.</p>
+          <ul style="list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:8px;font-size:14px">
+            <li style="display:flex;gap:10px"><span style="color:var(--color-accent)">&mdash;</span>Ground-up new construction</li>
+            <li style="display:flex;gap:10px"><span style="color:var(--color-accent)">&mdash;</span>Parking lot light repair</li>
+            <li style="display:flex;gap:10px"><span style="color:var(--color-accent)">&mdash;</span>LED conversions</li>
+          </ul>
+          <a href="#" onClick="{{ goCom }}" style="font-family:var(--font-heading);font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--color-accent-700);border-bottom:1px solid var(--color-accent)">Commercial work &rarr;</a>
+        </div>
+        <div class="blueprint" style="padding:28px;background:var(--color-accent-900);color:var(--color-bg)">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="font-family:var(--font-heading);font-size:12px;letter-spacing:.16em;color:var(--color-accent-300)">03 / Urgent</div>
+          <h3 style="font-size:30px;text-transform:uppercase;margin:10px 0 12px;color:var(--color-bg)">After hours</h3>
+          <p style="font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-bg) 82%, transparent)">Burning smell, sparking panel, a shop that can&rsquo;t open in the morning. Call and we&rsquo;ll do whatever we can to get you running.</p>
+          <ul style="list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:8px;font-size:14px">
+            <li style="display:flex;gap:10px"><span style="color:var(--color-accent-300)">&mdash;</span>Power loss &amp; dead panels</li>
+            <li style="display:flex;gap:10px"><span style="color:var(--color-accent-300)">&mdash;</span>Burning smells, sparks, heat</li>
+            <li style="display:flex;gap:10px"><span style="color:var(--color-accent-300)">&mdash;</span>Business-critical downtime</li>
+          </ul>
+          <a href="#" onClick="{{ goEmg }}" style="font-family:var(--font-heading);font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--color-accent-200);border-bottom:1px solid var(--color-accent-400)">Emergency service &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:96px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:32px">
+        <h2 style="font-size:44px;text-transform:uppercase;margin:0">Capabilities</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+        <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Residential &middot; Commercial &middot; Industrial</span>
+      </div>
+      <div class="u-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--color-divider)">
+        <div style="padding:22px 20px"><div class="u-num">01</div><div style="font-family:var(--font-heading);font-size:21px;text-transform:uppercase;margin-top:6px">New construction</div></div>
+        <div style="padding:22px 20px"><div class="u-num">02</div><div style="font-family:var(--font-heading);font-size:21px;text-transform:uppercase;margin-top:6px">Remodels</div></div>
+        <div style="padding:22px 20px"><div class="u-num">03</div><div style="font-family:var(--font-heading);font-size:21px;text-transform:uppercase;margin-top:6px">Service &amp; repair</div></div>
+        <div style="padding:22px 20px"><div class="u-num">04</div><div style="font-family:var(--font-heading);font-size:21px;text-transform:uppercase;margin-top:6px">After hours</div></div>
+        <div style="padding:22px 20px"><div class="u-num">05</div><div style="font-family:var(--font-heading);font-size:21px;text-transform:uppercase;margin-top:6px">Parking lot lights</div></div>
+        <div style="padding:22px 20px"><div class="u-num">06</div><div style="font-family:var(--font-heading);font-size:21px;text-transform:uppercase;margin-top:6px">LED conversions</div></div>
+        <div style="padding:22px 20px"><div class="u-num">07</div><div style="font-family:var(--font-heading);font-size:21px;text-transform:uppercase;margin-top:6px">Panels &amp; breakers</div></div>
+        <div style="padding:22px 20px"><div class="u-num">08</div><div style="font-family:var(--font-heading);font-size:21px;text-transform:uppercase;margin-top:6px">Troubleshooting</div></div>
+      </div>
+    </section>
+
+    <section style="margin:96px 0 0;background:var(--color-accent-900);color:var(--color-bg);padding:80px 0">
+      <div style="max-width:1240px;margin:0 auto;padding:0 24px">
+        <div style="display:grid;grid-template-columns:.85fr 1.15fr;gap:56px">
+          <div>
+            <div style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:18px">Answers before you call</div>
+            <h2 style="font-size:44px;text-transform:uppercase;margin:0 0 18px;color:var(--color-bg)">Straight answers, no phone tag.</h2>
+            <p style="font-size:16px;line-height:1.6;color:color-mix(in srgb, var(--color-bg) 78%, transparent);max-width:38ch">The questions Idaho Falls homeowners and shop owners actually ask us, answered in plain language.</p>
+            <a href="#" onClick="{{ goAnswers }}" class="btn blueprint" style="margin-top:26px;border-color:var(--color-accent-400);color:var(--color-bg);font-size:15px;padding:13px 22px;letter-spacing:.06em">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              All answers
+            </a>
+          </div>
+          <div style="display:grid;gap:1px;background:color-mix(in srgb, var(--color-bg) 22%, transparent)">
+            <div style="background:var(--color-accent-900);padding:22px 0 22px">
+              <h3 style="font-size:22px;margin:0 0 8px;color:var(--color-bg)">Do you charge a service-call fee?</h3>
+              <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-bg) 76%, transparent)">No. There is no service-call fee for any customer within a 30-mile radius of Idaho Falls, which includes Ammon, Ucon, Iona and Shelley. You pay for the work performed.</p>
+            </div>
+            <div style="background:var(--color-accent-900);padding:22px 0">
+              <h3 style="font-size:22px;margin:0 0 8px;color:var(--color-bg)">Can an electrician come out today?</h3>
+              <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-bg) 76%, transparent)">Usually, yes. Same-day service is standard for repair calls in Idaho Falls and Ammon &mdash; call in the morning and we will tell you honestly whether today is realistic.</p>
+            </div>
+            <div style="background:var(--color-accent-900);padding:22px 0">
+              <h3 style="font-size:22px;margin:0 0 8px;color:var(--color-bg)">Is my job too small to bother you with?</h3>
+              <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-bg) 76%, transparent)">No. One dead outlet is a legitimate call. Small jobs are how we earn the big ones, so they get a real appointment and a real technician.</p>
+            </div>
+            <div style="background:var(--color-accent-900);padding:22px 0 0">
+              <h3 style="font-size:22px;margin:0 0 8px;color:var(--color-bg)">Are you licensed and insured?</h3>
+              <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-bg) 76%, transparent)">Yes &mdash; Scott Lind Electric LLC is a state-licensed and insured Idaho electrical contractor. Ask for the license number and we will hand it to you.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:96px 24px 0">
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px">
+        <figure style="margin:0;min-width:0">
+          <div class="blueprint duotone" style="min-width:0;height:260px">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <image-slot id="sle-work-1" shape="rect" fit="cover" placeholder="Drop a job-site photo"></image-slot>
+          </div>
+          <figcaption style="margin-top:10px">Fig. 02 &mdash; Panel work, residential service call</figcaption>
+        </figure>
+        <figure style="margin:0;min-width:0">
+          <div class="blueprint duotone" style="min-width:0;height:260px">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <image-slot id="sle-work-2" shape="rect" fit="cover" placeholder="Drop a crew photo"></image-slot>
+          </div>
+          <figcaption style="margin-top:10px">Fig. 03 &mdash; The crew on a commercial remodel</figcaption>
+        </figure>
+        <figure style="margin:0;min-width:0">
+          <div class="blueprint duotone" style="min-width:0;height:260px">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <image-slot id="sle-work-3" shape="rect" fit="cover" placeholder="Drop a parking-lot light photo"></image-slot>
+          </div>
+          <figcaption style="margin-top:10px">Fig. 04 &mdash; Parking lot light repair, after hours</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:96px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:32px">
+        <h2 style="font-size:44px;text-transform:uppercase;margin:0">What customers say</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+        <a href="#" onClick="{{ goReviews }}" style="font-family:var(--font-heading);font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--color-accent-700);border-bottom:1px solid var(--color-accent)">All reviews &rarr;</a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px">
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Google review 01</div>
+          <p style="font-size:17px;line-height:1.5;margin:14px 0 18px;color:color-mix(in srgb, var(--color-text) 55%, transparent);font-style:italic">Paste a real Google review here &mdash; two or three sentences, exactly as the customer wrote it.</p>
+          <div style="font-family:var(--font-heading);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Customer name &middot; Idaho Falls</div>
+        </div>
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Google review 02</div>
+          <p style="font-size:17px;line-height:1.5;margin:14px 0 18px;color:color-mix(in srgb, var(--color-text) 55%, transparent);font-style:italic">Paste a real Google review here &mdash; ideally one that mentions the specific job and the response time.</p>
+          <div style="font-family:var(--font-heading);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Customer name &middot; Ammon</div>
+        </div>
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Google review 03</div>
+          <p style="font-size:17px;line-height:1.5;margin:14px 0 18px;color:color-mix(in srgb, var(--color-text) 55%, transparent);font-style:italic">Paste a real Google review here &mdash; a commercial customer, if you have one.</p>
+          <div style="font-family:var(--font-heading);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Business name &middot; Idaho Falls</div>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:96px 24px 0">
+      <div class="blueprint" style="padding:0;display:grid;grid-template-columns:1fr 1fr">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="padding:44px;border-right:1px solid var(--color-divider)">
+          <div class="u-num">Service area</div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:12px 0 16px">30 miles from<br>Idaho Falls</h2>
+          <p style="font-size:16px;line-height:1.6;max-width:44ch;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Everything inside the radius is a no-service-call-fee call. Idaho Falls and Ammon are home ground; the surrounding Bonneville County towns are a short drive.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:24px">
+            <span class="tag tag-accent">Idaho Falls</span>
+            <span class="tag tag-accent">Ammon</span>
+            <span class="tag tag-outline">Ucon</span>
+            <span class="tag tag-outline">Iona</span>
+            <span class="tag tag-outline">Shelley</span>
+            <span class="tag tag-outline">Rigby</span>
+            <span class="tag tag-outline">Ririe</span>
+            <span class="tag tag-outline">Roberts</span>
+          </div>
+          <a href="#" onClick="{{ goAmmon }}" style="display:inline-block;margin-top:26px;font-family:var(--font-heading);font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--color-accent-700);border-bottom:1px solid var(--color-accent)">Electrician in Ammon &rarr;</a>
+        </div>
+        <div style="padding:44px;background:color-mix(in srgb, var(--color-accent) 6%, transparent)">
+          <div class="u-num">Get in touch</div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:12px 0 16px">Free estimate</h2>
+          <sc-if value="{{ sent }}">
+            <p style="font-size:17px;line-height:1.6;padding:20px 0;color:var(--color-accent-800)">Thanks &mdash; your request is in. For anything urgent, call <a href="tel:2087161240" style="color:var(--color-accent-800)">208.716.1240</a> and you&rsquo;ll reach a person.</p>
+          </sc-if>
+          <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ submit }}" style="display:grid;gap:14px;margin-top:6px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div class="field"><label for="h-name">Full name</label><input class="input" id="h-name" name="name" placeholder="Jane Peterson"></div>
+              <div class="field"><label for="h-phone">Phone</label><input class="input" id="h-phone" name="phone" placeholder="208.000.0000"></div>
+            </div>
+            <div class="field"><label for="h-city">City</label><input class="input" id="h-city" name="city" placeholder="Idaho Falls"></div>
+            <div class="field"><label for="h-msg">What needs fixing?</label><textarea class="input" id="h-msg" name="message" placeholder="Two outlets in the kitchen are dead and the breaker trips when the microwave runs."></textarea></div>
+            <button type="submit" class="btn btn-primary blueprint" style="justify-self:start;font-size:15px;padding:13px 22px;letter-spacing:.06em">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              Send request
+            </button>
+          </form>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isRes }}">
+  <div>
+    <div style="border-bottom:1px solid var(--color-divider)">
+      <div style="max-width:1240px;margin:0 auto;padding:14px 24px;font-family:var(--font-heading);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+        <a href="#" onClick="{{ goHome }}" style="text-decoration:none;color:inherit">Home</a> &nbsp;/&nbsp; Residential
+      </div>
+    </div>
+    <section style="max-width:1240px;margin:0 auto;padding:64px 24px 0">
+      <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:start">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+            <span style="width:34px;height:1px;background:var(--color-accent)"></span>
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700)">Homes &middot; Idaho Falls &amp; Ammon</span>
+          </div>
+          <h1 style="font-size:clamp(42px,5.4vw,80px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 24px">Residential electrician in Idaho&nbsp;Falls</h1>
+          <p style="font-size:19px;line-height:1.55;max-width:60ch;margin:0 0 20px;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Scott Lind Electric repairs, replaces and rewires residential electrical systems anywhere within 30 miles of Idaho Falls, usually the same day you call. There is no minimum job size and no service-call fee inside that radius.</p>
+          <p style="font-size:16px;line-height:1.65;max-width:62ch;margin:0;color:color-mix(in srgb, var(--color-text) 72%, transparent)">A dead outlet, a breaker that trips every time the microwave runs, a light fixture that hums &mdash; those are the calls other electricians push to next week because there is a subdivision to wire. We take them. It is how we prove we are worth calling when something big happens.</p>
+        </div>
+        <div class="blueprint" style="padding:28px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Spec sheet</div>
+          <table class="table" style="margin-top:14px">
+            <tbody>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Response</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Same day, typical</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Estimates</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Free</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Service-call fee</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">None within 30 mi</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Minimum job</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">No minimum</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">After hours</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Available</td></tr>
+            </tbody>
+          </table>
+          <a href="tel:2087161240" class="btn btn-primary btn-block blueprint" style="margin-top:22px;font-size:16px;padding:14px 20px;letter-spacing:.05em">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            Call 208.716.1240
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:32px">
+        <h2 style="font-size:40px;text-transform:uppercase;margin:0">What we get called for</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+      </div>
+      <div class="u-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--color-divider)">
+        <div style="padding:26px 24px"><div class="u-num">01</div><h3 style="font-size:23px;text-transform:uppercase;margin:8px 0 8px">Breakers that trip</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">A breaker doing its job repeatedly is telling you something: an overloaded circuit, a failing breaker, or a fault in the wiring. We find which.</p></div>
+        <div style="padding:26px 24px"><div class="u-num">02</div><h3 style="font-size:23px;text-transform:uppercase;margin:8px 0 8px">Dead outlets &amp; switches</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Often a tripped GFCI upstream or a backstabbed connection that finally let go. Fast to trace, fast to fix properly.</p></div>
+        <div style="padding:26px 24px"><div class="u-num">03</div><h3 style="font-size:23px;text-transform:uppercase;margin:8px 0 8px">Panel &amp; service work</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Added circuits, panel replacement, and correcting the work of whoever was in there before us.</p></div>
+        <div style="padding:26px 24px"><div class="u-num">04</div><h3 style="font-size:23px;text-transform:uppercase;margin:8px 0 8px">Lighting &amp; fixtures</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Fixture replacement, can lights, exterior and yard lighting, LED conversions that stop the flicker.</p></div>
+        <div style="padding:26px 24px"><div class="u-num">05</div><h3 style="font-size:23px;text-transform:uppercase;margin:8px 0 8px">Remodels &amp; additions</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Kitchens, basements, garages and shops &mdash; rough-in through trim, coordinated with your other trades.</p></div>
+        <div style="padding:26px 24px"><div class="u-num">06</div><h3 style="font-size:23px;text-transform:uppercase;margin:8px 0 8px">Troubleshooting</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">The intermittent problem nobody else could find. Diagnosis is the job we are proudest of.</p></div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:start">
+        <div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 16px">Repair it or replace it?</h2>
+          <p style="font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">The honest answer depends on what failed. Here is how we decide &mdash; the same reasoning we&rsquo;ll walk you through on site, before you spend anything.</p>
+        </div>
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <table class="table">
+            <thead><tr><th>Component</th><th>Repair makes sense</th><th>Replace makes sense</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">Outlet / switch</td><td>Loose connection, tripped GFCI</td><td>Scorching, melted face, cracked body</td></tr>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">Breaker</td><td>Trips only under real overload</td><td>Trips with no load, feels hot, won&rsquo;t reset</td></tr>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">Panel</td><td>Space available, brand still supported</td><td>Full, obsolete, corroded, or known-defective</td></tr>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">Fixture</td><td>Ballast or socket only</td><td>Failing housing, or converting to LED</td></tr>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">Wiring</td><td>Single damaged run</td><td>Widespread damage or unsafe original work</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 28px">Residential questions</h2>
+      <div class="u-grid" style="grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)">
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Will you come out for one outlet?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Yes. One outlet is a normal call, and inside 30 miles of Idaho Falls there is no service-call fee for making the trip.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Do I need to be home?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">For most repairs, yes &mdash; someone needs to let us in and confirm what the problem looks like when it happens. Tell us on the phone and we&rsquo;ll work around your schedule.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Do you pull permits?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">When the work requires a permit and inspection, we handle it. We will tell you up front whether your job needs one.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">How fast can you get here?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Same-day is typical for repair calls in Idaho Falls and Ammon. If today is not realistic we will say so on the phone rather than leave you waiting.</p></div>
+      </div>
+      <p style="margin:22px 0 0;font-size:15px"><a href="#" onClick="{{ goAnswers }}" style="font-family:var(--font-heading);font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--color-accent)">Read all answers &rarr;</a></p>
+    </section>
+
+    <section style="margin:88px 0 0;background:var(--color-accent-900);color:var(--color-bg);padding:64px 0">
+      <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;align-items:center;gap:32px">
+        <div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 8px;color:var(--color-bg)">Something not working?</h2>
+          <p style="margin:0;font-size:17px;color:color-mix(in srgb, var(--color-bg) 78%, transparent)">Tell us what it&rsquo;s doing. We&rsquo;ll tell you what it takes.</p>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:12px;flex-wrap:wrap">
+          <a href="tel:2087161240" class="btn btn-primary blueprint" style="font-size:16px;padding:14px 24px;letter-spacing:.05em"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Call 208.716.1240</a>
+          <a href="#" onClick="{{ goContact }}" class="btn" style="border-color:var(--color-accent-400);color:var(--color-bg);font-size:16px;padding:14px 24px;letter-spacing:.05em">Free estimate</a>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isCom }}">
+  <div>
+    <div style="border-bottom:1px solid var(--color-divider)">
+      <div style="max-width:1240px;margin:0 auto;padding:14px 24px;font-family:var(--font-heading);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+        <a href="#" onClick="{{ goHome }}" style="text-decoration:none;color:inherit">Home</a> &nbsp;/&nbsp; Commercial
+      </div>
+    </div>
+    <section style="max-width:1240px;margin:0 auto;padding:64px 24px 0">
+      <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:start">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+            <span style="width:34px;height:1px;background:var(--color-accent)"></span>
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700)">Commercial &amp; industrial</span>
+          </div>
+          <h1 style="font-size:clamp(42px,5.4vw,80px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 24px">Electrical contractor in Idaho&nbsp;Falls</h1>
+          <p style="font-size:19px;line-height:1.55;max-width:60ch;margin:0 0 20px;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Scott Lind Electric is a licensed commercial electrical contractor working across Idaho Falls, Ammon and eastern Idaho &mdash; ground-up construction, tenant remodels, service calls, parking lot lighting and LED conversions, at a competitive rate.</p>
+          <p style="font-size:16px;line-height:1.65;max-width:62ch;margin:0;color:color-mix(in srgb, var(--color-text) 72%, transparent)">We run small on purpose. You talk to the person doing the work, the schedule doesn&rsquo;t get handed off, and when your building has a problem at 6am you are not customer number four hundred.</p>
+        </div>
+        <div class="blueprint" style="padding:28px;background:var(--color-accent-900);color:var(--color-bg)">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="font-family:var(--font-heading);font-size:12px;letter-spacing:.16em;color:var(--color-accent-300)">For property &amp; business owners</div>
+          <h3 style="font-size:28px;text-transform:uppercase;margin:12px 0 14px;color:var(--color-bg)">Downtime is the real cost</h3>
+          <p style="font-size:15px;line-height:1.6;margin:0 0 18px;color:color-mix(in srgb, var(--color-bg) 80%, transparent)">A dark parking lot, a dead cooler circuit, a failed inspection holding your opening &mdash; we prioritise the work that keeps you closed.</p>
+          <a href="tel:2087161240" class="btn btn-primary btn-block blueprint" style="font-size:16px;padding:14px 20px;letter-spacing:.05em">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            Call 208.716.1240
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:32px">
+        <h2 style="font-size:40px;text-transform:uppercase;margin:0">Commercial capabilities</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+      </div>
+      <div class="u-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--color-divider)">
+        <div style="padding:28px"><div class="u-num">01</div><h3 style="font-size:25px;text-transform:uppercase;margin:8px 0 8px">New construction</h3><p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Service entrance through final trim on ground-up commercial buildings, coordinated with your GC and inspection schedule.</p></div>
+        <div style="padding:28px"><div class="u-num">02</div><h3 style="font-size:25px;text-transform:uppercase;margin:8px 0 8px">Tenant remodels</h3><p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Re-lighting, re-circuiting and re-feeding a space for its next use &mdash; often phased so the neighbouring units keep trading.</p></div>
+        <div style="padding:28px"><div class="u-num">03</div><h3 style="font-size:25px;text-transform:uppercase;margin:8px 0 8px">Parking lot light repair</h3><p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Pole lights, wall packs and the underground feeds nobody wants to chase. Dark lots are a liability &mdash; we fix them, including after close.</p></div>
+        <div style="padding:28px"><div class="u-num">04</div><h3 style="font-size:25px;text-transform:uppercase;margin:8px 0 8px">LED conversions</h3><p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Retrofit or full fixture replacement across shops, warehouses and lots &mdash; less maintenance, better light, lower draw.</p></div>
+        <div style="padding:28px"><div class="u-num">05</div><h3 style="font-size:25px;text-transform:uppercase;margin:8px 0 8px">Service &amp; maintenance</h3><p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Panel work, circuit additions for new equipment, and the running repairs that keep an older building operating.</p></div>
+        <div style="padding:28px"><div class="u-num">06</div><h3 style="font-size:25px;text-transform:uppercase;margin:8px 0 8px">Industrial</h3><p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Equipment feeds, three-phase work and shop electrical for the machines your operation runs on.</p></div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:start">
+        <div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 16px">Who we work for</h2>
+          <p style="font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Any size or type of commercial project, across eastern Idaho.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:22px">
+            <span class="tag tag-outline">Retail &amp; restaurants</span>
+            <span class="tag tag-outline">Offices &amp; clinics</span>
+            <span class="tag tag-outline">Warehouses</span>
+            <span class="tag tag-outline">Shops &amp; garages</span>
+            <span class="tag tag-outline">Property managers</span>
+            <span class="tag tag-outline">General contractors</span>
+            <span class="tag tag-outline">Churches &amp; schools</span>
+            <span class="tag tag-outline">Agricultural</span>
+          </div>
+        </div>
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <table class="table">
+            <thead><tr><th>Situation</th><th>What we do first</th><th>When</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">Lot lights out</td><td>Assess pole, fixture and feed; restore light</td><td>After close if needed</td></tr>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">Circuit down</td><td>Isolate the fault, get the load back on</td><td>Same day, typical</td></tr>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">New equipment</td><td>Verify capacity, run the dedicated feed</td><td>Scheduled</td></tr>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">Failed inspection</td><td>Correct and re-present the work</td><td>Priority</td></tr>
+              <tr><td style="font-family:var(--font-heading);font-size:16px">Build-out</td><td>Walk the plans, quote the scope, free</td><td>By appointment</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 28px">Commercial questions</h2>
+      <div class="u-grid" style="grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)">
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">How big a project can you take?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Commercial projects of any size or type, from a single circuit to a building wired from the ground up. If a job is genuinely outside what we should take on, we&rsquo;ll say so.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Can you work outside business hours?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Yes. Shutdowns, lot lighting and anything that would interrupt trading can be scheduled after close or before opening.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Are estimates really free?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Yes &mdash; we walk the job, scope it and price it before any commitment, at no charge.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Do you work with general contractors?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Regularly. We coordinate with other trades and hold our part of the schedule &mdash; the reason GCs call us back.</p></div>
+      </div>
+    </section>
+
+    <section style="margin:88px 0 0;background:var(--color-accent-900);color:var(--color-bg);padding:64px 0">
+      <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;align-items:center;gap:32px">
+        <div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 8px;color:var(--color-bg)">Bidding a project?</h2>
+          <p style="margin:0;font-size:17px;color:color-mix(in srgb, var(--color-bg) 78%, transparent)">Send the plans or walk us through the building. Estimates are free.</p>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:12px;flex-wrap:wrap">
+          <a href="tel:2087161240" class="btn btn-primary blueprint" style="font-size:16px;padding:14px 24px;letter-spacing:.05em"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Call 208.716.1240</a>
+          <a href="#" onClick="{{ goContact }}" class="btn" style="border-color:var(--color-accent-400);color:var(--color-bg);font-size:16px;padding:14px 24px;letter-spacing:.05em">Request a bid</a>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isEmg }}">
+  <div>
+    <section style="background:var(--color-accent-900);color:var(--color-bg);padding:0 0 72px">
+      <div style="max-width:1240px;margin:0 auto;padding:14px 24px;font-family:var(--font-heading);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb, var(--color-bg) 55%, transparent);border-bottom:1px solid color-mix(in srgb, var(--color-bg) 18%, transparent)">
+        <a href="#" onClick="{{ goHome }}" style="text-decoration:none;color:inherit">Home</a> &nbsp;/&nbsp; After hours
+      </div>
+      <div style="max-width:1240px;margin:0 auto;padding:64px 24px 0;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:start">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+            <span style="width:34px;height:1px;background:var(--color-accent-300)"></span>
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-300)">Emergency &amp; after-hours service</span>
+          </div>
+          <h1 style="font-size:clamp(42px,5.4vw,80px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 24px;color:var(--color-bg)">Emergency electrician, Idaho&nbsp;Falls</h1>
+          <p style="font-size:19px;line-height:1.55;max-width:58ch;margin:0 0 20px;color:color-mix(in srgb, var(--color-bg) 84%, transparent)">Electrical problems don&rsquo;t follow business hours. Scott Lind Electric answers after-hours calls in Idaho Falls and Ammon and will do whatever we can to get your home or business safe and running again tonight.</p>
+          <p style="font-size:16px;line-height:1.65;max-width:60ch;margin:0 0 32px;color:color-mix(in srgb, var(--color-bg) 70%, transparent)">We run a small business ourselves. Nothing is more frustrating than an electrical fault standing between you and opening in the morning &mdash; so call, and you&rsquo;ll get a person, not a queue.</p>
+          <a href="tel:2087161240" class="btn btn-primary blueprint" style="font-size:22px;padding:20px 32px;letter-spacing:.04em">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            Call now &mdash; 208.716.1240
+          </a>
+        </div>
+        <div class="blueprint" style="padding:28px;border-color:color-mix(in srgb, var(--color-bg) 30%, transparent)">
+          <i class="corner tl" style="color:color-mix(in srgb, var(--color-bg) 60%, transparent)"></i><i class="corner tr" style="color:color-mix(in srgb, var(--color-bg) 60%, transparent)"></i><i class="corner bl" style="color:color-mix(in srgb, var(--color-bg) 60%, transparent)"></i><i class="corner br" style="color:color-mix(in srgb, var(--color-bg) 60%, transparent)"></i>
+          <div style="font-family:var(--font-heading);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300)">Do this right now</div>
+          <ol style="margin:16px 0 0;padding-left:22px;display:grid;gap:14px;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-bg) 86%, transparent)">
+            <li><strong style="font-family:var(--font-heading);font-size:17px;letter-spacing:.02em">Smell burning or see smoke?</strong><br>Shut off the breaker feeding that area if you can reach it safely. If there is fire or smoke in the wall, call 911 first.</li>
+            <li><strong style="font-family:var(--font-heading);font-size:17px;letter-spacing:.02em">Water near electrical?</strong><br>Don&rsquo;t touch the panel or any wet device. Kill power at the main if you can do it from a dry position, then call.</li>
+            <li><strong style="font-family:var(--font-heading);font-size:17px;letter-spacing:.02em">Breaker won&rsquo;t reset?</strong><br>Try it once. If it trips straight back, leave it off &mdash; it is holding back a fault. Don&rsquo;t tape or wedge it.</li>
+            <li><strong style="font-family:var(--font-heading);font-size:17px;letter-spacing:.02em">Then call 208.716.1240</strong><br>Tell us what you saw, smelled and heard. That detail is usually enough for us to arrive with the right parts.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:14px">
+        <h2 style="font-size:40px;text-transform:uppercase;margin:0">Call now, or schedule it?</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+      </div>
+      <p style="font-size:16px;line-height:1.65;max-width:70ch;margin:0 0 28px;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Not every electrical problem is an emergency, and we would rather you knew the difference than paid for an after-hours trip you didn&rsquo;t need. Here is how we triage a call.</p>
+      <div class="blueprint" style="padding:26px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <table class="table">
+          <thead><tr><th style="width:34%">What you&rsquo;re seeing</th><th>Why it matters</th><th style="width:20%">Do this</th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Burning smell, smoke or scorch marks</td><td>An active heat source inside the wiring or a device</td><td style="color:var(--color-accent-800);font-family:var(--font-heading);font-size:16px">Call immediately</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Sparks, buzzing or a hot panel</td><td>Arcing or a loose connection under load</td><td style="color:var(--color-accent-800);font-family:var(--font-heading);font-size:16px">Call immediately</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Breaker trips instantly with nothing plugged in</td><td>A short or ground fault in the circuit</td><td style="color:var(--color-accent-800);font-family:var(--font-heading);font-size:16px">Call immediately</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Water in a panel, fixture or outlet</td><td>Shock and fire risk while energised</td><td style="color:var(--color-accent-800);font-family:var(--font-heading);font-size:16px">Call immediately</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Whole building dark, neighbours fine</td><td>Your service, main or panel &mdash; not the utility</td><td style="color:var(--color-accent-800);font-family:var(--font-heading);font-size:16px">Call immediately</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Business can&rsquo;t open or trade tomorrow</td><td>Downtime cost outruns the after-hours trip</td><td style="color:var(--color-accent-800);font-family:var(--font-heading);font-size:16px">Call tonight</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">One dead outlet or switch</td><td>Annoying, not dangerous, if nothing is hot</td><td>Schedule same-day</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">A fixture flickering</td><td>Usually a lamp, ballast or loose connection</td><td>Schedule same-day</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Adding a circuit or fixture</td><td>Planned work, better done in daylight</td><td>Book an estimate</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Whole neighbourhood dark</td><td>Utility outage &mdash; not an electrician job</td><td>Call Rocky Mountain Power</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 28px">After-hours questions</h2>
+      <div class="u-grid" style="grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)">
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Do you answer the phone at night?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">We answer after-hours calls and will tell you honestly whether we can be there tonight or first thing in the morning. If it&rsquo;s dangerous, we treat it as dangerous.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">What counts as an electrical emergency?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Anything hot, smoking, sparking or wet, a breaker that will not hold, a total loss of power to the building, or a fault that stops a business trading. The table above covers the common cases.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Which areas do you cover after hours?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Idaho Falls, Ammon and the surrounding communities within 30 miles &mdash; Ucon, Iona, Shelley, Rigby, Ririe and Roberts included.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Should I shut off the main breaker?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">If you can reach it safely and dryly and something is smoking, sparking or wet &mdash; yes, then call. If reaching it means standing in water or touching a hot panel, stay back and call from a safe distance.</p></div>
+      </div>
+    </section>
+
+    <section style="margin:88px 0 0;background:var(--color-accent-900);color:var(--color-bg);padding:64px 0">
+      <div style="max-width:1240px;margin:0 auto;padding:0 24px;text-align:center">
+        <h2 style="font-size:clamp(32px,4vw,56px);text-transform:uppercase;margin:0 0 10px;color:var(--color-bg)">If it&rsquo;s hot, wet or sparking &mdash; call.</h2>
+        <p style="margin:0 0 28px;font-size:17px;color:color-mix(in srgb, var(--color-bg) 78%, transparent)">Scott Lind Electric &middot; Idaho Falls &amp; Ammon &middot; After hours</p>
+        <a href="tel:2087161240" class="btn btn-primary blueprint" style="font-size:24px;padding:22px 40px;letter-spacing:.04em"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>208.716.1240</a>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isAmmon }}">
+  <div>
+    <div style="border-bottom:1px solid var(--color-divider)">
+      <div style="max-width:1240px;margin:0 auto;padding:14px 24px;font-family:var(--font-heading);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+        <a href="#" onClick="{{ goHome }}" style="text-decoration:none;color:inherit">Home</a> &nbsp;/&nbsp; Service area &nbsp;/&nbsp; Ammon
+      </div>
+    </div>
+    <section style="max-width:1240px;margin:0 auto;padding:64px 24px 0">
+      <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:start">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+            <span style="width:34px;height:1px;background:var(--color-accent)"></span>
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700)">Ammon, Idaho &middot; Bonneville County</span>
+          </div>
+          <h1 style="font-size:clamp(42px,5.4vw,80px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 24px">Electrician in Ammon,&nbsp;Idaho</h1>
+          <p style="font-size:19px;line-height:1.55;max-width:60ch;margin:0 0 20px;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Ammon sits inside our no-fee radius, minutes from the shop on Taylor Avenue. Scott Lind Electric handles residential repairs, commercial service and after-hours emergencies throughout Ammon &mdash; same-day in most cases, with free estimates and no service-call fee.</p>
+          <p style="font-size:16px;line-height:1.65;max-width:62ch;margin:0;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Ammon&rsquo;s housing runs from mid-century homes with panels that are out of space to subdivisions built last year with circuits already loaded past what the builder planned for. Both call for the same thing: someone who diagnoses before quoting.</p>
+        </div>
+        <div class="blueprint" style="padding:28px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Ammon at a glance</div>
+          <table class="table" style="margin-top:14px">
+            <tbody>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Distance from our shop</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Under 10 min</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Service-call fee</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">None</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Same-day repair</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Typical</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">After hours</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Covered</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Estimates</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Free</td></tr>
+            </tbody>
+          </table>
+          <a href="tel:2087161240" class="btn btn-primary btn-block blueprint" style="margin-top:22px;font-size:16px;padding:14px 20px;letter-spacing:.05em">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            Call 208.716.1240
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:32px">
+        <h2 style="font-size:40px;text-transform:uppercase;margin:0">What we do in Ammon</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+      </div>
+      <div class="u-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--color-divider)">
+        <div style="padding:26px 24px"><div class="u-num">01</div><h3 style="font-size:23px;text-transform:uppercase;margin:8px 0 8px">Home repairs</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Outlets, switches, breakers, fixtures and the troubleshooting nobody else finished.</p></div>
+        <div style="padding:26px 24px"><div class="u-num">02</div><h3 style="font-size:23px;text-transform:uppercase;margin:8px 0 8px">Basements &amp; shops</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Finishing a basement or wiring a detached shop &mdash; circuits, lighting, panels and permits.</p></div>
+        <div style="padding:26px 24px"><div class="u-num">03</div><h3 style="font-size:23px;text-transform:uppercase;margin:8px 0 8px">Business service</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Ammon storefronts, offices and lots &mdash; service calls, LED conversions, lot light repair.</p></div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div class="blueprint" style="display:grid;grid-template-columns:1fr 1fr">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="padding:40px;border-right:1px solid var(--color-divider)">
+          <h2 style="font-size:36px;text-transform:uppercase;margin:0 0 14px">Also inside the radius</h2>
+          <p style="font-size:15px;line-height:1.65;margin:0 0 20px;color:color-mix(in srgb, var(--color-text) 74%, transparent)">Every town below is a no-service-call-fee trip from Idaho Falls.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="tag tag-accent">Idaho Falls</span>
+            <span class="tag tag-accent">Ammon</span>
+            <span class="tag tag-outline">Ucon</span>
+            <span class="tag tag-outline">Iona</span>
+            <span class="tag tag-outline">Shelley</span>
+            <span class="tag tag-outline">Rigby</span>
+            <span class="tag tag-outline">Ririe</span>
+            <span class="tag tag-outline">Roberts</span>
+          </div>
+        </div>
+        <div style="padding:0;position:relative;min-height:280px">
+          <image-slot id="sle-ammon-map" shape="rect" fit="cover" placeholder="Drop a service-area map screenshot"></image-slot>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 28px">Ammon questions</h2>
+      <div class="u-grid" style="grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)">
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">Do you charge extra to come to Ammon?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">No. Ammon is well inside the 30-mile radius, so there is no service-call fee &mdash; you pay for the work, not the drive.</p></div>
+        <div style="padding:28px"><h3 style="font-size:24px;margin:0 0 10px">How quickly can you get to Ammon?</h3><p style="margin:0;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Our shop is on Taylor Avenue in Idaho Falls, under ten minutes out. Same-day service is normal for Ammon repair calls.</p></div>
+      </div>
+      <p style="margin:22px 0 0"><a href="#" onClick="{{ goAnswers }}" style="font-family:var(--font-heading);font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--color-accent)">Read all answers &rarr;</a></p>
+    </section>
+
+    <section style="margin:88px 0 0;background:var(--color-accent-900);color:var(--color-bg);padding:64px 0">
+      <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;align-items:center;gap:32px">
+        <div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 8px;color:var(--color-bg)">Ammon, we&rsquo;re ten minutes out.</h2>
+          <p style="margin:0;font-size:17px;color:color-mix(in srgb, var(--color-bg) 78%, transparent)">Free estimate, no service-call fee, same-day where we can.</p>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:12px;flex-wrap:wrap">
+          <a href="tel:2087161240" class="btn btn-primary blueprint" style="font-size:16px;padding:14px 24px;letter-spacing:.05em"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Call 208.716.1240</a>
+          <a href="#" onClick="{{ goContact }}" class="btn" style="border-color:var(--color-accent-400);color:var(--color-bg);font-size:16px;padding:14px 24px;letter-spacing:.05em">Free estimate</a>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isAnswers }}">
+  <div>
+    <div style="border-bottom:1px solid var(--color-divider)">
+      <div style="max-width:1240px;margin:0 auto;padding:14px 24px;font-family:var(--font-heading);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+        <a href="#" onClick="{{ goHome }}" style="text-decoration:none;color:inherit">Home</a> &nbsp;/&nbsp; Answers
+      </div>
+    </div>
+    <section style="max-width:1240px;margin:0 auto;padding:64px 24px 0">
+      <div style="display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:start">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+            <span style="width:34px;height:1px;background:var(--color-accent)"></span>
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700)">Answers &middot; Idaho Falls &amp; Ammon</span>
+          </div>
+          <h1 style="font-size:clamp(40px,5vw,74px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 24px">Electrical answers, straight out</h1>
+          <p style="font-size:19px;line-height:1.55;max-width:58ch;margin:0;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Everything below is what we actually tell people on the phone. No hedging, no funnel &mdash; if the answer is &ldquo;you don&rsquo;t need an electrician for that&rdquo;, it says so.</p>
+        </div>
+        <nav class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Contents</div>
+          <div style="display:grid;gap:10px;margin-top:14px;font-size:15px">
+            <a href="#a-hiring" style="text-decoration:none">01 &nbsp; Hiring us &amp; what it costs you</a>
+            <a href="#a-problems" style="text-decoration:none">02 &nbsp; Common problems, explained</a>
+            <a href="#a-safety" style="text-decoration:none">03 &nbsp; Safety, code &amp; permits</a>
+            <a href="#a-who" style="text-decoration:none">04 &nbsp; Who should do the work</a>
+          </div>
+        </nav>
+      </div>
+    </section>
+
+    <section id="a-hiring" style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:28px">
+        <span class="u-num">01</span>
+        <h2 style="font-size:38px;text-transform:uppercase;margin:0">Hiring us &amp; what it costs you</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+      </div>
+      <div class="u-grid" style="grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)">
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Do you charge a service-call fee?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">No &mdash; there is no service-call fee for any customer within 30 miles of Idaho Falls. That covers Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts. You pay for the work performed, not for us to show up.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Are estimates free?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Yes. We look at the job, scope it and give you a price before any work starts, at no charge. For larger projects we&rsquo;ll walk the plans with you or your contractor.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Can an electrician come out today?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Usually. Same-day service is standard for repair calls in Idaho Falls and Ammon. Call in the morning for the best chance of a same-day slot &mdash; and if today isn&rsquo;t realistic, we&rsquo;ll tell you that instead of leaving you waiting.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Is my job too small?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">No. One dead outlet, one bad switch, one fixture &mdash; those are real calls and they get a real appointment. Small jobs are how we earn the trust that brings us the big ones.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Are you licensed and insured?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Yes &mdash; Scott Lind Electric LLC is a state-licensed, insured Idaho electrical contractor. Ask for the license number and we&rsquo;ll give it to you before we start.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">What areas do you serve?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Idaho Falls, Ammon and everywhere within roughly 30 miles across Bonneville and Jefferson counties. Further out is still possible &mdash; call and ask.</p></div>
+      </div>
+    </section>
+
+    <section id="a-problems" style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:28px">
+        <span class="u-num">02</span>
+        <h2 style="font-size:38px;text-transform:uppercase;margin:0">Common problems, explained</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+      </div>
+      <div class="u-grid" style="grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)">
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Why does my breaker keep tripping?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">A breaker trips because it is doing its job. The three usual causes are an overloaded circuit (too much running at once), a short or ground fault in the wiring or a device, or a breaker that has simply worn out. If it resets and holds, note what was running when it tripped. If it trips instantly with nothing plugged in, leave it off and call &mdash; that is a fault, not an overload.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Half my outlets died at once. Why?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Most often a tripped GFCI upstream on the same circuit &mdash; check bathrooms, the kitchen, the garage and outside for a receptacle with a reset button. Press it. If nothing comes back, or there&rsquo;s no GFCI to find, a connection has failed somewhere in the run and it needs tracing.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">My lights flicker or dim when appliances start. Serious?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">A brief dim when a big motor starts is normal. Flickering that comes and goes on its own, or gets worse over time, is not &mdash; it often means a loose connection, and loose connections make heat. Get it looked at rather than waiting.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Should I upgrade my electrical panel?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Consider it if the panel is full with no room for the circuits you need, if it&rsquo;s an obsolete or known-problem brand, if there&rsquo;s rust or scorching inside, or if you&rsquo;re adding significant load like a shop, hot tub or AC. A panel that is simply old and healthy can stay.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Why are my parking lot lights out again?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Repeated pole-light failures usually trace to water in a base or junction, a failing photocell or contactor, or a feed that has been damaged underground &mdash; not the lamp. Replacing lamps over and over treats the symptom. Converting to LED at the same time cuts the maintenance cycle down hard.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Is LED conversion worth it for a business?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">For most commercial spaces, yes &mdash; lower draw, far longer life, better light, and no ballasts to chase. The case is strongest for high-bay warehouse fixtures, lots and any space that runs lights all day.</p></div>
+      </div>
+    </section>
+
+    <section id="a-safety" style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:28px">
+        <span class="u-num">03</span>
+        <h2 style="font-size:38px;text-transform:uppercase;margin:0">Safety, code &amp; permits</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+      </div>
+      <div class="u-grid" style="grid-template-columns:1fr 1fr;border:1px solid var(--color-divider)">
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Do I need a permit for electrical work in Idaho?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">New circuits, panel work, service changes and most remodel wiring require a permit and inspection; a like-for-like device swap generally does not. When your job needs one, we handle the permit and the inspection &mdash; and we&rsquo;ll tell you up front which category you&rsquo;re in.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">What should I do before you arrive?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Clear access to the panel and to whatever isn&rsquo;t working, and note the pattern &mdash; what fails, when, and what else is running. That detail routinely saves an hour of diagnosis, which saves you money.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">When is an electrical problem an emergency?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">When something is hot, smoking, sparking or wet; when a breaker won&rsquo;t hold; when the whole building has lost power but the neighbours haven&rsquo;t; or when a fault stops a business trading. Anything else can usually wait for a same-day appointment.</p></div>
+        <div style="padding:30px"><h3 style="font-size:25px;margin:0 0 10px">Can I do my own electrical work?</h3><p style="margin:0;font-size:15px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Some homeowner work is legal in Idaho on your own residence, but permits, inspections and code compliance still apply &mdash; and insurers ask questions after a fire. Anything inside the panel, anything on the service, and anything you&rsquo;re unsure about should go to a licensed electrician.</p></div>
+      </div>
+    </section>
+
+    <section id="a-who" style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:14px">
+        <span class="u-num">04</span>
+        <h2 style="font-size:38px;text-transform:uppercase;margin:0">Handyman or licensed electrician?</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+      </div>
+      <p style="font-size:16px;line-height:1.65;max-width:70ch;margin:0 0 28px;color:color-mix(in srgb, var(--color-text) 76%, transparent)">Plenty of work around a house doesn&rsquo;t need us. Some absolutely does &mdash; and the difference matters to your insurance as much as your safety.</p>
+      <div class="blueprint" style="padding:26px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <table class="table">
+          <thead><tr><th style="width:38%">Work</th><th>Who should do it</th><th style="width:26%">Why</th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Changing a lamp or a plug-in fixture</td><td>You</td><td>No permanent wiring involved</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Resetting a GFCI or a tripped breaker</td><td>You, once</td><td>If it trips again, something is wrong</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Replacing a light fixture</td><td>Either &mdash; if the box is sound</td><td>Old boxes and unsupported fans are the risk</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Outlets, switches, dimmers</td><td>Licensed electrician</td><td>Backstabs, aluminium and undersized wire hide here</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Adding a circuit or a dedicated feed</td><td>Licensed electrician</td><td>Load calculation, permit and inspection</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Any work inside the panel</td><td>Licensed electrician</td><td>Live bus bars; no safe DIY version</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Service, meter or mast work</td><td>Licensed electrician</td><td>Utility coordination and permits required</td></tr>
+            <tr><td style="font-family:var(--font-heading);font-size:16px">Anything hot, scorched or smelling</td><td>Licensed electrician, now</td><td>It is a fire in progress, slowly</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section style="margin:88px 0 0;background:var(--color-accent-900);color:var(--color-bg);padding:64px 0">
+      <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;align-items:center;gap:32px">
+        <div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 8px;color:var(--color-bg)">Question not answered here?</h2>
+          <p style="margin:0;font-size:17px;color:color-mix(in srgb, var(--color-bg) 78%, transparent)">Call and ask. We&rsquo;ll tell you straight, even if the answer is &ldquo;you don&rsquo;t need us&rdquo;.</p>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:12px;flex-wrap:wrap">
+          <a href="tel:2087161240" class="btn btn-primary blueprint" style="font-size:16px;padding:14px 24px;letter-spacing:.05em"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Call 208.716.1240</a>
+          <a href="#" onClick="{{ goContact }}" class="btn" style="border-color:var(--color-accent-400);color:var(--color-bg);font-size:16px;padding:14px 24px;letter-spacing:.05em">Send a question</a>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isAbout }}">
+  <div>
+    <div style="border-bottom:1px solid var(--color-divider)">
+      <div style="max-width:1240px;margin:0 auto;padding:14px 24px;font-family:var(--font-heading);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+        <a href="#" onClick="{{ goHome }}" style="text-decoration:none;color:inherit">Home</a> &nbsp;/&nbsp; About
+      </div>
+    </div>
+    <section style="max-width:1240px;margin:0 auto;padding:64px 24px 0">
+      <div style="display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:start">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+            <span style="width:34px;height:1px;background:var(--color-accent)"></span>
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700)">Scott Lind Electric LLC</span>
+          </div>
+          <h1 style="font-size:clamp(42px,5.4vw,80px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 24px">The name on the van answers the phone</h1>
+          <p style="font-size:19px;line-height:1.55;max-width:58ch;margin:0 0 20px;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Scott Lind Electric is a state-licensed electrical contractor based on Taylor Avenue in Idaho Falls, working across residential, commercial and industrial jobs throughout eastern Idaho.</p>
+          <p style="font-size:16px;line-height:1.7;max-width:62ch;margin:0 0 16px;color:color-mix(in srgb, var(--color-text) 74%, transparent)">The whole company is built on one decision: take the small jobs. Most electricians won&rsquo;t drive across town for a single dead outlet &mdash; there is a subdivision to wire and the math doesn&rsquo;t work. We took the other view. Fix the small thing well, and when something serious happens in that house or that building, there is no question who gets the call.</p>
+          <p style="font-size:16px;line-height:1.7;max-width:62ch;margin:0;color:color-mix(in srgb, var(--color-text) 74%, transparent)">That is also why there is no service-call fee inside 30 miles, why estimates are free, and why the phone gets answered after hours. Not marketing &mdash; just the only way the promise holds up.</p>
+        </div>
+        <figure style="margin:0;min-width:0">
+          <div class="blueprint duotone" style="min-width:0;height:380px">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <image-slot id="sle-scott" shape="rect" fit="cover" placeholder="Drop a photo of Scott / the crew"></image-slot>
+          </div>
+          <figcaption style="margin-top:10px">Fig. 05 &mdash; Scott Lind, Idaho Falls, ID</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:32px">
+        <h2 style="font-size:40px;text-transform:uppercase;margin:0">How we work</h2>
+        <span style="flex:1;height:1px;background:var(--color-divider)"></span>
+      </div>
+      <div class="u-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--color-divider)">
+        <div style="padding:26px 22px"><div class="u-num">01</div><h3 style="font-size:22px;text-transform:uppercase;margin:8px 0 8px">Diagnose first</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">We find out what actually failed before quoting a repair. Guessing is expensive for both of us.</p></div>
+        <div style="padding:26px 22px"><div class="u-num">02</div><h3 style="font-size:22px;text-transform:uppercase;margin:8px 0 8px">Price before tools</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">You know the scope and the number before anything is opened up.</p></div>
+        <div style="padding:26px 22px"><div class="u-num">03</div><h3 style="font-size:22px;text-transform:uppercase;margin:8px 0 8px">Say the honest thing</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Including &ldquo;that can wait&rdquo;, &ldquo;you don&rsquo;t need us for that&rdquo;, or &ldquo;today isn&rsquo;t realistic&rdquo;.</p></div>
+        <div style="padding:26px 22px"><div class="u-num">04</div><h3 style="font-size:22px;text-transform:uppercase;margin:8px 0 8px">Leave it to code</h3><p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Permitted and inspected where required, and correct where nobody will ever look.</p></div>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:80px 24px 0">
+      <div class="blueprint" style="display:grid;grid-template-columns:1fr 1fr">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="padding:40px;border-right:1px solid var(--color-divider)">
+          <div class="u-num">Credentials</div>
+          <h2 style="font-size:34px;text-transform:uppercase;margin:12px 0 20px">Licensed, insured, local</h2>
+          <table class="table">
+            <tbody>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Business</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Scott Lind Electric LLC</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Idaho contractor license</td><td style="text-align:right;font-style:italic;color:color-mix(in srgb, var(--color-text) 50%, transparent)">Add license number</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Insurance</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Carried &mdash; certificate on request</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Based in</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Idaho Falls, ID 83404</td></tr>
+              <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Serving</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Idaho Falls, Ammon &amp; 30 miles</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:40px;background:color-mix(in srgb, var(--color-accent) 6%, transparent)">
+          <div class="u-num">Who calls us</div>
+          <h2 style="font-size:34px;text-transform:uppercase;margin:12px 0 20px">Three kinds of customer</h2>
+          <div style="display:grid;gap:18px;font-size:15px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 78%, transparent)">
+            <p style="margin:0"><strong style="font-family:var(--font-heading);font-size:18px;letter-spacing:.02em;color:var(--color-text)">Homeowners</strong><br>who have been told their job is too small, or who need it fixed today.</p>
+            <p style="margin:0"><strong style="font-family:var(--font-heading);font-size:18px;letter-spacing:.02em;color:var(--color-text)">Business &amp; property owners</strong><br>who cannot afford a dark lot, a dead circuit or a failed inspection.</p>
+            <p style="margin:0"><strong style="font-family:var(--font-heading);font-size:18px;letter-spacing:.02em;color:var(--color-text)">General contractors</strong><br>who need an electrical sub that holds the schedule and answers the phone.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin:88px 0 0;background:var(--color-accent-900);color:var(--color-bg);padding:64px 0">
+      <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;align-items:center;gap:32px">
+        <div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 8px;color:var(--color-bg)">Try us on something small.</h2>
+          <p style="margin:0;font-size:17px;color:color-mix(in srgb, var(--color-bg) 78%, transparent)">That&rsquo;s the whole pitch.</p>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:12px;flex-wrap:wrap">
+          <a href="tel:2087161240" class="btn btn-primary blueprint" style="font-size:16px;padding:14px 24px;letter-spacing:.05em"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Call 208.716.1240</a>
+          <a href="#" onClick="{{ goContact }}" class="btn" style="border-color:var(--color-accent-400);color:var(--color-bg);font-size:16px;padding:14px 24px;letter-spacing:.05em">Free estimate</a>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isReviews }}">
+  <div>
+    <div style="border-bottom:1px solid var(--color-divider)">
+      <div style="max-width:1240px;margin:0 auto;padding:14px 24px;font-family:var(--font-heading);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+        <a href="#" onClick="{{ goHome }}" style="text-decoration:none;color:inherit">Home</a> &nbsp;/&nbsp; Reviews
+      </div>
+    </div>
+    <section style="max-width:1240px;margin:0 auto;padding:64px 24px 0">
+      <div style="display:flex;flex-wrap:wrap;align-items:end;gap:40px">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+            <span style="width:34px;height:1px;background:var(--color-accent)"></span>
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700)">Reviews &middot; Idaho Falls &amp; Ammon</span>
+          </div>
+          <h1 style="font-size:clamp(42px,5.4vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 20px">What customers say</h1>
+          <p style="font-size:18px;line-height:1.55;max-width:56ch;margin:0;color:color-mix(in srgb, var(--color-text) 80%, transparent)">Reviews from real Idaho Falls and Ammon customers, quoted from our Google Business Profile.</p>
+        </div>
+        <a href="tel:2087161240" class="btn btn-primary blueprint" style="margin-left:auto;font-size:16px;padding:14px 24px;letter-spacing:.05em"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Call 208.716.1240</a>
+      </div>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:48px 24px 0">
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px">
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Google review 01 &middot; Residential</div>
+          <p style="font-size:17px;line-height:1.55;margin:14px 0 18px;color:color-mix(in srgb, var(--color-text) 55%, transparent);font-style:italic">Paste the review text here, word for word from Google.</p>
+          <div style="font-family:var(--font-heading);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Customer name &middot; Idaho Falls</div>
+        </div>
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Google review 02 &middot; Same-day</div>
+          <p style="font-size:17px;line-height:1.55;margin:14px 0 18px;color:color-mix(in srgb, var(--color-text) 55%, transparent);font-style:italic">Paste a review that mentions how fast we got there.</p>
+          <div style="font-family:var(--font-heading);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Customer name &middot; Ammon</div>
+        </div>
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Google review 03 &middot; Commercial</div>
+          <p style="font-size:17px;line-height:1.55;margin:14px 0 18px;color:color-mix(in srgb, var(--color-text) 55%, transparent);font-style:italic">Paste a review from a business customer.</p>
+          <div style="font-family:var(--font-heading);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Business name &middot; Idaho Falls</div>
+        </div>
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Google review 04 &middot; Small job</div>
+          <p style="font-size:17px;line-height:1.55;margin:14px 0 18px;color:color-mix(in srgb, var(--color-text) 55%, transparent);font-style:italic">Paste a review about a job other electricians wouldn&rsquo;t take.</p>
+          <div style="font-family:var(--font-heading);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Customer name &middot; Idaho Falls</div>
+        </div>
+        <div class="blueprint" style="padding:26px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="u-num">Google review 05 &middot; After hours</div>
+          <p style="font-size:17px;line-height:1.55;margin:14px 0 18px;color:color-mix(in srgb, var(--color-text) 55%, transparent);font-style:italic">Paste a review from an after-hours call.</p>
+          <div style="font-family:var(--font-heading);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Customer name &middot; Ucon</div>
+        </div>
+        <div class="blueprint" style="padding:26px;background:var(--color-accent-900);color:var(--color-bg)">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="font-family:var(--font-heading);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300)">Worked with us?</div>
+          <h3 style="font-size:27px;text-transform:uppercase;margin:12px 0 12px;color:var(--color-bg)">Leave a review</h3>
+          <p style="font-size:15px;line-height:1.6;margin:0 0 18px;color:color-mix(in srgb, var(--color-bg) 80%, transparent)">Reviews that name the town and the job help the next person find us. It takes a minute and it means a lot.</p>
+          <a href="#" class="btn blueprint" style="border-color:var(--color-accent-400);color:var(--color-bg);font-size:15px;padding:12px 20px;letter-spacing:.06em"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Review us on Google</a>
+        </div>
+      </div>
+      <p style="margin:26px 0 0;font-size:13px;font-style:italic;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Replace each card with a real, attributed Google review &mdash; never invented text. Six is a good number to keep on this page.</p>
+    </section>
+
+    <section style="margin:88px 0 0;background:var(--color-accent-900);color:var(--color-bg);padding:64px 0">
+      <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;align-items:center;gap:32px">
+        <div>
+          <h2 style="font-size:40px;text-transform:uppercase;margin:0 0 8px;color:var(--color-bg)">Be the next one.</h2>
+          <p style="margin:0;font-size:17px;color:color-mix(in srgb, var(--color-bg) 78%, transparent)">Free estimates, same-day where we can, no service-call fee within 30 miles.</p>
+        </div>
+        <a href="tel:2087161240" class="btn btn-primary blueprint" style="margin-left:auto;font-size:18px;padding:16px 28px;letter-spacing:.05em"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Call 208.716.1240</a>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isContact }}">
+  <div>
+    <div style="border-bottom:1px solid var(--color-divider)">
+      <div style="max-width:1240px;margin:0 auto;padding:14px 24px;font-family:var(--font-heading);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+        <a href="#" onClick="{{ goHome }}" style="text-decoration:none;color:inherit">Home</a> &nbsp;/&nbsp; Contact
+      </div>
+    </div>
+    <section style="max-width:1240px;margin:0 auto;padding:64px 24px 0">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+            <span style="width:34px;height:1px;background:var(--color-accent)"></span>
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700)">Get in touch</span>
+          </div>
+          <h1 style="font-size:clamp(40px,5vw,72px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 20px">Free estimate, no service&#8209;call fee</h1>
+          <p style="font-size:18px;line-height:1.6;max-width:52ch;margin:0 0 32px;color:color-mix(in srgb, var(--color-text) 80%, transparent)">Fastest route is the phone &mdash; you&rsquo;ll reach a person, and for anything urgent that is the only route we recommend.</p>
+          <a href="tel:2087161240" class="btn btn-primary blueprint" style="font-size:22px;padding:20px 32px;letter-spacing:.04em">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            208.716.1240
+          </a>
+          <div class="blueprint" style="margin-top:36px;padding:28px">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <div class="u-num">Scott Lind Electric LLC</div>
+            <table class="table" style="margin-top:14px">
+              <tbody>
+                <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Address</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">1302 Taylor Avenue<br>Idaho Falls, ID 83404</td></tr>
+                <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Phone</td><td style="text-align:right"><a href="tel:2087161240" style="font-family:var(--font-heading);font-size:17px;text-decoration:none">208.716.1240</a></td></tr>
+                <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Hours</td><td style="text-align:right;font-style:italic;color:color-mix(in srgb, var(--color-text) 50%, transparent)">Confirm business hours</td></tr>
+                <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">After hours</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Call the same number</td></tr>
+                <tr><td style="color:color-mix(in srgb, var(--color-text) 60%, transparent)">Service area</td><td style="text-align:right;font-family:var(--font-heading);font-size:16px">Idaho Falls, Ammon &amp; 30 miles</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="blueprint" style="padding:32px;background:color-mix(in srgb, var(--color-accent) 6%, transparent)">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <h2 style="font-size:32px;text-transform:uppercase;margin:0 0 6px">Request an estimate</h2>
+            <p style="font-size:14px;margin:0 0 22px;color:color-mix(in srgb, var(--color-text) 65%, transparent)">Tell us what it&rsquo;s doing and where you are. We&rsquo;ll come back with a plan and a price.</p>
+            <sc-if value="{{ sent }}">
+              <p style="font-size:17px;line-height:1.6;padding:20px 0;color:var(--color-accent-800)">Thanks &mdash; your request is in. For anything urgent, call <a href="tel:2087161240" style="color:var(--color-accent-800)">208.716.1240</a> and you&rsquo;ll reach a person.</p>
+            </sc-if>
+            <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+            <form onSubmit="{{ submit }}" style="display:grid;gap:16px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="field"><label for="c-name">Full name</label><input class="input" id="c-name" name="name" placeholder="Jane Peterson"></div>
+                <div class="field"><label for="c-phone">Phone</label><input class="input" id="c-phone" name="phone" placeholder="208.000.0000"></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="field"><label for="c-email">E-mail</label><input class="input" id="c-email" name="email" type="email" placeholder="jane@example.com"></div>
+                <div class="field"><label for="c-city">City</label><input class="input" id="c-city" name="city" placeholder="Idaho Falls"></div>
+              </div>
+              <div class="field">
+                <label>Type of work</label>
+                <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:4px">
+                  <label class="radio"><input type="radio" name="kind" value="residential"><span class="dot"></span>Residential</label>
+                  <label class="radio"><input type="radio" name="kind" value="commercial"><span class="dot"></span>Commercial</label>
+                  <label class="radio"><input type="radio" name="kind" value="urgent"><span class="dot"></span>Urgent</label>
+                </div>
+              </div>
+              <div class="field"><label for="c-msg">What needs doing?</label><textarea class="input" id="c-msg" name="message" style="min-height:120px" placeholder="The outlets on one kitchen wall are dead and the breaker trips when the microwave runs."></textarea></div>
+              <button type="submit" class="btn btn-primary blueprint" style="justify-self:start;font-size:16px;padding:14px 24px;letter-spacing:.05em">
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                Send request
+              </button>
+            </form>
+            </sc-if>
+          </div>
+          <figure style="margin:28px 0 0;min-width:0">
+            <div class="blueprint" style="height:260px">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <image-slot id="sle-contact-map" shape="rect" fit="cover" placeholder="Drop a map of 1302 Taylor Ave"></image-slot>
+            </div>
+            <figcaption style="margin-top:10px">Fig. 06 &mdash; 1302 Taylor Avenue, Idaho Falls, ID 83404</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  </main>
+
+  <footer style="margin-top:104px;border-top:1px solid var(--color-divider);background:color-mix(in srgb, var(--color-text) 4%, transparent)">
+    <div style="max-width:1240px;margin:0 auto;padding:64px 24px 28px">
+      <div style="display:grid;grid-template-columns:1.2fr .8fr .8fr 1fr;gap:40px">
+        <div>
+          <img src="images/sle-logo.png" alt="Scott Lind Electric LLC" style="height:32px;width:auto;margin-bottom:18px">
+          <div style="font-size:15px;line-height:1.7">
+            <strong style="font-family:var(--font-heading);font-size:17px;letter-spacing:.02em">Scott Lind Electric LLC</strong><br>
+            1302 Taylor Avenue<br>
+            Idaho Falls, ID 83404<br>
+            <a href="tel:2087161240" style="font-family:var(--font-heading);font-size:19px;letter-spacing:.04em;text-decoration:none">208.716.1240</a>
+          </div>
+        </div>
+        <div>
+          <div class="u-num" style="margin-bottom:14px">Services</div>
+          <div style="display:grid;gap:9px;font-size:14px">
+            <a href="#" onClick="{{ goRes }}" style="text-decoration:none">Residential electrical</a>
+            <a href="#" onClick="{{ goCom }}" style="text-decoration:none">Commercial electrical</a>
+            <a href="#" onClick="{{ goEmg }}" style="text-decoration:none">After-hours emergency</a>
+            <a href="#" onClick="{{ goContact }}" style="text-decoration:none">Free estimates</a>
+          </div>
+        </div>
+        <div>
+          <div class="u-num" style="margin-bottom:14px">Company</div>
+          <div style="display:grid;gap:9px;font-size:14px">
+            <a href="#" onClick="{{ goAbout }}" style="text-decoration:none">About Scott</a>
+            <a href="#" onClick="{{ goReviews }}" style="text-decoration:none">Reviews</a>
+            <a href="#" onClick="{{ goAnswers }}" style="text-decoration:none">Answers &amp; FAQ</a>
+            <a href="#" onClick="{{ goContact }}" style="text-decoration:none">Contact</a>
+          </div>
+        </div>
+        <div>
+          <div class="u-num" style="margin-bottom:14px">Service area</div>
+          <p style="font-size:14px;line-height:1.7;margin:0;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Idaho Falls, Ammon, Ucon, Iona, Shelley, Rigby, Ririe, Roberts and everywhere within 30 miles &mdash; no service-call fee.</p>
+          <div style="margin-top:16px;font-family:var(--font-heading);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)">Licensed &amp; insured in Idaho</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:48px;padding-top:20px;border-top:1px solid var(--color-divider);font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+        <span>&copy; 2026 Scott Lind Electric LLC</span>
+        <span style="margin-left:auto">Idaho Falls electrician &middot; Residential, commercial &amp; industrial &middot; Same-day service</span>
+      </div>
+    </div>
+  </footer>
+
+  <sc-if value="{{ seoNotes }}">
+    <aside style="position:fixed;right:20px;bottom:20px;z-index:60;width:320px;max-height:70vh;overflow:auto;background:var(--color-bg);border:1px solid var(--color-accent);box-shadow:var(--shadow-lg);padding:20px">
+      <div class="u-num" style="margin-bottom:6px">SEO build notes</div>
+      <h4 style="margin:0 0 12px;font-size:20px;text-transform:uppercase">{{ here }}</h4>
+      <ul style="margin:0;padding-left:18px;display:grid;gap:9px;font-size:13px;line-height:1.5">
+        <sc-for list="{{ noteItems }}" as="note" hint-placeholder-count="4">
+          <li>{{ note }}</li>
+        </sc-for>
+      </ul>
+    </aside>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startPage&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;residential&quot;,&quot;commercial&quot;,&quot;emergency&quot;,&quot;ammon&quot;,&quot;answers&quot;,&quot;about&quot;,&quot;reviews&quot;,&quot;contact&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Preview&quot;},&quot;seoNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Preview&quot;},&quot;emergencyBanner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+class Component extends DCLogic {
+  state = { page: 'home', sent: false };
+
+  componentDidMount() {
+    if (this.props.startPage && this.props.startPage !== 'home') this.setState({ page: this.props.startPage });
+  }
+  componentDidUpdate(prev) {
+    if (prev.startPage !== this.props.startPage && this.props.startPage) this.setState({ page: this.props.startPage });
+  }
+
+  go(p) {
+    return (e) => {
+      if (e && e.preventDefault) e.preventDefault();
+      this.setState({ page: p });
+      try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (_) {}
+    };
+  }
+
+  notesFor(p) {
+    const n = {
+      home: [
+        'H1 carries the brand promise, not a keyword stuffing: "No job too small. Same-day repair."',
+        'Electrician schema (LocalBusiness subtype) with NAP, areaServed and makesOffer is emitted in <head>.',
+        'Answer block uses question-shaped H3s + a direct first sentence — the format AI assistants quote.',
+        'Internal links point to every service, city and answer page from the home page.',
+        'City and service names appear in body copy as entities (Idaho Falls, Ammon, Bonneville County).'
+      ],
+      residential: [
+        'Target query: "electrician Idaho Falls" / "electrical repairman Idaho Falls".',
+        'Answer-first intro paragraph so assistants can lift a complete response.',
+        'Symptom list matches how people actually search ("breaker keeps tripping").',
+        'FAQ block is FAQPage-eligible markup.'
+      ],
+      commercial: [
+        'Target query: "electrical contractor Idaho Falls" / "commercial electrician near me".',
+        'Named capabilities (parking lot lights, LED conversion) win long-tail searches with no competition.',
+        'Downtime framing gives assistants a reason to recommend, not just a listing.'
+      ],
+      emergency: [
+        'Target query: "emergency electrician Idaho Falls" / "electrician open now".',
+        'The call-now-vs-schedule table is the single most quotable asset on the site.',
+        'Steps are numbered and imperative — assistant answers copy this structure verbatim.'
+      ],
+      ammon: [
+        'City page pattern: repeat for Ucon, Iona, Shelley, Rigby with genuinely local copy.',
+        'Never duplicate city pages word for word — Google discounts near-duplicates.',
+        'Mentions drive time and neighborhoods so the page reads local, not templated.'
+      ],
+      answers: [
+        'The AI-search engine of the site: 14 questions in question-shaped headings.',
+        'Every answer opens with a complete one-sentence answer before context.',
+        'Comparison tables (repair vs replace, handyman vs electrician) get quoted heavily.',
+        'FAQPage + Electrician schema together make the site the local authority.'
+      ],
+      about: [
+        'E-E-A-T page: real person, real license, real address — what Google weighs for trades.',
+        'Add license number and years in business to strengthen it.'
+      ],
+      reviews: [
+        'Reviews must be real and attributed; paste them from the Google Business Profile.',
+        'Never self-serve AggregateRating schema for reviews hosted elsewhere.',
+        'Ask every customer for a review that names the town and the job.'
+      ],
+      contact: [
+        'NAP must match the Google Business Profile character for character.',
+        'Phone as a tel: link and as plain text; embedded map reinforces location.',
+        'Hours markup helps "open now" searches surface the business.'
+      ]
+    };
+    return n[p] || n.home;
+  }
+
+  renderVals() {
+    const p = this.state.page;
+    const labels = {
+      home: 'Home', residential: 'Residential', commercial: 'Commercial',
+      emergency: 'After Hours', ammon: 'Ammon', answers: 'Answers',
+      about: 'About', reviews: 'Reviews', contact: 'Contact'
+    };
+    return {
+      isHome: p === 'home', isRes: p === 'residential', isCom: p === 'commercial',
+      isEmg: p === 'emergency', isAmmon: p === 'ammon', isAnswers: p === 'answers',
+      isAbout: p === 'about', isReviews: p === 'reviews', isContact: p === 'contact',
+      here: labels[p] || 'Home',
+      goHome: this.go('home'), goRes: this.go('residential'), goCom: this.go('commercial'),
+      goEmg: this.go('emergency'), goAmmon: this.go('ammon'), goAnswers: this.go('answers'),
+      goAbout: this.go('about'), goReviews: this.go('reviews'), goContact: this.go('contact'),
+      emergencyBanner: this.props.emergencyBanner !== false,
+      seoNotes: this.props.seoNotes === true,
+      noteItems: this.notesFor(p),
+      sent: this.state.sent,
+      notSent: !this.state.sent,
+      submit: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ sent: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
