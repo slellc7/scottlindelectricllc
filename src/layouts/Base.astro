@@ -1,0 +1,173 @@
+---
+import { SITE } from '../consts';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Schema from '../components/Schema.astro';
+import type { Faq } from '../data/faqs';
+
+import '../styles/design-system.css';
+import '../styles/site.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Second crumb; omit on the home page. Also drives BreadcrumbList schema. */
+  breadcrumb?: string;
+  faqs?: Faq[];
+  service?: string;
+  ogType?: 'website' | 'article';
+  article?: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    updatedDate?: Date;
+    image?: string;
+  };
+}
+
+const {
+  title,
+  description,
+  breadcrumb,
+  faqs,
+  service,
+  ogType = 'website',
+  article,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/images/sle-logo.png', Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta name="theme-color" content="#1d2d3d" />
+    <meta name="format-detection" content="telephone=yes" />
+
+    <meta property="og:site_name" content={SITE.legalName} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="icon" href="/images/sle-logo.png" />
+    <link rel="apple-touch-icon" href="/images/sle-logo.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.legalName} blog`}
+      href="/rss.xml"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Barlow+Condensed:wght@400;600&display=swap"
+    />
+
+    <Schema
+      canonical={canonical}
+      description={description}
+      breadcrumb={breadcrumb}
+      faqs={faqs}
+      service={service}
+      article={article}
+    />
+  </head>
+
+  <body>
+    <div class="page">
+      <a class="skip-link" href="#main">Skip to content</a>
+
+      <Header />
+
+      <main id="main">
+        <slot />
+      </main>
+
+      <Footer />
+    </div>
+
+    <script>
+      // Progressive enhancement only — every page works with this blocked.
+      document.documentElement.classList.add('js');
+
+      const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+      const nav = document.getElementById('site-nav');
+
+      if (toggle && nav) {
+        toggle.hidden = false;
+        toggle.addEventListener('click', () => {
+          const open = nav.dataset.open === 'true';
+          nav.dataset.open = open ? 'false' : 'true';
+          toggle.setAttribute('aria-expanded', open ? 'false' : 'true');
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && nav.dataset.open === 'true') {
+            nav.dataset.open = 'false';
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.focus();
+          }
+        });
+      }
+
+      document.querySelectorAll<HTMLFormElement>('form[data-estimate-form]').forEach((form) => {
+        const status = form.parentElement?.querySelector<HTMLElement>('[data-form-status]');
+        const error = form.querySelector<HTMLElement>('[data-form-error]');
+        const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+        const endpoint = form.getAttribute('action');
+        if (!endpoint) return;
+
+        form.addEventListener('submit', async (e) => {
+          // Honeypot: bots fill every field they find; a person never sees this one.
+          const company = form.elements.namedItem('company') as HTMLInputElement | null;
+          e.preventDefault();
+          if (company?.value) return;
+
+          if (error) error.hidden = true;
+          const label = submit?.textContent ?? '';
+          if (submit) {
+            submit.disabled = true;
+            submit.textContent = 'Sending…';
+          }
+
+          try {
+            const res = await fetch(endpoint, {
+              method: 'POST',
+              body: new FormData(form),
+              headers: { Accept: 'application/json' },
+            });
+            if (!res.ok) throw new Error(String(res.status));
+            form.hidden = true;
+            if (status) {
+              status.hidden = false;
+              status.setAttribute('tabindex', '-1');
+              status.focus();
+            }
+          } catch {
+            if (submit) {
+              submit.disabled = false;
+              submit.textContent = label;
+            }
+            if (error) error.hidden = false;
+            else form.submit();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

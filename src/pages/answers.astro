@@ -1,0 +1,130 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import Crumb from '../components/Crumb.astro';
+import FaqGrid from '../components/FaqGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import {
+  answersHiring,
+  answersProblems,
+  answersSafety,
+  allAnswersFaqs,
+} from '../data/faqs';
+
+const sections = [
+  { id: 'a-hiring', num: '01', title: 'Hiring us & what it costs you', items: answersHiring },
+  { id: 'a-problems', num: '02', title: 'Common problems, explained', items: answersProblems },
+  { id: 'a-safety', num: '03', title: 'Safety, code & permits', items: answersSafety },
+];
+
+const whoDoesIt = [
+  ['Changing a lamp or a plug-in fixture', 'You', 'No permanent wiring involved'],
+  ['Resetting a GFCI or a tripped breaker', 'You, once', 'If it trips again, something is wrong'],
+  ['Replacing a light fixture', 'Either — if the box is sound', 'Old boxes and unsupported fans are the risk'],
+  ['Outlets, switches, dimmers', 'Licensed electrician', 'Backstabs, aluminium and undersized wire hide here'],
+  ['Adding a circuit or a dedicated feed', 'Licensed electrician', 'Load calculation, permit and inspection'],
+  ['Any work inside the panel', 'Licensed electrician', 'Live bus bars; no safe DIY version'],
+  ['Service, meter or mast work', 'Licensed electrician', 'Utility coordination and permits required'],
+  ['Anything hot, scorched or smelling', 'Licensed electrician, now', 'It is a fire in progress, slowly'],
+];
+---
+
+<Base
+  title="Electrical Answers & FAQ | Idaho Falls Electrician"
+  description="Straight answers on hiring an electrician in Idaho Falls: service-call fees, same-day availability, permits, tripping breakers and panel upgrades."
+  breadcrumb="Answers"
+  faqs={allAnswersFaqs}
+>
+  <Crumb trail={['Answers']} />
+
+  <section class="section section--page">
+    <div class="grid-lead grid-lead--even">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Answers · Idaho Falls &amp; Ammon</span>
+        </p>
+        <h1 class="h-page h-page--sm">Electrical answers, straight out</h1>
+        <p class="lead lead--narrow">
+          Everything below is what we actually tell people on the phone. No hedging, no funnel — if
+          the answer is "you don't need an electrician for that", it says so.
+        </p>
+      </div>
+
+      <nav class="blueprint panel panel--snug" aria-labelledby="toc-heading">
+        <Corners />
+        <div class="u-num" id="toc-heading">Contents</div>
+        <div class="toc">
+          {
+            sections.map((s) => (
+              <a href={`#${s.id}`}>
+                {s.num} &nbsp; {s.title}
+              </a>
+            ))
+          }
+          <a href="#a-who">04 &nbsp; Who should do the work</a>
+        </div>
+      </nav>
+    </div>
+  </section>
+
+  {
+    sections.map((s) => (
+      <section class="section section--sub" id={s.id}>
+        <div class="section-num">
+          <span class="u-num">{s.num}</span>
+          <h2>{s.title}</h2>
+          <span class="rule-line" aria-hidden="true" />
+        </div>
+        <FaqGrid items={s.items} roomy />
+      </section>
+    ))
+  }
+
+  <section class="section section--sub" id="a-who">
+    <div class="section-num section-num--tight">
+      <span class="u-num">04</span>
+      <h2>Handyman or licensed electrician?</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+    </div>
+    <p class="prose prose--wide gap-after">
+      Plenty of work around a house doesn't need us. Some absolutely does — and the difference
+      matters to your insurance as much as your safety.
+    </p>
+
+    <div class="blueprint panel panel--snug">
+      <Corners />
+      <div class="table-scroll">
+        <table class="table table--who">
+          <caption class="visually-hidden">
+            Which electrical jobs a homeowner can do and which need a licensed electrician
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Work</th>
+              <th scope="col">Who should do it</th>
+              <th scope="col">Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              whoDoesIt.map(([work, who, why]) => (
+                <tr>
+                  <td class="t-key">{work}</td>
+                  <td>{who}</td>
+                  <td>{why}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Question not answered here?"
+    copy={'Call and ask. We’ll tell you straight, even if the answer is "you don’t need us".'}
+    secondary={{ href: '/contact/', label: 'Send a question' }}
+  />
+</Base>

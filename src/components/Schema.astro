@@ -1,0 +1,106 @@
+---
+/**
+ * JSON-LD for the page.
+ *
+ * The Electrician (LocalBusiness) node carries a stable @id so every other
+ * node — Service, BlogPosting — can reference the same business rather than
+ * restating it.
+ */
+import { SITE } from '../consts';
+import type { Faq } from '../data/faqs';
+
+interface Props {
+  canonical: string;
+  description: string;
+  breadcrumb?: string;
+  faqs?: Faq[];
+  service?: string;
+  article?: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    updatedDate?: Date;
+    image?: string;
+  };
+}
+
+const { canonical, description, breadcrumb, faqs, service, article } = Astro.props;
+
+const business = {
+  '@type': 'Electrician',
+  '@id': `${SITE.url}/#business`,
+  name: SITE.legalName,
+  url: `${SITE.url}/`,
+  telephone: SITE.telephoneE164,
+  image: `${SITE.url}/images/sle-logo.png`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: SITE.address.street,
+    addressLocality: SITE.address.city,
+    addressRegion: SITE.address.region,
+    postalCode: SITE.address.postalCode,
+    addressCountry: SITE.address.country,
+  },
+  areaServed: SITE.areaServed.map((name) => ({ '@type': 'City', name })),
+  description: SITE.description,
+  makesOffer: SITE.services.map((name) => ({
+    '@type': 'Offer',
+    itemOffered: { '@type': 'Service', name },
+  })),
+};
+
+const graph: Record<string, unknown>[] = [business];
+
+if (breadcrumb) {
+  graph.push({
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.url}/` },
+      { '@type': 'ListItem', position: 2, name: breadcrumb, item: canonical },
+    ],
+  });
+}
+
+if (faqs?.length) {
+  graph.push({
+    '@type': 'FAQPage',
+    '@id': `${canonical}#faq`,
+    mainEntity: faqs.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  });
+}
+
+if (service) {
+  graph.push({
+    '@type': 'Service',
+    name: service,
+    serviceType: service,
+    url: canonical,
+    provider: { '@id': `${SITE.url}/#business` },
+    areaServed: SITE.areaServed.map((name) => ({ '@type': 'City', name })),
+    description,
+  });
+}
+
+if (article) {
+  graph.push({
+    '@type': 'BlogPosting',
+    headline: article.title,
+    description: article.description,
+    datePublished: article.pubDate.toISOString(),
+    dateModified: (article.updatedDate ?? article.pubDate).toISOString(),
+    url: canonical,
+    mainEntityOfPage: canonical,
+    ...(article.image ? { image: new URL(article.image, SITE.url).href } : {}),
+    author: { '@id': `${SITE.url}/#business` },
+    publisher: { '@id': `${SITE.url}/#business` },
+  });
+}
+
+const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />

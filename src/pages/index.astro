@@ -1,0 +1,241 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import Figure from '../components/Figure.astro';
+import EstimateForm from '../components/EstimateForm.astro';
+import ReviewCard from '../components/ReviewCard.astro';
+import { SITE } from '../consts';
+import { homeFaqs } from '../data/faqs';
+import { homeReviews } from '../data/reviews';
+
+const services = [
+  {
+    num: '01 / Homeowners',
+    title: 'Residential',
+    href: '/residential/',
+    cta: 'Residential service →',
+    body: 'Outlets, switches, breakers that keep tripping, fixtures, remodels and additions. The small jobs other electricians are too busy for are the ones we take.',
+    points: ['Outlet, switch & fixture repair', 'Breaker & panel trouble', 'Remodels & added circuits'],
+    dark: false,
+  },
+  {
+    num: '02 / Business',
+    title: 'Commercial',
+    href: '/commercial/',
+    cta: 'Commercial work →',
+    body: 'New construction, tenant remodels, service work, parking lot lights and LED conversions — scheduled around your hours, not ours.',
+    points: ['Ground-up new construction', 'Parking lot light repair', 'LED conversions'],
+    dark: false,
+  },
+  {
+    num: '03 / Urgent',
+    title: 'After hours',
+    href: '/after-hours/',
+    cta: 'Emergency service →',
+    body: "Burning smell, sparking panel, a shop that can't open in the morning. Call and we'll do whatever we can to get you running.",
+    points: ['Power loss & dead panels', 'Burning smells, sparks, heat', 'Business-critical downtime'],
+    dark: true,
+  },
+];
+
+const stats = [
+  ['01', 'Same-day<br>service', 'Call in the morning, fixed the same day in most cases.'],
+  ['02', 'No service<br>call fee', 'Within a 30-mile radius of Idaho Falls. You pay for the work, not the drive.'],
+  ['03', 'Free<br>estimates', 'Scope and price before anyone picks up a tool.'],
+  ['04', 'After hours<br>available', "Electrical problems don't keep business hours. Neither do we."],
+];
+
+const capabilities = [
+  'New construction', 'Remodels', 'Service & repair', 'After hours',
+  'Parking lot lights', 'LED conversions', 'Panels & breakers', 'Troubleshooting',
+];
+
+const towns = [
+  ['Idaho Falls', true], ['Ammon', true], ['Ucon', false], ['Iona', false],
+  ['Shelley', false], ['Rigby', false], ['Ririe', false], ['Roberts', false],
+] as const;
+---
+
+<Base
+  title="Idaho Falls Electrician — Same-Day | Scott Lind Electric"
+  description="Licensed Idaho Falls electrician. Same-day residential, commercial and after-hours repair in Idaho Falls and Ammon. Free estimates, no service-call fee."
+  faqs={homeFaqs}
+>
+  <section class="section section--hero">
+    <div class="grid-hero">
+      <div>
+        <p class="eyebrow">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Idaho Falls electrician · Licensed &amp; insured</span>
+        </p>
+        <h1 class="h-display">No job too small.<br />Same-day repair.</h1>
+        <p class="lead lead--narrow">
+          Scott Lind Electric is a state-licensed electrical contractor serving Idaho Falls, Ammon
+          and everywhere within 30 miles — residential, commercial and industrial. One dead outlet
+          or a full build-out, you get the same answer: we'll come fix it.
+        </p>
+        <p class="hero-actions">
+          <a href={SITE.telHref} class="btn btn-primary blueprint btn-lg">
+            <Corners />
+            Call {SITE.phone}
+          </a>
+          <a href="/contact/" class="btn btn-secondary btn-lg">Request a free estimate</a>
+        </p>
+      </div>
+
+      <Figure
+        label="Photo — service van"
+        size="tall"
+        caption="Fig. 01 — Scott Lind Electric service van, Idaho Falls, ID"
+      />
+    </div>
+  </section>
+
+  <section class="section section--strip">
+    <div class="u-grid stat-strip">
+      {
+        stats.map(([num, title, body]) => (
+          <div class="stat">
+            <div class="u-num">{num}</div>
+            <h2 class="stat-title" set:html={title} />
+            <p>{body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="rule-head rule-head--roomy">
+      <h2>What we do</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+      <span class="rule-note">Three ways to work with us</span>
+    </div>
+
+    <div class="grid-3">
+      {
+        services.map((s) => (
+          <div class:list={['blueprint', 'svc-card', s.dark && 'svc-card--dark']}>
+            <Corners />
+            <div class="u-num">{s.num}</div>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+            <ul class="svc-list">
+              {s.points.map((p) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+            <a href={s.href} class:list={['link-arrow', s.dark && 'link-arrow--invert']}>
+              {s.cta}
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="rule-head">
+      <h2>Capabilities</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+      <span class="rule-note">Residential · Commercial · Industrial</span>
+    </div>
+    <div class="u-grid cap-grid">
+      {
+        capabilities.map((label, i) => (
+          <div class="cap-cell">
+            <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
+            <h3>{label}</h3>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="band band--pad on-dark">
+    <div class="band-inner">
+      <div class="band-split">
+        <div>
+          <p class="eyebrow eyebrow--invert">
+            <span class="eyebrow-rule" aria-hidden="true"></span>
+            <span class="eyebrow-text">Answers before you call</span>
+          </p>
+          <h2 class="band-title">Straight answers, no phone tag.</h2>
+          <p class="prose prose--tight">
+            The questions Idaho Falls homeowners and shop owners actually ask us, answered in plain
+            language.
+          </p>
+          <p class="after">
+            <a href="/answers/" class="btn blueprint btn-on-dark btn-md">
+              <Corners />
+              All answers
+            </a>
+          </p>
+        </div>
+
+        <div class="qa-list">
+          {
+            homeFaqs.map(({ q, a }) => (
+              <div class="qa-item">
+                <h3>{q}</h3>
+                <p>{a}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="visually-hidden">Recent work</h2>
+    <div class="grid-3">
+      <Figure label="Photo — job site" caption="Fig. 02 — Panel work, residential service call" />
+      <Figure label="Photo — crew" caption="Fig. 03 — The crew on a commercial remodel" />
+      <Figure
+        label="Photo — parking lot light"
+        caption="Fig. 04 — Parking lot light repair, after hours"
+      />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="rule-head">
+      <h2>What customers say</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+      <a href="/reviews/" class="link-arrow">All reviews →</a>
+    </div>
+    <div class="grid-3">
+      {homeReviews.map((r) => <ReviewCard {...r} />)}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="blueprint panel-split">
+      <Corners />
+
+      <div class="panel-half">
+        <div class="u-num">Service area</div>
+        <h2>30 miles from<br />Idaho Falls</h2>
+        <p class="prose prose--mid">
+          Everything inside the radius is a no-service-call-fee call. Idaho Falls and Ammon are home
+          ground; the surrounding Bonneville County towns are a short drive.
+        </p>
+        <div class="tag-row tag-row--spaced">
+          {
+            towns.map(([name, home]) => (
+              <span class:list={['tag', home ? 'tag-accent' : 'tag-outline']}>{name}</span>
+            ))
+          }
+        </div>
+        <p class="after"><a href="/ammon/" class="link-arrow">Electrician in Ammon →</a></p>
+      </div>
+
+      <div class="panel-half panel-half--tint">
+        <div class="u-num">Get in touch</div>
+        <h2 id="estimate">Free estimate</h2>
+        <EstimateForm source="Home page — free estimate" idPrefix="h" />
+      </div>
+    </div>
+  </section>
+</Base>

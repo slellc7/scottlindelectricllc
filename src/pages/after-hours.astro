@@ -1,0 +1,138 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import Crumb from '../components/Crumb.astro';
+import FaqGrid from '../components/FaqGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../consts';
+import { emergencyFaqs } from '../data/faqs';
+
+const steps = [
+  ['Smell burning or see smoke?', 'Shut off the breaker feeding that area if you can reach it safely. If there is fire or smoke in the wall, call 911 first.'],
+  ['Water near electrical?', "Don't touch the panel or any wet device. Kill power at the main if you can do it from a dry position, then call."],
+  ["Breaker won't reset?", "Try it once. If it trips straight back, leave it off — it is holding back a fault. Don't tape or wedge it."],
+  [`Then call ${SITE.phone}`, 'Tell us what you saw, smelled and heard. That detail is usually enough for us to arrive with the right parts.'],
+];
+
+// `urgent` drives the accent treatment on the action column.
+const triage = [
+  ['Burning smell, smoke or scorch marks', 'An active heat source inside the wiring or a device', 'Call immediately', true],
+  ['Sparks, buzzing or a hot panel', 'Arcing or a loose connection under load', 'Call immediately', true],
+  ['Breaker trips instantly with nothing plugged in', 'A short or ground fault in the circuit', 'Call immediately', true],
+  ['Water in a panel, fixture or outlet', 'Shock and fire risk while energised', 'Call immediately', true],
+  ['Whole building dark, neighbours fine', 'Your service, main or panel — not the utility', 'Call immediately', true],
+  ["Business can't open or trade tomorrow", 'Downtime cost outruns the after-hours trip', 'Call tonight', true],
+  ['One dead outlet or switch', 'Annoying, not dangerous, if nothing is hot', 'Schedule same-day', false],
+  ['A fixture flickering', 'Usually a lamp, ballast or loose connection', 'Schedule same-day', false],
+  ['Adding a circuit or fixture', 'Planned work, better done in daylight', 'Book an estimate', false],
+  ['Whole neighbourhood dark', 'Utility outage — not an electrician job', 'Call Rocky Mountain Power', false],
+] as const;
+---
+
+<Base
+  title="Emergency Electrician, Idaho Falls | After Hours"
+  description="After-hours emergency electrician for Idaho Falls and Ammon. Burning smells, sparks, dead panels, a business that can't open — call 208.716.1240."
+  breadcrumb="After hours"
+  faqs={emergencyFaqs}
+  service="After-hours emergency electrical service"
+>
+  <section class="band band--emergency on-dark">
+    <Crumb trail={['After hours']} invert />
+
+    <div class="band-inner">
+      <div class="grid-lead grid-lead--even">
+        <div>
+          <p class="eyebrow eyebrow--invert eyebrow--sub">
+            <span class="eyebrow-rule" aria-hidden="true"></span>
+            <span class="eyebrow-text">Emergency &amp; after-hours service</span>
+          </p>
+          <h1 class="h-page">Emergency electrician, Idaho&nbsp;Falls</h1>
+          <p class="lead lead--narrow">
+            Electrical problems don't follow business hours. Scott Lind Electric answers after-hours
+            calls in Idaho Falls and Ammon and will do whatever we can to get your home or business
+            safe and running again tonight.
+          </p>
+          <p class="prose">
+            We run a small business ourselves. Nothing is more frustrating than an electrical fault
+            standing between you and opening in the morning — so call, and you'll get a person, not
+            a queue.
+          </p>
+          <p class="after">
+            <a href={SITE.telHref} class="btn btn-primary blueprint btn-xl">
+              <Corners />
+              Call now — {SITE.phone}
+            </a>
+          </p>
+        </div>
+
+        <div class="blueprint panel panel--outline-light">
+          <Corners />
+          <h2 class="panel-kicker">Do this right now</h2>
+          <ol class="steps">
+            {
+              steps.map(([title, body]) => (
+                <li>
+                  <strong>{title}</strong>
+                  <br />
+                  {body}
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="rule-head rule-head--sub rule-head--tight">
+      <h2>Call now, or schedule it?</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+    </div>
+    <p class="prose prose--wide gap-after">
+      Not every electrical problem is an emergency, and we would rather you knew the difference than
+      paid for an after-hours trip you didn't need. Here is how we triage a call.
+    </p>
+
+    <div class="blueprint panel panel--snug">
+      <Corners />
+      <div class="table-scroll">
+        <table class="table table--triage">
+          <caption class="visually-hidden">
+            Which electrical symptoms need a call tonight and which can wait for a scheduled
+            appointment
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">What you're seeing</th>
+              <th scope="col">Why it matters</th>
+              <th scope="col">Do this</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              triage.map(([symptom, why, action, urgent]) => (
+                <tr>
+                  <td class="t-key">{symptom}</td>
+                  <td>{why}</td>
+                  <td class:list={[urgent && 't-urgent']}>{action}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <h2 class="h-block h-block--gap">After-hours questions</h2>
+    <FaqGrid items={emergencyFaqs} />
+  </section>
+
+  <CtaBand
+    center
+    heading="If it's hot, wet or sparking — call."
+    copy="Scott Lind Electric · Idaho Falls & Ammon · After hours"
+  />
+</Base>

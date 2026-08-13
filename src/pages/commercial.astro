@@ -1,0 +1,146 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import Crumb from '../components/Crumb.astro';
+import FaqGrid from '../components/FaqGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../consts';
+import { commercialFaqs } from '../data/faqs';
+
+const capabilities = [
+  ['New construction', 'Service entrance through final trim on ground-up commercial buildings, coordinated with your GC and inspection schedule.'],
+  ['Tenant remodels', 'Re-lighting, re-circuiting and re-feeding a space for its next use — often phased so the neighbouring units keep trading.'],
+  ['Parking lot light repair', 'Pole lights, wall packs and the underground feeds nobody wants to chase. Dark lots are a liability — we fix them, including after close.'],
+  ['LED conversions', 'Retrofit or full fixture replacement across shops, warehouses and lots — less maintenance, better light, lower draw.'],
+  ['Service & maintenance', 'Panel work, circuit additions for new equipment, and the running repairs that keep an older building operating.'],
+  ['Industrial', 'Equipment feeds, three-phase work and shop electrical for the machines your operation runs on.'],
+];
+
+const sectors = [
+  'Retail & restaurants', 'Offices & clinics', 'Warehouses', 'Shops & garages',
+  'Property managers', 'General contractors', 'Churches & schools', 'Agricultural',
+];
+
+const situations = [
+  ['Lot lights out', 'Assess pole, fixture and feed; restore light', 'After close if needed'],
+  ['Circuit down', 'Isolate the fault, get the load back on', 'Same day, typical'],
+  ['New equipment', 'Verify capacity, run the dedicated feed', 'Scheduled'],
+  ['Failed inspection', 'Correct and re-present the work', 'Priority'],
+  ['Build-out', 'Walk the plans, quote the scope, free', 'By appointment'],
+];
+---
+
+<Base
+  title="Commercial Electrician Idaho Falls | Scott Lind Electric"
+  description="Licensed commercial electrical contractor in Idaho Falls: new construction, tenant remodels, parking lot light repair and LED conversions. Free estimates."
+  breadcrumb="Commercial"
+  faqs={commercialFaqs}
+  service="Commercial electrical contracting"
+>
+  <Crumb trail={['Commercial']} />
+
+  <section class="section section--page">
+    <div class="grid-lead">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Commercial &amp; industrial</span>
+        </p>
+        <h1 class="h-page">Electrical contractor in Idaho&nbsp;Falls</h1>
+        <p class="lead">
+          Scott Lind Electric is a licensed commercial electrical contractor working across Idaho
+          Falls, Ammon and eastern Idaho — ground-up construction, tenant remodels, service calls,
+          parking lot lighting and LED conversions, at a competitive rate.
+        </p>
+        <p class="prose">
+          We run small on purpose. You talk to the person doing the work, the schedule doesn't get
+          handed off, and when your building has a problem at 6am you are not customer number four
+          hundred.
+        </p>
+      </div>
+
+      <div class="blueprint panel panel--dark">
+        <Corners />
+        <div class="panel-kicker">For property &amp; business owners</div>
+        <h2>Downtime is the real cost</h2>
+        <p>
+          A dark parking lot, a dead cooler circuit, a failed inspection holding your opening — we
+          prioritise the work that keeps you closed.
+        </p>
+        <a href={SITE.telHref} class="btn btn-primary btn-block blueprint btn-lg">
+          <Corners />
+          Call {SITE.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="rule-head rule-head--sub">
+      <h2>Commercial capabilities</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+    </div>
+    <div class="u-grid cell-grid cell-grid--2">
+      {
+        capabilities.map(([title, body], i) => (
+          <div class="cell cell--wide">
+            <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="grid-duo">
+      <div>
+        <h2 class="h-block">Who we work for</h2>
+        <p class="prose prose--wide">Any size or type of commercial project, across eastern Idaho.</p>
+        <div class="tag-row tag-row--spaced">
+          {sectors.map((s) => <span class="tag tag-outline">{s}</span>)}
+        </div>
+      </div>
+      <div class="blueprint panel panel--snug">
+        <Corners />
+        <div class="table-scroll">
+          <table class="table">
+            <caption class="visually-hidden">
+              How we respond to common commercial situations
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Situation</th>
+                <th scope="col">What we do first</th>
+                <th scope="col">When</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                situations.map(([sit, first, when]) => (
+                  <tr>
+                    <td class="t-key">{sit}</td>
+                    <td>{first}</td>
+                    <td>{when}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <h2 class="h-block h-block--gap">Commercial questions</h2>
+    <FaqGrid items={commercialFaqs} />
+  </section>
+
+  <CtaBand
+    heading="Bidding a project?"
+    copy="Send the plans or walk us through the building. Estimates are free."
+    secondary={{ href: '/contact/', label: 'Request a bid' }}
+  />
+</Base>

@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import Crumb from '../components/Crumb.astro';
+import Figure from '../components/Figure.astro';
+import EstimateForm from '../components/EstimateForm.astro';
+import { SITE } from '../consts';
+---
+
+<Base
+  title="Contact | Free Estimate | Scott Lind Electric"
+  description="Call 208.716.1240 or request a free estimate from Scott Lind Electric, 1302 Taylor Avenue, Idaho Falls, ID 83404. No service-call fee within 30 miles."
+  breadcrumb="Contact"
+>
+  <Crumb trail={['Contact']} />
+
+  <section class="section section--page">
+    <div class="grid-even">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Get in touch</span>
+        </p>
+        <h1 class="h-page h-page--sm">Free estimate, no service&#8209;call fee</h1>
+        <p class="lead lead--narrow lead--sm gap-lead">
+          Fastest route is the phone — you'll reach a person, and for anything urgent that is the
+          only route we recommend.
+        </p>
+
+        <a href={SITE.telHref} class="btn btn-primary blueprint btn-xl">
+          <Corners />
+          {SITE.phone}
+        </a>
+
+        <div class="blueprint panel panel--stacked">
+          <Corners />
+          <h2 class="u-num">{SITE.legalName}</h2>
+          <table class="table spec-table">
+            <caption class="visually-hidden">Contact details and service terms</caption>
+            <tbody>
+              <tr>
+                <td class="t-label">Address</td>
+                <td class="t-val">
+                  <address class="addr-plain">
+                    {SITE.address.street}<br />
+                    {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}
+                  </address>
+                </td>
+              </tr>
+              <tr><td class="t-label">Phone</td><td class="t-val"><a href={SITE.telHref}>{SITE.phone}</a></td></tr>
+              {/* PLACEHOLDER: confirm hours, then add openingHoursSpecification in Schema.astro. */}
+              <tr><td class="t-label">Hours</td><td class="t-todo">Confirm business hours</td></tr>
+              <tr><td class="t-label">After hours</td><td class="t-val">Call the same number</td></tr>
+              <tr><td class="t-label">Service area</td><td class="t-val">Idaho Falls, Ammon &amp; 30 miles</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="blueprint panel panel--tint panel--wide">
+          <Corners />
+          <h2 class="panel-title-lg">Request an estimate</h2>
+          <p class="panel-intro">
+            Tell us what it's doing and where you are. We'll come back with a plan and a price.
+          </p>
+          <EstimateForm source="Contact page — request an estimate" idPrefix="c" full />
+        </div>
+
+        <Figure
+          label="Map — 1302 Taylor Ave"
+          icon="pin"
+          duotone={false}
+          caption={`Fig. 06 — ${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postalCode}`}
+        />
+      </div>
+    </div>
+  </section>
+</Base>

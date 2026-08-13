@@ -1,0 +1,44 @@
+---
+import { SITE } from '../consts';
+
+interface Props {
+  heading: string;
+  copy: string;
+  /** Optional second button; omit for a phone-only band. */
+  secondary?: { href: string; label: string };
+  /** Centred variant used at the foot of the after-hours page. */
+  center?: boolean;
+}
+const { heading, copy, secondary, center = false } = Astro.props;
+---
+
+<section class:list={['band', 'cta-band', center && 'cta-band--center']}>
+  <div class="cta-inner">
+    {center ? (
+      <>
+        <h2>{heading}</h2>
+        <p>{copy}</p>
+        <a href={SITE.telHref} class="btn btn-primary blueprint btn-xxl">
+          <i class="corner tl" /><i class="corner tr" /><i class="corner bl" /><i class="corner br" />
+          {SITE.phone}
+        </a>
+      </>
+    ) : (
+      <>
+        <div class="cta-copy">
+          <h2>{heading}</h2>
+          <p>{copy}</p>
+        </div>
+        <div class="cta-actions">
+          <a href={SITE.telHref} class="btn btn-primary blueprint btn-lg">
+            <i class="corner tl" /><i class="corner tr" /><i class="corner bl" /><i class="corner br" />
+            Call {SITE.phone}
+          </a>
+          {secondary && (
+            <a href={secondary.href} class="btn btn-on-dark btn-lg">{secondary.label}</a>
+          )}
+        </div>
+      </>
+    )}
+  </div>
+</section>

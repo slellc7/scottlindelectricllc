@@ -548,6 +548,64 @@ main { flex: 1; }
 
 .site-footer .u-num { margin: 0 0 14px; font-weight: 400; line-height: 1.55; }
 
+/* ── blog ────────────────────────────────────────────────────────────────── */
+
+/* auto-fit rather than a fixed 2-up: an odd post count would otherwise leave an
+   empty track, and the hairline bed shows through it as a grey block. auto-fit
+   collapses unused tracks, so one post fills the row. */
+.post-grid {
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  border: 1px solid var(--color-divider);
+}
+@media (max-width: 700px) {
+  .post-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.post-card h2 { font-size: 25px; text-transform: uppercase; margin: 8px 0; }
+.post-card h2 a { color: inherit; text-decoration: none; }
+.post-card h2 a:hover { color: var(--color-accent-700); }
+.post-card .u-num time { font-variant-numeric: tabular-nums; }
+.post-card-tags { margin-top: 14px; }
+
+/* Long-form reading measure — narrower than the marketing grid, which is built
+   for scanning rather than reading. */
+.post-body { max-width: 68ch; font-size: 17px; line-height: 1.7; }
+.post-body > * + * { margin-top: 1.1em; }
+.post-body h2 {
+  font-size: 32px; text-transform: uppercase; margin-top: 2em;
+  padding-top: .7em; border-top: 1px solid var(--color-divider);
+}
+.post-body h3 { font-size: 22px; text-transform: none; margin-top: 1.7em; }
+.post-body p { margin-bottom: 0; }
+.post-body strong { font-weight: 700; }
+.post-body a { color: var(--color-accent-700); text-underline-offset: 3px; }
+.post-body ul, .post-body ol { padding-left: 1.3em; }
+.post-body li + li { margin-top: .5em; }
+.post-body ol { counter-reset: none; }
+.post-body code {
+  font-size: .9em; padding: 1px 5px;
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+.post-body blockquote {
+  margin: 0; padding-left: 20px;
+  border-left: 2px solid var(--color-accent);
+  color: color-mix(in srgb, var(--color-text) 75%, transparent);
+}
+.post-body hr {
+  height: 1px; border: 0; margin: 2em 0;
+  background: var(--color-divider);
+}
+.post-body img { margin: 1.4em 0; }
+/* An anchored h2 must clear the sticky header — [id] handles it globally, but
+   the border-top above would otherwise sit under the header edge. */
+.post-body h2[id] { scroll-margin-top: 130px; }
+
+@media (max-width: 700px) {
+  .post-body { font-size: 16px; }
+  .post-body h2 { font-size: 26px; }
+  .post-card h2 { font-size: 22px; }
+}
+
 /* .u-num is a kicker, never a title. Several of them sit on real heading
    elements so the document outline is correct — and container rules such as
    `.panel h2` (two selectors) then out-specify the single `.u-num` class and

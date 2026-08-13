@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import { SITE, NAV } from '../consts';
+import logo from '../assets/sle-logo.png';
+
+// Trailing-slash-insensitive compare, so /residential and /residential/ both mark.
+const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isCurrent = (href: string) => (href.replace(/\/+$/, '') || '/') === here;
+---
+
+<!-- Emergency banner. To retire it, delete this block. -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="topbar-lead"
+      ><span class="topbar-dot" aria-hidden="true"></span>After-hours electrical emergency? We answer
+      the phone.</span
+    >
+    <span class="topbar-note">Idaho Falls &amp; Ammon · No service-call fee within 30 miles</span>
+    <a class="topbar-tel" href={SITE.telHref}>{SITE.phone}</a>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/">
+      <Image src={logo} alt={`${SITE.legalName} — home`} loading="eager" densities={[1, 2]} />
+    </a>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      data-nav-toggle
+      aria-controls="site-nav"
+      aria-expanded="false"
+      hidden
+    >
+      <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span
+      >
+      Menu
+    </button>
+
+    <nav class="nav-main" id="site-nav" aria-label="Main">
+      {
+        NAV.map(({ href, label }) => (
+          <a href={href} aria-current={isCurrent(href) ? 'page' : undefined}>
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a href={SITE.telHref} class="btn btn-primary blueprint header-cta">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i
+        class="corner br"></i>
+      Call {SITE.phone}
+    </a>
+  </div>
+</header>

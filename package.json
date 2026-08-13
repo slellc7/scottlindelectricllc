@@ -4,11 +4,22 @@
   "private": true,
   "description": "Scott Lind Electric LLC — static marketing site, built from the Claude Design source.",
   "scripts": {
-    "build": "node build.js",
-    "serve": "node build.js && node --run _serve",
-    "_serve": "cd dist && python3 -m http.server 4321"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.2.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3"
   }
 }

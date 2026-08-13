@@ -1,14 +1,14 @@
 [build]
-  command = "node build.js"
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
 
-# Static HTML, so cache the assets hard and the pages not at all —
-# otherwise an edit takes hours to show up for anyone who has visited before.
+# Astro fingerprints everything in /_astro/, so it can be cached forever.
+# HTML must not be, or an edit takes hours to reach anyone who has visited.
 [[headers]]
-  for = "/assets/*"
+  for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 

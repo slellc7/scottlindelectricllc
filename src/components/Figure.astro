@@ -1,0 +1,80 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Corners from './Corners.astro';
+
+/**
+ * A framed figure. Renders a labelled placeholder until a real photo exists.
+ *
+ * To fill one: drop the file in src/assets/, import it in the page, and pass it
+ * as `src`. Astro then generates WebP + srcset automatically, and the design
+ * system's duotone treatment switches itself back on (site.css turns it off
+ * only while a .fig-ph placeholder is present).
+ */
+interface Props {
+  src?: ImageMetadata;
+  alt?: string;
+  /** Placeholder text, shown only while src is absent. */
+  label: string;
+  caption?: string;
+  icon?: 'photo' | 'person' | 'map' | 'pin';
+  size?: 'med' | 'tall' | 'xtall' | 'map';
+  /** The duotone colour wash — off for maps, on for photography. */
+  duotone?: boolean;
+  /** Frame-less variant used inside the Ammon split panel. */
+  bare?: boolean;
+}
+
+const {
+  src,
+  alt = '',
+  label,
+  caption,
+  icon = 'photo',
+  size = 'med',
+  duotone = true,
+  bare = false,
+} = Astro.props;
+
+const sizeClass = {
+  med: '',
+  tall: 'fig-frame--tall',
+  xtall: 'fig-frame--xtall',
+  map: 'fig-frame--map',
+}[size];
+---
+
+{/* prettier-ignore */}
+<figure class="fig">
+  <div class:list={[!bare && 'blueprint', duotone && 'duotone', 'fig-frame', sizeClass]}>
+    {!bare && <Corners />}
+    {src ? (
+      <Image src={src} alt={alt} widths={[400, 800, 1200]} sizes="(max-width: 700px) 100vw, 40vw" />
+    ) : (
+      <div class="fig-ph">
+        {icon === 'photo' && (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <rect x="2.5" y="4.5" width="19" height="15" /><circle cx="8.5" cy="10" r="1.8" /><path d="M3 17l5.5-5 4 3.5L16.5 11l4.5 4" />
+          </svg>
+        )}
+        {icon === 'person' && (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" /><path d="M4 21v-1.5A5.5 5.5 0 0 1 9.5 14h5a5.5 5.5 0 0 1 5.5 5.5V21" />
+          </svg>
+        )}
+        {icon === 'map' && (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <path d="M9 3.5 3 6v14.5l6-2.5 6 2.5 6-2.5V3.5l-6 2.5z" /><path d="M9 3.5v14.5M15 6v14.5" />
+          </svg>
+        )}
+        {icon === 'pin' && (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z" /><circle cx="12" cy="10" r="2.6" />
+          </svg>
+        )}
+        {label}
+      </div>
+    )}
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

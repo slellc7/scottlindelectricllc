@@ -1,0 +1,16 @@
+---
+interface Props {
+  /** Trail after Home, e.g. ["Service area", "Ammon"]. Last item is the current page. */
+  trail: string[];
+  /** The emergency hero sits on a dark band and needs the reversed treatment. */
+  invert?: boolean;
+}
+const { trail, invert = false } = Astro.props;
+---
+
+<nav class:list={['crumb', invert && 'crumb--invert']} aria-label="Breadcrumb">
+  <div class="crumb-inner">
+    <a href="/">Home</a>
+    {trail.map((label) => (<><span class="crumb-sep">/</span>{label}</>))}
+  </div>
+</nav>

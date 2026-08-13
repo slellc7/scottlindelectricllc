@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Corners from '../../components/Corners.astro';
+import Crumb from '../../components/Crumb.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+// Drafts never reach the build; `import.meta.env.PROD` keeps them visible in dev.
+const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Base
+  title="Electrical Advice & Updates | Scott Lind Electric"
+  description="Practical electrical advice from a licensed Idaho Falls electrician — troubleshooting, panels, lighting, code and what a job actually costs."
+  breadcrumb="Blog"
+>
+  <Crumb trail={['Blog']} />
+
+  <section class="section section--page">
+    <div class="grid-lead grid-lead--even">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Notes from the van · Idaho Falls</span>
+        </p>
+        <h1 class="h-page h-page--sm">Electrical advice, written down</h1>
+        <p class="lead lead--narrow">
+          The explanations we end up giving on the phone, written out once so you can read them
+          before you call — or instead of calling, if that's what the answer turns out to be.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    {
+      posts.length === 0 ? (
+        <div class="blueprint panel">
+          <Corners />
+          <p class="prose">
+            No posts yet. Add a markdown file to <code>src/content/blog/</code> and it appears here.
+          </p>
+        </div>
+      ) : (
+        <div class="u-grid cell-grid post-grid">
+          {posts.map((post) => (
+            <article class="cell cell--wide post-card">
+              <div class="u-num">
+                <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+              </div>
+              <h2>
+                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+              </h2>
+              <p>{post.data.description}</p>
+              {post.data.tags.length > 0 && (
+                <div class="tag-row post-card-tags">
+                  {post.data.tags.map((t) => (
+                    <span class="tag tag-outline">{t}</span>
+                  ))}
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      )
+    }
+  </section>
+
+  <CtaBand
+    heading="Rather just ask someone?"
+    copy="Call and we'll tell you straight — including when you don't need an electrician."
+    secondary={{ href: '/contact/', label: 'Free estimate' }}
+  />
+</Base>

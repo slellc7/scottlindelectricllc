@@ -1,0 +1,125 @@
+---
+import { SITE, formEnabled } from '../consts';
+import Corners from './Corners.astro';
+
+/**
+ * The estimate form — or, until SITE.formEndpoint is real, a call-us panel.
+ *
+ * A form whose action is still the placeholder would POST to a 404 and silently
+ * eat the enquiry. On a site whose whole promise is "you'll reach a person",
+ * losing one is the worst failure available, so the form simply isn't rendered
+ * until there's somewhere for it to go.
+ */
+interface Props {
+  /** Recorded in the payload so you can tell which page the enquiry came from. */
+  source: string;
+  /** The contact page carries the fuller form (e-mail + type of work). */
+  full?: boolean;
+  /** Prefix for input ids, so two forms can coexist on one page. */
+  idPrefix?: string;
+}
+
+const { source, full = false, idPrefix = 'f' } = Astro.props;
+const id = (name: string) => `${idPrefix}-${name}`;
+---
+
+{
+  !formEnabled ? (
+    <div class="form-offline">
+      <p>
+        Online estimate requests aren't switched on yet. Call and you'll reach a person, which is the
+        faster route anyway.
+      </p>
+      <a href={SITE.telHref} class="btn btn-primary blueprint btn-lg">
+        <Corners />
+        Call {SITE.phone}
+      </a>
+    </div>
+  ) : (
+    <>
+      <p class="form-status" data-form-status hidden>
+        Thanks — your request is in. For anything urgent, call{' '}
+        <a href={SITE.telHref}>{SITE.phone}</a> and you'll reach a person.
+      </p>
+
+      <form class="form" data-estimate-form action={SITE.formEndpoint} method="post">
+        <input type="hidden" name="_source" value={source} />
+        <div class="form-hp" aria-hidden="true">
+          <label>
+            Company
+            <input type="text" name="company" tabindex="-1" autocomplete="off" />
+          </label>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for={id('name')}>Full name</label>
+            <input class="input" id={id('name')} name="name" autocomplete="name" required placeholder="Jane Peterson" />
+          </div>
+          <div class="field">
+            <label for={id('phone')}>Phone</label>
+            <input class="input" id={id('phone')} name="phone" type="tel" autocomplete="tel" required placeholder="208.000.0000" />
+          </div>
+        </div>
+
+        {full ? (
+          <div class="form-row">
+            <div class="field">
+              <label for={id('email')}>E-mail</label>
+              <input class="input" id={id('email')} name="email" type="email" autocomplete="email" placeholder="jane@example.com" />
+            </div>
+            <div class="field">
+              <label for={id('city')}>City</label>
+              <input class="input" id={id('city')} name="city" autocomplete="address-level2" placeholder="Idaho Falls" />
+            </div>
+          </div>
+        ) : (
+          <div class="field">
+            <label for={id('city')}>City</label>
+            <input class="input" id={id('city')} name="city" autocomplete="address-level2" placeholder="Idaho Falls" />
+          </div>
+        )}
+
+        {full && (
+          <fieldset class="field fieldset-plain">
+            <legend>Type of work</legend>
+            <div class="radio-row">
+              <label class="radio">
+                <input type="radio" name="kind" value="residential" />
+                <span class="dot" />Residential
+              </label>
+              <label class="radio">
+                <input type="radio" name="kind" value="commercial" />
+                <span class="dot" />Commercial
+              </label>
+              <label class="radio">
+                <input type="radio" name="kind" value="urgent" />
+                <span class="dot" />Urgent
+              </label>
+            </div>
+          </fieldset>
+        )}
+
+        <div class="field">
+          <label for={id('msg')}>{full ? 'What needs doing?' : 'What needs fixing?'}</label>
+          <textarea
+            class:list={['input', full && 'textarea-tall']}
+            id={id('msg')}
+            name="message"
+            required
+            placeholder="Two outlets in the kitchen are dead and the breaker trips when the microwave runs."
+          />
+        </div>
+
+        <p class="form-error" data-form-error hidden>
+          That didn't send. Please call {SITE.phone} and we'll take the details over the phone.
+        </p>
+
+        <button type="submit" class:list={['btn btn-primary blueprint', full ? 'btn-lg' : 'btn-md']}>
+          <Corners />
+          Send request
+        </button>
+      </form>
+    </>
+  )
+}

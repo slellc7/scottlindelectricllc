@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import Crumb from '../components/Crumb.astro';
+import CtaBand from '../components/CtaBand.astro';
+import ReviewCard from '../components/ReviewCard.astro';
+import { SITE } from '../consts';
+import { allReviews } from '../data/reviews';
+---
+
+<Base
+  title="Reviews | Scott Lind Electric, Idaho Falls"
+  description="Reviews from Idaho Falls and Ammon customers of Scott Lind Electric, quoted word for word from our Google Business Profile. Licensed and insured."
+  breadcrumb="Reviews"
+>
+  <Crumb trail={['Reviews']} />
+
+  <section class="section section--page">
+    <div class="reviews-head">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Reviews · Idaho Falls &amp; Ammon</span>
+        </p>
+        <h1 class="h-page">What customers say</h1>
+        <p class="lead lead--narrow lead--sm">
+          Reviews from real Idaho Falls and Ammon customers, quoted from our Google Business Profile.
+        </p>
+      </div>
+      <a href={SITE.telHref} class="btn btn-primary blueprint btn-lg reviews-head-cta">
+        <Corners />Call {SITE.phone}
+      </a>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="grid-3">
+      {allReviews.map((r) => <ReviewCard {...r} />)}
+
+      <div class="blueprint review-card review-card--dark">
+        <Corners />
+        <div class="panel-kicker">Worked with us?</div>
+        <h2>Leave a review</h2>
+        <p>
+          Reviews that name the town and the job help the next person find us. It takes a minute and
+          it means a lot.
+        </p>
+        <a href={SITE.reviewUrl} class="btn blueprint btn-on-dark btn-md" rel="noopener" target="_blank">
+          <Corners />Review us on Google
+        </a>
+      </div>
+    </div>
+
+    <p class="review-note">
+      Replace each card with a real, attributed Google review — never invented text. Six is a good
+      number to keep on this page.
+    </p>
+  </section>
+
+  <CtaBand
+    heading="Be the next one."
+    copy="Free estimates, same-day where we can, no service-call fee within 30 miles."
+  />
+</Base>

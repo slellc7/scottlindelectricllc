@@ -1,0 +1,159 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import Crumb from '../components/Crumb.astro';
+import FaqGrid from '../components/FaqGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../consts';
+import { residentialFaqs } from '../data/faqs';
+
+const spec = [
+  ['Response', 'Same day, typical'],
+  ['Estimates', 'Free'],
+  ['Service-call fee', 'None within 30 mi'],
+  ['Minimum job', 'No minimum'],
+  ['After hours', 'Available'],
+];
+
+const calls = [
+  ['Breakers that trip', 'A breaker doing its job repeatedly is telling you something: an overloaded circuit, a failing breaker, or a fault in the wiring. We find which.'],
+  ['Dead outlets & switches', 'Often a tripped GFCI upstream or a backstabbed connection that finally let go. Fast to trace, fast to fix properly.'],
+  ['Panel & service work', 'Added circuits, panel replacement, and correcting the work of whoever was in there before us.'],
+  ['Lighting & fixtures', 'Fixture replacement, can lights, exterior and yard lighting, LED conversions that stop the flicker.'],
+  ['Remodels & additions', 'Kitchens, basements, garages and shops — rough-in through trim, coordinated with your other trades.'],
+  ['Troubleshooting', 'The intermittent problem nobody else could find. Diagnosis is the job we are proudest of.'],
+];
+
+const repairReplace = [
+  ['Outlet / switch', 'Loose connection, tripped GFCI', 'Scorching, melted face, cracked body'],
+  ['Breaker', 'Trips only under real overload', "Trips with no load, feels hot, won't reset"],
+  ['Panel', 'Space available, brand still supported', 'Full, obsolete, corroded, or known-defective'],
+  ['Fixture', 'Ballast or socket only', 'Failing housing, or converting to LED'],
+  ['Wiring', 'Single damaged run', 'Widespread damage or unsafe original work'],
+];
+---
+
+<Base
+  title="Residential Electrician, Idaho Falls | Scott Lind Electric"
+  description="Residential electrical repair in Idaho Falls and Ammon: outlets, breakers, panels, lighting and remodels. Same-day service, free estimates, no call-out fee."
+  breadcrumb="Residential"
+  faqs={residentialFaqs}
+  service="Residential electrical repair"
+>
+  <Crumb trail={['Residential']} />
+
+  <section class="section section--page">
+    <div class="grid-lead">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Homes · Idaho Falls &amp; Ammon</span>
+        </p>
+        <h1 class="h-page">Residential electrician in Idaho&nbsp;Falls</h1>
+        <p class="lead">
+          Scott Lind Electric repairs, replaces and rewires residential electrical systems anywhere
+          within 30 miles of Idaho Falls, usually the same day you call. There is no minimum job
+          size and no service-call fee inside that radius.
+        </p>
+        <p class="prose">
+          A dead outlet, a breaker that trips every time the microwave runs, a light fixture that
+          hums — those are the calls other electricians push to next week because there is a
+          subdivision to wire. We take them. It is how we prove we are worth calling when something
+          big happens.
+        </p>
+      </div>
+
+      <div class="blueprint panel">
+        <Corners />
+        <div class="u-num">Spec sheet</div>
+        <table class="table spec-table">
+          <caption class="visually-hidden">Residential service terms</caption>
+          <tbody>
+            {
+              spec.map(([k, v]) => (
+                <tr>
+                  <td class="t-label">{k}</td>
+                  <td class="t-val">{v}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <a href={SITE.telHref} class="btn btn-primary btn-block blueprint btn-lg">
+          <Corners />
+          Call {SITE.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="rule-head rule-head--sub">
+      <h2>What we get called for</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+    </div>
+    <div class="u-grid cell-grid cell-grid--3">
+      {
+        calls.map(([title, body], i) => (
+          <div class="cell">
+            <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="grid-duo">
+      <div>
+        <h2 class="h-block">Repair it or replace it?</h2>
+        <p class="prose prose--wide">
+          The honest answer depends on what failed. Here is how we decide — the same reasoning we'll
+          walk you through on site, before you spend anything.
+        </p>
+      </div>
+      <div class="blueprint panel panel--snug">
+        <Corners />
+        <div class="table-scroll">
+          <table class="table">
+            <caption class="visually-hidden">
+              When we repair a component and when we replace it
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Component</th>
+                <th scope="col">Repair makes sense</th>
+                <th scope="col">Replace makes sense</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                repairReplace.map(([part, repair, replace]) => (
+                  <tr>
+                    <td class="t-key">{part}</td>
+                    <td>{repair}</td>
+                    <td>{replace}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <h2 class="h-block h-block--gap">Residential questions</h2>
+    <FaqGrid items={residentialFaqs} />
+    <p class="after-sm"><a href="/answers/" class="link-arrow">Read all answers →</a></p>
+  </section>
+
+  <CtaBand
+    heading="Something not working?"
+    copy="Tell us what it's doing. We'll tell you what it takes."
+    secondary={{ href: '/contact/', label: 'Free estimate' }}
+  />
+</Base>

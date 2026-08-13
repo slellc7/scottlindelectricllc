@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import Crumb from '../components/Crumb.astro';
+import FaqGrid from '../components/FaqGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Figure from '../components/Figure.astro';
+import { SITE } from '../consts';
+import { ammonFaqs } from '../data/faqs';
+
+const glance = [
+  ['Distance from our shop', 'Under 10 min'],
+  ['Service-call fee', 'None'],
+  ['Same-day repair', 'Typical'],
+  ['After hours', 'Covered'],
+  ['Estimates', 'Free'],
+];
+
+const work = [
+  ['Home repairs', 'Outlets, switches, breakers, fixtures and the troubleshooting nobody else finished.'],
+  ['Basements & shops', 'Finishing a basement or wiring a detached shop — circuits, lighting, panels and permits.'],
+  ['Business service', 'Ammon storefronts, offices and lots — service calls, LED conversions, lot light repair.'],
+];
+
+const towns = [
+  ['Idaho Falls', true], ['Ammon', true], ['Ucon', false], ['Iona', false],
+  ['Shelley', false], ['Rigby', false], ['Ririe', false], ['Roberts', false],
+] as const;
+---
+
+<Base
+  title="Electrician in Ammon, Idaho | Scott Lind Electric"
+  description="Electrician serving Ammon, Idaho — residential repair, commercial service and after-hours emergencies. Ten minutes out, no service-call fee, free estimates."
+  breadcrumb="Ammon"
+  faqs={ammonFaqs}
+>
+  <Crumb trail={['Service area', 'Ammon']} />
+
+  <section class="section section--page">
+    <div class="grid-lead">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Ammon, Idaho · Bonneville County</span>
+        </p>
+        <h1 class="h-page">Electrician in Ammon,&nbsp;Idaho</h1>
+        <p class="lead">
+          Ammon sits inside our no-fee radius, minutes from the shop on Taylor Avenue. Scott Lind
+          Electric handles residential repairs, commercial service and after-hours emergencies
+          throughout Ammon — same-day in most cases, with free estimates and no service-call fee.
+        </p>
+        <p class="prose">
+          Ammon's housing runs from mid-century homes with panels that are out of space to
+          subdivisions built last year with circuits already loaded past what the builder planned
+          for. Both call for the same thing: someone who diagnoses before quoting.
+        </p>
+      </div>
+
+      <div class="blueprint panel">
+        <Corners />
+        <div class="u-num">Ammon at a glance</div>
+        <table class="table spec-table">
+          <caption class="visually-hidden">Service terms for Ammon</caption>
+          <tbody>
+            {
+              glance.map(([k, v]) => (
+                <tr>
+                  <td class="t-label">{k}</td>
+                  <td class="t-val">{v}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <a href={SITE.telHref} class="btn btn-primary btn-block blueprint btn-lg">
+          <Corners />
+          Call {SITE.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="rule-head rule-head--sub">
+      <h2>What we do in Ammon</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+    </div>
+    <div class="u-grid cell-grid cell-grid--3">
+      {
+        work.map(([title, body], i) => (
+          <div class="cell">
+            <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="blueprint panel-split panel-split--compact">
+      <Corners />
+      <div class="panel-half">
+        <h2>Also inside the radius</h2>
+        <p class="prose">Every town below is a no-service-call-fee trip from Idaho Falls.</p>
+        <div class="tag-row">
+          {
+            towns.map(([name, home]) => (
+              <span class:list={['tag', home ? 'tag-accent' : 'tag-outline']}>{name}</span>
+            ))
+          }
+        </div>
+      </div>
+      <div class="panel-half panel-half--flush">
+        <Figure label="Map — 30-mile service radius" icon="map" size="map" duotone={false} bare />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <h2 class="h-block h-block--gap">Ammon questions</h2>
+    <FaqGrid items={ammonFaqs} />
+    <p class="after-sm"><a href="/answers/" class="link-arrow">Read all answers →</a></p>
+  </section>
+
+  <CtaBand
+    heading="Ammon, we're ten minutes out."
+    copy="Free estimate, no service-call fee, same-day where we can."
+    secondary={{ href: '/contact/', label: 'Free estimate' }}
+  />
+</Base>

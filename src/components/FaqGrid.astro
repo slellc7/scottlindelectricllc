@@ -1,0 +1,21 @@
+---
+import type { Faq } from '../data/faqs';
+
+interface Props {
+  items: Faq[];
+  /** The Answers page uses the roomier padding and larger question size. */
+  roomy?: boolean;
+}
+const { items, roomy = false } = Astro.props;
+---
+
+<div class="u-grid faq-grid">
+  {
+    items.map(({ q, a }) => (
+      <div class:list={['faq-item', roomy && 'faq-item--roomy']}>
+        <h3>{q}</h3>
+        <p>{a}</p>
+      </div>
+    ))
+  }
+</div>

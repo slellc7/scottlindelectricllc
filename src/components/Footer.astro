@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import { SITE, FOOTER } from '../consts';
+import logo from '../assets/sle-logo.png';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <Image src={logo} alt="" densities={[1, 2]} />
+        <address class="foot-addr">
+          <strong>{SITE.legalName}</strong><br />
+          {SITE.address.street}<br />
+          {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}<br />
+          <a class="foot-tel" href={SITE.telHref}>{SITE.phone}</a>
+        </address>
+      </div>
+
+      <div>
+        <h2 class="u-num">Services</h2>
+        <nav class="foot-links" aria-label="Services">
+          {FOOTER.services.map(({ href, label }) => <a href={href}>{label}</a>)}
+        </nav>
+      </div>
+
+      <div>
+        <h2 class="u-num">Company</h2>
+        <nav class="foot-links" aria-label="Company">
+          {FOOTER.company.map(({ href, label }) => <a href={href}>{label}</a>)}
+        </nav>
+      </div>
+
+      <div class="foot-area">
+        <h2 class="u-num">Service area</h2>
+        <p>
+          Idaho Falls, Ammon, Ucon, Iona, Shelley, Rigby, Ririe, Roberts and everywhere within 30
+          miles — no service-call fee.
+        </p>
+        <div class="foot-badge">Licensed &amp; insured in Idaho</div>
+      </div>
+    </div>
+
+    <div class="foot-bottom">
+      <span>© {year} {SITE.legalName}</span>
+      <span>Idaho Falls electrician · Residential, commercial &amp; industrial · Same-day service</span
+      >
+    </div>
+  </div>
+</footer>

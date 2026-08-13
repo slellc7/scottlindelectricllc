@@ -1,0 +1,21 @@
+# Old ASP.NET site → new URLs. 301 = permanent, so link equity transfers.
+# IIS paths were case-insensitive; Netlify is not, so the casings that were
+# actually linked are listed explicitly.
+
+/default.aspx              /                 301
+/Default.aspx              /                 301
+
+/Residential.aspx          /residential/     301
+/residential.aspx          /residential/     301
+
+/commercial.aspx           /commercial/      301
+/Commercial.aspx           /commercial/      301
+
+/after_hours.aspx          /after-hours/     301
+/After_Hours.aspx          /after-hours/     301
+
+/free-estimates.aspx       /contact/         301
+
+# "Same-Day Services" had no direct equivalent; residential is the page whose
+# whole pitch is same-day repair.
+/same-day-services.aspx    /residential/     301

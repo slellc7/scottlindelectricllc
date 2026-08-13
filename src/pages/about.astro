@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import Crumb from '../components/Crumb.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Figure from '../components/Figure.astro';
+import { SITE } from '../consts';
+
+const how = [
+  ['Diagnose first', 'We find out what actually failed before quoting a repair. Guessing is expensive for both of us.'],
+  ['Price before tools', 'You know the scope and the number before anything is opened up.'],
+  ['Say the honest thing', 'Including "that can wait", "you don’t need us for that", or "today isn’t realistic".'],
+  ['Leave it to code', 'Permitted and inspected where required, and correct where nobody will ever look.'],
+];
+
+const customers = [
+  ['Homeowners', 'who have been told their job is too small, or who need it fixed today.'],
+  ['Business & property owners', 'who cannot afford a dark lot, a dead circuit or a failed inspection.'],
+  ['General contractors', 'who need an electrical sub that holds the schedule and answers the phone.'],
+];
+---
+
+<Base
+  title="About | Scott Lind Electric, Idaho Falls"
+  description="Scott Lind Electric LLC is a licensed, insured electrical contractor on Taylor Avenue in Idaho Falls, working residential, commercial and industrial jobs."
+  breadcrumb="About"
+>
+  <Crumb trail={['About']} />
+
+  <section class="section section--page">
+    <div class="grid-lead grid-lead--even">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">{SITE.legalName}</span>
+        </p>
+        <h1 class="h-page">The name on the van answers the phone</h1>
+        <p class="lead lead--narrow">
+          Scott Lind Electric is a state-licensed electrical contractor based on Taylor Avenue in
+          Idaho Falls, working across residential, commercial and industrial jobs throughout eastern
+          Idaho.
+        </p>
+        <p class="prose">
+          The whole company is built on one decision: take the small jobs. Most electricians won't
+          drive across town for a single dead outlet — there is a subdivision to wire and the math
+          doesn't work. We took the other view. Fix the small thing well, and when something serious
+          happens in that house or that building, there is no question who gets the call.
+        </p>
+        <p class="prose">
+          That is also why there is no service-call fee inside 30 miles, why estimates are free, and
+          why the phone gets answered after hours. Not marketing — just the only way the promise
+          holds up.
+        </p>
+      </div>
+
+      <Figure
+        label="Photo — Scott / the crew"
+        icon="person"
+        size="xtall"
+        caption="Fig. 05 — Scott Lind, Idaho Falls, ID"
+      />
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="rule-head rule-head--sub">
+      <h2>How we work</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+    </div>
+    <div class="u-grid cell-grid cell-grid--4">
+      {how.map(([title, body], i) => (
+        <div class="cell">
+          <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
+          <h3>{title}</h3>
+          <p>{body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="blueprint panel-split panel-split--compact">
+      <Corners />
+
+      <div class="panel-half">
+        <div class="u-num">Credentials</div>
+        <h2>Licensed, insured, local</h2>
+        <table class="table">
+          <caption class="visually-hidden">Business credentials</caption>
+          <tbody>
+            <tr><td class="t-label">Business</td><td class="t-val">{SITE.legalName}</td></tr>
+            {/* PLACEHOLDER: replace with the real Idaho contractor licence number. */}
+            <tr><td class="t-label">Idaho contractor license</td><td class="t-todo">Add license number</td></tr>
+            <tr><td class="t-label">Insurance</td><td class="t-val">Carried — certificate on request</td></tr>
+            <tr><td class="t-label">Based in</td><td class="t-val">{SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}</td></tr>
+            <tr><td class="t-label">Serving</td><td class="t-val">Idaho Falls, Ammon &amp; 30 miles</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel-half panel-half--tint">
+        <div class="u-num">Who calls us</div>
+        <h2>Three kinds of customer</h2>
+        <div class="who-list">
+          {customers.map(([who, what]) => (
+            <p><strong>{who}</strong><br />{what}</p>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Try us on something small."
+    copy="That's the whole pitch."
+    secondary={{ href: '/contact/', label: 'Free estimate' }}
+  />
+</Base>

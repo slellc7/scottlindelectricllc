@@ -1,0 +1,25 @@
+---
+import Corners from './Corners.astro';
+
+/**
+ * PLACEHOLDER slot for a real Google review.
+ *
+ * Paste reviews word for word from the Google Business Profile, with the
+ * customer's name and town. Never write review text — fabricated reviews are an
+ * FTC problem, not just an SEO one. For the same reason, do not add
+ * AggregateRating schema for reviews that are hosted on Google.
+ */
+interface Props {
+  kicker: string;
+  quote: string;
+  by: string;
+}
+const { kicker, quote, by } = Astro.props;
+---
+
+<div class="blueprint review-card">
+  <Corners />
+  <div class="u-num">{kicker}</div>
+  <blockquote class="review-quote">{quote}</blockquote>
+  <div class="review-by">{by}</div>
+</div>
