@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import PageHeading from '../../components/PageHeading.astro';
 import Base from '../../layouts/Base.astro';
 import Corners from '../../components/Corners.astro';
 import Crumb from '../../components/Crumb.astro';
@@ -24,11 +25,9 @@ const fmt = (d: Date) =>
   <section class="section section--page">
     <div class="grid-lead grid-lead--even">
       <div>
-        <p class="eyebrow eyebrow--sub">
-          <span class="eyebrow-rule" aria-hidden="true"></span>
-          <span class="eyebrow-text">Notes from the van · Idaho Falls</span>
-        </p>
-        <h1 class="h-page h-page--sm">Electrical advice, written down</h1>
+        <PageHeading kicker={`Notes from the van · Idaho Falls`} size="h-page--sm" tight>
+          Electrical advice, written down
+        </PageHeading>
         <p class="lead lead--narrow">
           The explanations we end up giving on the phone, written out once so you can read them
           before you call — or instead of calling, if that's what the answer turns out to be.

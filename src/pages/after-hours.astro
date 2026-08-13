@@ -25,7 +25,10 @@ const triage = [
   ['One dead outlet or switch', 'Annoying, not dangerous, if nothing is hot', 'Schedule same-day', false],
   ['A fixture flickering', 'Usually a lamp, ballast or loose connection', 'Schedule same-day', false],
   ['Adding a circuit or fixture', 'Planned work, better done in daylight', 'Book an estimate', false],
-  ['Whole neighbourhood dark', 'Utility outage — not an electrician job', 'Call Rocky Mountain Power', false],
+  // Idaho Falls city is served by Idaho Falls Power (municipal); Rocky Mountain
+  // Power serves outside the city limits, including Ammon. Naming only one was
+  // wrong for roughly half the service area.
+  ['Whole neighbourhood dark', 'Utility outage — not an electrician job', 'Call your utility', false],
 ] as const;
 ---
 
@@ -48,9 +51,9 @@ const triage = [
           </p>
           <h1 class="h-page">Emergency electrician, Idaho&nbsp;Falls</h1>
           <p class="lead lead--narrow">
-            Electrical problems don't follow business hours. Scott Lind Electric answers after-hours
-            calls in Idaho Falls and Ammon and will do whatever we can to get your home or business
-            safe and running again tonight.
+            Electrical problems don't follow business hours. Scott Lind Electric answers the phone around
+            the clock Monday to Saturday, across Idaho Falls and Ammon, and will do whatever we can
+            to get your home or business safe and running again tonight.
           </p>
           <p class="prose">
             We run a small business ourselves. Nothing is more frustrating than an electrical fault

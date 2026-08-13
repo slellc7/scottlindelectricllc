@@ -1,0 +1,35 @@
+---
+/**
+ * Kicker + headline as one <h1>.
+ *
+ * Nine H1s carried no place name, which for a local trades site wastes the
+ * strongest heading on every page. Rather than bend the headlines into
+ * "Electrician in Idaho Falls" everywhere — which would flatten the copy — the
+ * eyebrow that already sits above them moves *inside* the heading.
+ *
+ * Nothing moves on screen: the eyebrow keeps its own classes and styling, and
+ * the headline keeps its size. The only change is that the place name is now
+ * part of the H1 rather than a paragraph next to it. That is the ordinary
+ * editorial kicker-plus-headline pattern, not keyword stuffing — the text was
+ * already there, visible, and describing the page.
+ */
+interface Props {
+  /** The kicker line. Should name the place the page is about. */
+  kicker: string;
+  /** Extra classes for the headline, e.g. "h-page--sm". */
+  size?: string;
+  /** The hero uses a tighter kicker gap than the subpages. */
+  tight?: boolean;
+  /** Screen-reader separator between kicker and headline. */
+  id?: string;
+}
+const { kicker, size = '', tight = false, id } = Astro.props;
+---
+
+<h1 class:list={['h-page', size, 'h1-stack']} id={id}>
+  <span class:list={['eyebrow', tight && 'eyebrow--sub', 'h1-kicker']}>
+    <span class="eyebrow-rule" aria-hidden="true"></span>
+    <span class="eyebrow-text">{kicker}</span>
+  </span>
+  <span class="h1-line"><slot /></span>
+</h1>

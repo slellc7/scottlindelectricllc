@@ -13,6 +13,8 @@ interface Props {
   canonical: string;
   description: string;
   breadcrumb?: string;
+  /** Optional intermediate level, e.g. Home > Service area > Ammon. */
+  breadcrumbParent?: { name: string; url: string };
   faqs?: Faq[];
   service?: string;
   article?: {
@@ -24,7 +26,7 @@ interface Props {
   };
 }
 
-const { canonical, description, breadcrumb, faqs, service, article } = Astro.props;
+const { canonical, description, breadcrumb, breadcrumbParent, faqs, service, article } = Astro.props;
 
 const business = {
   '@type': 'Electrician',
@@ -32,7 +34,30 @@ const business = {
   name: SITE.legalName,
   url: `${SITE.url}/`,
   telephone: SITE.telephoneE164,
-  image: `${SITE.url}/images/sle-logo.png`,
+  // A photograph of the business, not the logo — Google asks for the real
+  // thing here, and keeps `logo` separate for the knowledge panel.
+  image: SITE.photos.map((p) => `${SITE.url}${p}`),
+  logo: `${SITE.url}/images/sle-logo.png`,
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: SITE.hours.open24,
+      // Google's documented way to express "open 24 hours".
+      opens: '00:00',
+      closes: '23:59',
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: SITE.hours.closed,
+      // Both set to 00:00 marks the day as closed.
+      opens: '00:00',
+      closes: '00:00',
+    },
+  ],
+  geo: { '@type': 'GeoCoordinates', latitude: SITE.geo.lat, longitude: SITE.geo.lng },
+  hasMap: SITE.googleListing,
+  // sameAs is the entity link between this domain and the Business Profile.
+  sameAs: [SITE.googleListing],
   address: {
     '@type': 'PostalAddress',
     streetAddress: SITE.address.street,
@@ -43,6 +68,7 @@ const business = {
   },
   areaServed: SITE.areaServed.map((name) => ({ '@type': 'City', name })),
   description: SITE.description,
+  slogan: SITE.slogan,
   makesOffer: SITE.services.map((name) => ({
     '@type': 'Offer',
     itemOffered: { '@type': 'Service', name },
@@ -52,13 +78,22 @@ const business = {
 const graph: Record<string, unknown>[] = [business];
 
 if (breadcrumb) {
-  graph.push({
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.url}/` },
-      { '@type': 'ListItem', position: 2, name: breadcrumb, item: canonical },
-    ],
+  const items = [{ '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.url}/` }];
+  if (breadcrumbParent) {
+    items.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: breadcrumbParent.name,
+      item: new URL(breadcrumbParent.url, SITE.url).href,
+    });
+  }
+  items.push({
+    '@type': 'ListItem',
+    position: items.length + 1,
+    name: breadcrumb,
+    item: canonical,
   });
+  graph.push({ '@type': 'BreadcrumbList', itemListElement: items });
 }
 
 if (faqs?.length) {

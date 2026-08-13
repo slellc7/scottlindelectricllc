@@ -108,6 +108,16 @@ the better-maintained of the two.
 
 ---
 
+## An accessibility fix worth knowing about
+
+`--color-accent` is the design system's 600 step, and `.btn-primary` painted
+`--color-bg` on it — **3.71:1**. The 14px/600 button label counts as normal text
+under WCAG, so AA wants 4.5:1. Buttons now use the 700 step: **5.78:1**, for the
+cost of a slightly deeper blue. The override sits at the top of `site.css`;
+delete that block to restore the original lighter button.
+
+---
+
 ## Content still to supply
 
 The design shipped with deliberate blanks. They are still blank — inventing this

@@ -63,3 +63,17 @@ const heroFiles = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true }
 );
 export const heroImage: ImageMetadata | undefined = Object.values(heroFiles)[0]?.default;
+
+/**
+ * Phone-only crop of the hero, framed on the van livery.
+ *
+ * The wide banner cannot show a horizontal logo inside a portrait hero, so
+ * phones get their own file rather than a tighter crop of the same one.
+ * Name it `hero-mobile.jpg` alongside `hero.jpg`; optional.
+ */
+const heroMobileFiles = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/hero-mobile.{jpg,jpeg,png,webp,avif}',
+  { eager: true }
+);
+export const heroImageMobile: ImageMetadata | undefined =
+  Object.values(heroMobileFiles)[0]?.default;

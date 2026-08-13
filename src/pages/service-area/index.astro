@@ -1,0 +1,140 @@
+---
+import PageHeading from '../../components/PageHeading.astro';
+import Base from '../../layouts/Base.astro';
+import Corners from '../../components/Corners.astro';
+import Crumb from '../../components/Crumb.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import ServiceMap from '../../components/ServiceMap.astro';
+import FaqGrid from '../../components/FaqGrid.astro';
+import { SITE } from '../../consts';
+import { towns } from '../../data/serviceArea';
+import type { Faq } from '../../data/faqs';
+
+const home = towns.filter((t) => t.primary);
+const rest = towns.filter((t) => !t.primary);
+
+const areaFaqs: Faq[] = [
+  {
+    q: 'How far do you travel?',
+    a: 'About 30 miles from Idaho Falls, which covers Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts. Everything inside that radius is a no-service-call-fee trip. Further out is still possible — call and ask.',
+  },
+  {
+    q: 'Is there a fee for coming out to my town?',
+    a: 'No. There is no service-call fee anywhere inside the 30-mile radius. You pay for the work performed, not for the drive.',
+  },
+  {
+    q: 'Do the outer towns still get same-day service?',
+    a: 'Often, yes — it depends on where the day already has us. Idaho Falls and Ammon are the most likely to be same-day. Call in the morning and we will tell you honestly what is realistic.',
+  },
+  {
+    q: 'Do you cover the whole area after hours?',
+    a: 'Yes. We are open 24 hours Monday to Saturday and answer across the whole radius, not just in Idaho Falls. We are closed Sunday.',
+  },
+];
+---
+
+<Base
+  title="Service Area — Idaho Falls & 30 Miles | Scott Lind Electric"
+  description="Scott Lind Electric covers Idaho Falls, Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts — no service-call fee anywhere inside 30 miles of Idaho Falls."
+  breadcrumb="Service area"
+  faqs={areaFaqs}
+>
+  <Crumb trail={['Service area']} />
+
+  <section class="section section--page">
+    <div class="grid-lead grid-lead--even">
+      <div>
+        <PageHeading kicker={`Idaho Falls & 30 miles · Eastern Idaho`} size="h-page--sm" tight>
+          Where we work
+        </PageHeading>
+        <p class="lead lead--narrow">
+          Everything within about 30 miles of Idaho Falls, and every one of those miles is free —
+          there is no service-call fee anywhere inside the radius. You pay for the work, not the
+          drive.
+        </p>
+      </div>
+
+      <div class="blueprint panel">
+        <Corners />
+        <div class="u-num">The radius, in short</div>
+        <table class="table spec-table">
+          <caption class="visually-hidden">Service area terms</caption>
+          <tbody>
+            <tr><td class="t-label">Based in</td><td class="t-val">{SITE.address.city}, {SITE.address.region}</td></tr>
+            <tr><td class="t-label">Radius</td><td class="t-val">About 30 miles</td></tr>
+            <tr><td class="t-label">Service-call fee</td><td class="t-val">None inside it</td></tr>
+            <tr><td class="t-label">Same-day repair</td><td class="t-val">Typical</td></tr>
+            <tr><td class="t-label">After hours</td><td class="t-val">24 hours, Mon&ndash;Sat</td></tr>
+          </tbody>
+        </table>
+        <a href={SITE.telHref} class="btn btn-primary btn-block blueprint btn-lg">
+          <Corners />
+          Call {SITE.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="rule-head rule-head--sub">
+      <h2>Home ground</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+    </div>
+    <div class="u-grid cell-grid cell-grid--2">
+      {
+        home.map((t, i) => (
+          <div class="cell cell--wide">
+            <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
+            <h3>{t.name}</h3>
+            <p>{t.note}</p>
+            {t.href && (
+              <p class="after-sm">
+                <a href={t.href} class="link-arrow">
+                  Electrician in {t.name} →
+                </a>
+              </p>
+            )}
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="blueprint panel-split panel-split--compact">
+      <Corners />
+      <div class="panel-half">
+        <h2>Also inside the radius</h2>
+        <p class="prose">
+          Same terms in every one of these: free estimate, no service-call fee, after-hours covered.
+        </p>
+        <div class="tag-row tag-row--spaced">
+          {home.map((t) => <span class="tag tag-accent">{t.name}</span>)}
+          {rest.map((t) => <span class="tag tag-outline">{t.name}</span>)}
+        </div>
+        <p class="prose" style="margin-top:20px">
+          Not on the list? If you are a little past the radius it is usually still worth a call —
+          we would rather tell you yes or no than have you guess.
+        </p>
+        <p class="after-sm">
+          <a href={SITE.telHref} class="link-arrow">Call {SITE.phone} →</a>
+        </p>
+      </div>
+      <div class="panel-half panel-half--flush">
+        <div class="map-frame"><ServiceMap /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <h2 class="h-block h-block--gap">Service area questions</h2>
+    <FaqGrid items={areaFaqs} />
+    <p class="after-sm"><a href="/answers/" class="link-arrow">Read all answers →</a></p>
+  </section>
+
+  <CtaBand
+    heading="Inside the radius? Then there's no trip charge."
+    copy="Free estimate, same-day where we can, after hours when it can't wait."
+    secondary={{ href: '/contact/', label: 'Free estimate' }}
+  />
+</Base>

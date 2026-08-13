@@ -1,4 +1,5 @@
 ---
+import PageHeading from '../components/PageHeading.astro';
 import Base from '../layouts/Base.astro';
 import Corners from '../components/Corners.astro';
 import Crumb from '../components/Crumb.astro';
@@ -18,11 +19,9 @@ import { allReviews } from '../data/reviews';
   <section class="section section--page">
     <div class="reviews-head">
       <div>
-        <p class="eyebrow eyebrow--sub">
-          <span class="eyebrow-rule" aria-hidden="true"></span>
-          <span class="eyebrow-text">Reviews · Idaho Falls &amp; Ammon</span>
-        </p>
-        <h1 class="h-page">What customers say</h1>
+        <PageHeading kicker={`Reviews · Idaho Falls & Ammon`} size="" tight>
+          What customers say
+        </PageHeading>
         <p class="lead lead--narrow lead--sm">
           Reviews from real Idaho Falls and Ammon customers, quoted from our Google Business Profile.
         </p>
@@ -52,8 +51,7 @@ import { allReviews } from '../data/reviews';
     </div>
 
     <p class="review-note">
-      Replace each card with a real, attributed Google review — never invented text. Six is a good
-      number to keep on this page.
+      Every review above is quoted word for word from our Google Business Profile.
     </p>
   </section>
 

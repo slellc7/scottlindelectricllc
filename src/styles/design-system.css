@@ -17,7 +17,7 @@
   --color-surface: #e9e9ea;
   --color-text: #1d1f20;
   --color-accent: #5980a6;
-  --color-accent-2: #728fab;
+  --color-accent-2: #b49700;  /* brass, from the logo */
   --color-divider: color-mix(in srgb, #1d1f20 16%, transparent);
 
   /* Tonal ramps — generated in OKLCH on one shared lightness scale, so the
@@ -42,15 +42,22 @@
   --color-accent-800: #2c455d;
   --color-accent-900: #1d2d3d;
 
-  --color-accent-2-100: #eef6ff;
-  --color-accent-2-200: #d6ebff;
-  --color-accent-2-300: #bdd8f2;
-  --color-accent-2-400: #9ebbd8;
-  --color-accent-2-500: #7e9cb8;
-  --color-accent-2-600: #627d98;
-  --color-accent-2-700: #486077;
-  --color-accent-2-800: #314457;
-  --color-accent-2-900: #1f2d3a;
+  /* Brass — derived from the logo's gold (#f3d211, OKLCH h 97deg) and
+     regenerated on the SAME shared lightness scale as the blues above, so a
+     brass step and an accent step of the same number carry equal visual
+     weight. This slot previously held a near-duplicate of --color-accent
+     and was used nowhere; it now gives the logo a relative in the palette.
+     Yellow is intrinsically light, so the dark steps read as bronze — which
+     the logo already contains (#706900, #c89232). */
+  --color-accent-2-100: #fff6bd;
+  --color-accent-2-200: #f7e9aa;
+  --color-accent-2-300: #e7d684;
+  --color-accent-2-400: #cfb745;
+  --color-accent-2-500: #b49700;
+  --color-accent-2-600: #987700;
+  --color-accent-2-700: #7a5a00;
+  --color-accent-2-800: #5b3e00;
+  --color-accent-2-900: #3f2700;
 
   --font-heading: "Barlow Condensed", system-ui, sans-serif;
   --font-heading-weight: 600;

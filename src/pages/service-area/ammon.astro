@@ -1,18 +1,18 @@
 ---
-import Base from '../layouts/Base.astro';
-import Corners from '../components/Corners.astro';
-import Crumb from '../components/Crumb.astro';
-import FaqGrid from '../components/FaqGrid.astro';
-import CtaBand from '../components/CtaBand.astro';
-import Figure from '../components/Figure.astro';
-import { SITE } from '../consts';
-import { ammonFaqs } from '../data/faqs';
+import Base from '../../layouts/Base.astro';
+import Corners from '../../components/Corners.astro';
+import Crumb from '../../components/Crumb.astro';
+import FaqGrid from '../../components/FaqGrid.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import ServiceMap from '../../components/ServiceMap.astro';
+import { SITE } from '../../consts';
+import { ammonFaqs } from '../../data/faqs';
 
 const glance = [
   ['Distance from our shop', 'Under 10 min'],
   ['Service-call fee', 'None'],
   ['Same-day repair', 'Typical'],
-  ['After hours', 'Covered'],
+  ['After hours', '24 hours, Mon–Sat'],
   ['Estimates', 'Free'],
 ];
 
@@ -32,9 +32,10 @@ const towns = [
   title="Electrician in Ammon, Idaho | Scott Lind Electric"
   description="Electrician serving Ammon, Idaho — residential repair, commercial service and after-hours emergencies. Ten minutes out, no service-call fee, free estimates."
   breadcrumb="Ammon"
+  breadcrumbParent={{ name: 'Service area', url: '/service-area/' }}
   faqs={ammonFaqs}
 >
-  <Crumb trail={['Service area', 'Ammon']} />
+  <Crumb trail={[{ label: 'Service area', href: '/service-area/' }, 'Ammon']} />
 
   <section class="section section--page">
     <div class="grid-lead">
@@ -113,7 +114,7 @@ const towns = [
         </div>
       </div>
       <div class="panel-half panel-half--flush">
-        <Figure label="Map — 30-mile service radius" icon="map" size="map" duotone={false} bare />
+        <div class="map-frame"><ServiceMap /></div>
       </div>
     </div>
   </section>

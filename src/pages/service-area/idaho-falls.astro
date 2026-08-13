@@ -1,0 +1,177 @@
+---
+import Base from '../../layouts/Base.astro';
+import Corners from '../../components/Corners.astro';
+import Crumb from '../../components/Crumb.astro';
+import FaqGrid from '../../components/FaqGrid.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { SITE } from '../../consts';
+import type { Faq } from '../../data/faqs';
+
+const glance = [
+  ['Distance from our shop', 'We are in town'],
+  ['Service-call fee', 'None'],
+  ['Same-day repair', 'Typical'],
+  ['After hours', '24 hours, Mon–Sat'],
+  ['Estimates', 'Free'],
+];
+
+const work = [
+  [
+    'Older homes near the centre',
+    'Two-wire circuits with no ground, fuse panels that were converted decades ago, and backstabbed outlets that finally let go. Diagnosing before quoting matters most in these houses.',
+  ],
+  [
+    'Newer subdivisions',
+    'Builder-grade panels already full, AFCI breakers nuisance-tripping on the wrong load, and circuits carrying more than anyone planned for once a shop or hot tub goes in.',
+  ],
+  [
+    'Downtown &amp; commercial',
+    'Storefronts, offices and shops along the river — service work, lighting, LED conversions and the running repairs an older building needs.',
+  ],
+];
+
+/**
+ * Questions specific to being *in* Idaho Falls. Deliberately none of these
+ * repeat a question on /answers/ — one URL should own each Question entity.
+ */
+const idahoFallsFaqs: Faq[] = [
+  {
+    q: 'The power is out — do I call you or the utility?',
+    a: 'Call the utility first if the whole street is dark. Inside Idaho Falls city limits that is Idaho Falls Power, the city-owned utility; outside the city limits it is Rocky Mountain Power. Call us instead when your building is dark and the neighbours are fine, because then the fault is on your side of the meter — your service, main or panel.',
+  },
+  {
+    q: 'How quickly can you reach my part of Idaho Falls?',
+    a: 'Our shop is on Taylor Avenue, so nowhere in the city is a long trip. Same-day service is standard for repair calls here, and there is no service-call fee anywhere in town.',
+  },
+  {
+    q: 'Do you work on older homes in Idaho Falls?',
+    a: 'Regularly. Older Idaho Falls houses bring their own problems — ungrounded two-wire circuits, panels converted from fuses, aluminium branch wiring in some 1960s and 70s builds. We diagnose what is actually there before quoting rather than assuming.',
+  },
+];
+---
+
+<Base
+  title="Electrician in Idaho Falls, ID | Scott Lind Electric"
+  description="Idaho Falls electrician based on Taylor Avenue — residential repair, commercial service and after-hours calls anywhere in the city. Same-day, free estimates, no fee."
+  breadcrumb="Idaho Falls"
+  breadcrumbParent={{ name: 'Service area', url: '/service-area/' }}
+  faqs={idahoFallsFaqs}
+>
+  <Crumb trail={[{ label: 'Service area', href: '/service-area/' }, 'Idaho Falls']} />
+
+  <section class="section section--page">
+    <div class="grid-lead">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Idaho Falls, Idaho · Bonneville County</span>
+        </p>
+        <h1 class="h-page">Electrician in Idaho&nbsp;Falls, Idaho</h1>
+        <p class="lead">
+          Scott Lind Electric is based in Idaho Falls — the shop is on Taylor Avenue, not in another
+          town an hour away. Residential repairs, commercial service and after-hours calls anywhere
+          in the city, usually the same day, with free estimates and no service-call fee.
+        </p>
+        <p class="prose">
+          Idaho Falls is not one kind of house. There are homes near the centre still running
+          two-wire circuits with no ground, subdivisions on the edges wired to builder minimums a few
+          years ago, and everything between. What they have in common is that guessing is expensive —
+          so we find out what is actually behind the wall before quoting a price.
+        </p>
+      </div>
+
+      <div class="blueprint panel">
+        <Corners />
+        <div class="u-num">Idaho Falls at a glance</div>
+        <table class="table spec-table">
+          <caption class="visually-hidden">Service terms for Idaho Falls</caption>
+          <tbody>
+            {
+              glance.map(([k, v]) => (
+                <tr>
+                  <td class="t-label">{k}</td>
+                  <td class="t-val">{v}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <a href={SITE.telHref} class="btn btn-primary btn-block blueprint btn-lg">
+          <Corners />
+          Call {SITE.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="rule-head rule-head--sub">
+      <h2>What we get called for in Idaho Falls</h2>
+      <span class="rule-line" aria-hidden="true"></span>
+    </div>
+    <div class="u-grid cell-grid cell-grid--3">
+      {
+        work.map(([title, body], i) => (
+          <div class="cell">
+            <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
+            <h3 set:html={title} />
+            <p set:html={body} />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <div class="blueprint panel-split panel-split--compact">
+      <Corners />
+      <div class="panel-half">
+        <div class="u-num">Worth knowing</div>
+        <h2>Two utilities, one city</h2>
+        <p class="prose">
+          Idaho Falls is unusual: inside the city limits your power comes from
+          <strong> Idaho Falls Power</strong>, the city-owned utility that has run on Snake River
+          hydro since 1900 and serves around 28,000 customers. Step outside the city boundary — Ammon
+          included — and you are on <strong>Rocky Mountain Power</strong> instead.
+        </p>
+        <p class="prose">
+          It matters at the worst moment. When the whole street goes dark, the right call is your
+          utility, and which one depends on which side of the line you are on. When your building is
+          dark and the neighbours are fine, the fault is on your side of the meter — that one is
+          ours.
+        </p>
+      </div>
+      <div class="panel-half panel-half--tint">
+        <div class="u-num">Who to call</div>
+        <h2>Utility or electrician?</h2>
+        <div class="table-scroll">
+          <table class="table">
+            <caption class="visually-hidden">Whether to call the utility or an electrician</caption>
+            <thead>
+              <tr><th scope="col">What you're seeing</th><th scope="col">Call</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="t-key">Whole street dark, in the city</td><td>Idaho Falls Power</td></tr>
+              <tr><td class="t-key">Whole street dark, outside the city</td><td>Rocky Mountain Power</td></tr>
+              <tr><td class="t-key">Your building dark, neighbours fine</td><td class="t-urgent">Us</td></tr>
+              <tr><td class="t-key">Half the building dark</td><td class="t-urgent">Us</td></tr>
+              <tr><td class="t-key">Burning smell, sparks, heat</td><td class="t-urgent">Us — now</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub">
+    <h2 class="h-block h-block--gap">Idaho Falls questions</h2>
+    <FaqGrid items={idahoFallsFaqs} />
+    <p class="after-sm"><a href="/answers/" class="link-arrow">Read all answers →</a></p>
+  </section>
+
+  <CtaBand
+    heading="We're already in town."
+    copy="Free estimate, no service-call fee, same-day where we can."
+    secondary={{ href: '/contact/', label: 'Free estimate' }}
+  />
+</Base>

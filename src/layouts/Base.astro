@@ -13,6 +13,7 @@ interface Props {
   description: string;
   /** Second crumb; omit on the home page. Also drives BreadcrumbList schema. */
   breadcrumb?: string;
+  breadcrumbParent?: { name: string; url: string };
   faqs?: Faq[];
   service?: string;
   ogType?: 'website' | 'article';
@@ -29,6 +30,7 @@ const {
   title,
   description,
   breadcrumb,
+  breadcrumbParent,
   faqs,
   service,
   ogType = 'website',
@@ -83,6 +85,7 @@ const ogImage = new URL('/images/sle-logo.png', Astro.site).href;
       canonical={canonical}
       description={description}
       breadcrumb={breadcrumb}
+      breadcrumbParent={breadcrumbParent}
       faqs={faqs}
       service={service}
       article={article}

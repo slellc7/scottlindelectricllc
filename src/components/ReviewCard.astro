@@ -1,25 +1,39 @@
 ---
 import Corners from './Corners.astro';
+import type { Review } from '../data/reviews';
 
 /**
- * PLACEHOLDER slot for a real Google review.
+ * A real, attributed Google review. Quotes live in src/data/reviews.ts and are
+ * transcribed verbatim — never write or edit review text.
  *
- * Paste reviews word for word from the Google Business Profile, with the
- * customer's name and town. Never write review text — fabricated reviews are an
- * FTC problem, not just an SEO one. For the same reason, do not add
- * AggregateRating schema for reviews that are hosted on Google.
+ * The stars are presentational. No Review/AggregateRating schema is emitted:
+ * these reviews are hosted on Google, and marking up third-party reviews as
+ * your own breaches Google's structured-data guidelines.
  */
-interface Props {
-  kicker: string;
-  quote: string;
-  by: string;
-}
-const { kicker, quote, by } = Astro.props;
+type Props = Review;
+const { kicker, quote, by, rating } = Astro.props;
+
+// One review runs to ~700 characters; in a third-width card that reads as a
+// wall, so it gets the double-width plate. The threshold sits at 500 rather
+// than 420 because the next-longest is 421 — close enough to the rest that
+// widening it too would leave the grid with a half-empty final row.
+const wide = quote.length > 500;
 ---
 
-<div class="blueprint review-card">
+<div class:list={['blueprint', 'review-card', wide && 'review-card--wide']}>
   <Corners />
   <div class="u-num">{kicker}</div>
+
+  <p class="stars" aria-label={`${rating} out of 5 stars`}>
+    {
+      Array.from({ length: 5 }, (_, i) => (
+        <svg viewBox="0 0 20 19" aria-hidden="true" class:list={['star', i >= rating && 'star--off']}>
+          <path d="M10 0l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L10 14.3 4.2 17.8l1.6-6.6L.6 6.8l6.8-.5z" />
+        </svg>
+      ))
+    }
+  </p>
+
   <blockquote class="review-quote">{quote}</blockquote>
-  <div class="review-by">{by}</div>
+  <cite class="review-by">{by}</cite>
 </div>

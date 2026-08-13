@@ -56,7 +56,7 @@ export const commercialFaqs: Faq[] = [
   },
   {
     q: 'Can you work outside business hours?',
-    a: 'Yes. Shutdowns, lot lighting and anything that would interrupt trading can be scheduled after close or before opening.',
+    a: 'Yes. We are open 24 hours Monday to Saturday, so shutdowns, lot lighting and anything that would interrupt trading can be scheduled after close or before opening. We are closed Sunday.',
   },
   {
     q: 'Are estimates really free?',
@@ -71,7 +71,11 @@ export const commercialFaqs: Faq[] = [
 export const emergencyFaqs: Faq[] = [
   {
     q: 'Do you answer the phone at night?',
-    a: "We answer after-hours calls and will tell you honestly whether we can be there tonight or first thing in the morning. If it's dangerous, we treat it as dangerous.",
+    a: "Yes — we are open 24 hours a day, Monday to Saturday, and we will tell you honestly whether we can be there tonight or first thing in the morning. If it's dangerous, we treat it as dangerous. We are closed Sunday.",
+  },
+  {
+    q: 'Are you open on Sunday?',
+    a: 'No. We are open around the clock Monday to Saturday and closed on Sunday. If something is smoking, sparking or wet on a Sunday, treat it as an emergency: shut off the breaker feeding it if you can do so safely, call 911 if there is fire or smoke in a wall, and call us first thing Monday.',
   },
   {
     q: 'What counts as an electrical emergency?',
@@ -79,7 +83,7 @@ export const emergencyFaqs: Faq[] = [
   },
   {
     q: 'Which areas do you cover after hours?',
-    a: 'Idaho Falls, Ammon and the surrounding communities within 30 miles — Ucon, Iona, Shelley, Rigby, Ririe and Roberts included.',
+    a: 'Idaho Falls, Ammon and the surrounding communities within 30 miles — Ucon, Iona, Shelley, Rigby, Ririe and Roberts included — 24 hours a day, Monday to Saturday.',
   },
   {
     q: 'Should I shut off the main breaker?',

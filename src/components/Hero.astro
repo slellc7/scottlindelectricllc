@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { SITE } from '../consts';
 
@@ -18,7 +18,10 @@ import { SITE } from '../consts';
  */
 interface Props {
   image?: ImageMetadata;
+  /** Art-directed crop for phones — see the note on .hero-media below. */
+  imageMobile?: ImageMetadata;
   alt?: string;
+  slogan?: string;
   eyebrow: string;
   /** Each string is one line; they reveal in sequence on load. */
   headingLines: string[];
@@ -30,28 +33,42 @@ interface Props {
 
 const {
   image,
+  imageMobile,
   alt = '',
+  slogan,
   eyebrow,
   headingLines,
   lead,
   caption,
   placeholder = 'Photo — service van',
 } = Astro.props;
+
+// A 2.94:1 banner cannot show a horizontal logo inside a portrait phone hero —
+// `cover` has to eat ~70% of the width. So phones get their own crop, framed on
+// the livery, laid out as a band at its natural aspect rather than filled.
+const mobile = imageMobile
+  ? await getImage({ src: imageMobile, widths: [420, 760, 1000], format: 'webp' })
+  : null;
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
   <div class="hero-media">
     {
       image ? (
-        <Image
-          src={image}
-          alt={alt}
-          widths={[800, 1400, 2000]}
-          sizes="100vw"
-          loading="eager"
-          fetchpriority="high"
-          class="hero-img"
-        />
+        <picture>
+          {mobile && (
+            <source media="(max-width: 700px)" srcset={mobile.srcSet.attribute || mobile.src} sizes="100vw" />
+          )}
+          <Image
+            src={image}
+            alt={alt}
+            widths={[800, 1400, 2000]}
+            sizes="100vw"
+            loading="eager"
+            fetchpriority="high"
+            class="hero-img"
+          />
+        </picture>
       ) : (
         <div class="hero-ph">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
@@ -71,12 +88,14 @@ const {
 
   <div class="hero-inner">
     <div class="hero-copy">
-      <p class="eyebrow eyebrow--invert hero-r" style="--d:0ms">
-        <span class="eyebrow-rule" aria-hidden="true"></span>
-        <span class="eyebrow-text">{eyebrow}</span>
-      </p>
-
+      {/* The kicker lives inside the H1 so the home page's strongest heading
+          names the city — the headline itself stays the brand line. Visually
+          identical to an eyebrow sitting above it. */}
       <h1 class="h-display hero-heading" id="hero-heading">
+        <span class="eyebrow eyebrow--invert h1-kicker hero-r" style="--d:0ms">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">{eyebrow}</span>
+        </span>
         {
           headingLines.map((line, i) => (
             <span class="hero-line">
@@ -86,9 +105,17 @@ const {
         }
       </h1>
 
-      <p class="lead hero-lead hero-r" style={`--d:${140 + headingLines.length * 90}ms`}>{lead}</p>
+      {
+        slogan && (
+          <p class="hero-slogan hero-r" style={`--d:${120 + headingLines.length * 90}ms`}>
+            {slogan}
+          </p>
+        )
+      }
 
-      <p class="hero-actions hero-r" style={`--d:${210 + headingLines.length * 90}ms`}>
+      <p class="lead hero-lead hero-r" style={`--d:${170 + headingLines.length * 90}ms`}>{lead}</p>
+
+      <p class="hero-actions hero-r" style={`--d:${230 + headingLines.length * 90}ms`}>
         <a href={SITE.telHref} class="btn btn-primary blueprint btn-lg">
           <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
           Call {SITE.phone}
@@ -218,6 +245,22 @@ const {
   /* Each line clips its own reveal, so the type rises out of the rule above it. */
   .hero-line { display: block; overflow: hidden; }
 
+  /* The brand line. Sentence case and warmer than the condensed caps above it —
+     it is the one place on the page that sounds like a person rather than a
+     spec sheet, so it should not be shouted. */
+  .hero-slogan {
+    font-family: var(--font-heading);
+    font-size: clamp(18px, 2vw, 24px);
+    line-height: 1.25;
+    letter-spacing: .01em;
+    color: var(--color-accent-300);
+    margin: 0 0 18px;
+    /* No ch-based cap here — ch resolves against the condensed heading face and
+       lands ~280px, which strands "business" on its own line. .hero-copy
+       already bounds the column; balance just evens the break on phones. */
+    text-wrap: balance;
+  }
+
   .hero-lead {
     color: color-mix(in srgb, var(--color-bg) 88%, transparent);
     max-width: 52ch;
@@ -269,22 +312,41 @@ const {
   }
 
   @media (max-width: 700px) {
-    .hero-inner { padding: 64px 18px 60px; }
-    .hero-lead { margin-bottom: 24px; }
-    .hero-actions :global(.btn) { width: 100%; }
-    /* At 375px the visible window is only ~27% of a 2.94:1 banner, so a crop
-       centred on the graphic lands on half a letterform. Framing the cab keeps
-       it reading as a van. */
-    .hero-media :global(.hero-img) { object-position: 34% center; }
+    /* Split layout: photograph as a band at its own aspect, copy on solid ground
+       beneath it. Nothing is cropped, so the livery reads in full, and the type
+       sits on flat --color-accent-900 at 12.6:1 rather than over a scrim. */
+    .hero { display: flex; flex-direction: column; min-height: 0; }
+    .hero-media { position: relative; inset: auto; aspect-ratio: 912 / 570; }
+    .hero-media :global(.hero-img) { object-position: center; animation: none; }
+    .hero-inner { padding: 40px 18px 56px; }
+    .hero-slogan { font-size: 19px; margin-bottom: 16px; }
+    /* The brand line. Sentence case and warmer than the condensed caps above it —
+     it is the one place on the page that sounds like a person rather than a
+     spec sheet, so it should not be shouted. */
+  .hero-slogan {
+    font-family: var(--font-heading);
+    font-size: clamp(18px, 2vw, 24px);
+    line-height: 1.25;
+    letter-spacing: .01em;
+    color: var(--color-accent-300);
+    margin: 0 0 18px;
+    /* No ch-based cap here — ch resolves against the condensed heading face and
+       lands ~280px, which strands "business" on its own line. .hero-copy
+       already bounds the column; balance just evens the break on phones. */
+    text-wrap: balance;
+  }
 
+  .hero-lead { margin-bottom: 24px; }
+    .hero-actions :global(.btn) { width: 100%; }
     /* A photo this dark at phone width needs the scrim flat, not raked —
        the diagonal leaves the last line of the heading on bare sky. */
+    /* No longer carrying any type — it just feathers the photo's bottom edge
+       into the copy block so the join doesn't read as a hard seam. */
     .hero-scrim {
       background: linear-gradient(
-        to top,
-        color-mix(in srgb, var(--color-accent-900) 93%, transparent) 0%,
-        color-mix(in srgb, var(--color-accent-900) 86%, transparent) 55%,
-        color-mix(in srgb, var(--color-accent-900) 62%, transparent) 100%
+        to bottom,
+        transparent 58%,
+        color-mix(in srgb, var(--color-accent-900) 90%, transparent) 100%
       );
     }
   }

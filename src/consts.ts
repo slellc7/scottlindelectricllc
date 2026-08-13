@@ -11,7 +11,9 @@ export const SITE = {
   name: 'Scott Lind Electric',
   legalName: 'Scott Lind Electric LLC',
   description:
-    'Licensed Idaho Falls electrician offering same-day residential, commercial and after-hours electrical service. Free estimates and no service-call fee within 30 miles.',
+    'Licensed Idaho Falls electrician offering same-day residential, commercial and after-hours electrical service, open 24 hours Monday to Saturday. Free estimates and no service-call fee within 30 miles.',
+
+  slogan: "You've got a friend in the electrical business",
 
   phone: '208.716.1240',
   telephoneE164: '+1-208-716-1240',
@@ -26,6 +28,40 @@ export const SITE = {
   },
 
   areaServed: ['Idaho Falls', 'Ammon', 'Ucon', 'Iona', 'Shelley', 'Rigby', 'Ririe', 'Roberts'],
+
+  /** Geocoded from the shop address. Feeds LocalBusiness.geo — Google uses it
+   *  for proximity matching, and it is one of the few properties a small local
+   *  site can supply that many competitors don't. */
+  geo: { lat: 43.4860098, lng: -112.0198398 },
+
+  /** Verified to resolve to "Scott Lind Electric LLC" on Google Maps. Feeds
+   *  both hasMap and sameAs, which is how the site tells Google that this
+   *  domain and that Business Profile are the same entity. */
+  googleListing: 'https://www.google.com/maps?cid=16827192462932853737',
+
+  /**
+   * Business photographs for LocalBusiness.image. Google asks for several
+   * high-resolution images at 16:9, 4:3 and 1:1; these are crops of the van
+   * shot, each comfortably over the 300,000-pixel floor. Served from public/ so
+   * the URLs stay stable — Astro's processed assets are content-hashed and
+   * would change filename on every re-encode.
+   */
+  photos: [
+    '/images/scott-lind-electric-van-16x9.jpg',
+    '/images/scott-lind-electric-van-4x3.jpg',
+    '/images/scott-lind-electric-van-1x1.jpg',
+  ],
+
+  /**
+   * Hours as set on the Google Business Profile: open 24 hours Monday to
+   * Saturday, closed Sunday. These must stay identical to the Business Profile
+   * — conflicting hours between a site and a GBP listing is a trust signal
+   * Google actively weighs.
+   */
+  hours: {
+    open24: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    closed: ['Sunday'],
+  },
 
   services: [
     'Residential electrical repair',
@@ -45,8 +81,16 @@ export const SITE = {
    */
   formEndpoint: 'REPLACE_ME',
 
-  /** TODO — paste the "write a review" short link from the Business Profile. */
-  reviewUrl: 'https://search.google.com/local/writereview?placeid=REPLACE_ME',
+  /**
+   * Google listing, via the CID from the Business Profile's feature id
+   * (0x53545fd1c00db917:0xe9863264083e43e9). Verified to open
+   * "Scott Lind Electric LLC" — the Reviews tab there has the write button.
+   *
+   * For a true one-click review form, Scott can copy the short link from his
+   * Business Profile ("Ask for reviews"); it looks like
+   * https://g.page/r/XXXXXXXX/review and can replace this directly.
+   */
+  reviewUrl: 'https://www.google.com/maps?cid=16827192462932853737',
 } as const;
 
 export const formEnabled = !SITE.formEndpoint.includes('REPLACE_ME');
@@ -56,7 +100,7 @@ export const NAV = [
   { href: '/commercial/', label: 'Commercial' },
   { href: '/after-hours/', label: 'After Hours' },
   { href: '/answers/', label: 'Answers' },
-  { href: '/ammon/', label: 'Service Area' },
+  { href: '/service-area/', label: 'Service Area' },
   { href: '/about/', label: 'About' },
   { href: '/reviews/', label: 'Reviews' },
   { href: '/blog/', label: 'Blog' },
@@ -72,6 +116,9 @@ export const FOOTER = {
   ],
   company: [
     { href: '/about/', label: 'About Scott' },
+    { href: '/service-area/', label: 'Service area' },
+    { href: '/service-area/idaho-falls/', label: 'Electrician in Idaho Falls' },
+    { href: '/service-area/ammon/', label: 'Electrician in Ammon' },
     { href: '/reviews/', label: 'Reviews' },
     { href: '/answers/', label: 'Answers & FAQ' },
     { href: '/blog/', label: 'Blog' },

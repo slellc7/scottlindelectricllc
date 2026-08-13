@@ -17,6 +17,7 @@ const services = FOOTER.services.filter((l) => l.href !== '/work/' || hasPhotos)
     <div class="foot-grid">
       <div class="foot-brand">
         <Image src={logo} alt="" densities={[1, 2]} />
+        <p class="foot-slogan">{SITE.slogan}</p>
         <address class="foot-addr">
           <strong>{SITE.legalName}</strong><br />
           {SITE.address.street}<br />

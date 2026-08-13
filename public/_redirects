@@ -19,3 +19,8 @@
 # "Same-Day Services" had no direct equivalent; residential is the page whose
 # whole pitch is same-day repair.
 /same-day-services.aspx    /residential/     301
+
+# Restructure: town pages moved under the service-area hub.
+/ammon/                    /service-area/ammon/         301
+/ammon                     /service-area/ammon/         301
+/idaho-falls/              /service-area/idaho-falls/   301

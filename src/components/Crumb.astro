@@ -1,7 +1,14 @@
 ---
+export type Crumb = string | { label: string; href: string };
+
 interface Props {
-  /** Trail after Home, e.g. ["Service area", "Ammon"]. Last item is the current page. */
-  trail: string[];
+  /**
+   * Trail after Home. A plain string renders as text; `{label, href}` renders
+   * as a link, so an intermediate step like "Service area" actually goes
+   * somewhere instead of pointing at a page that doesn't exist.
+   * The last item is the current page and should always be a plain string.
+   */
+  trail: Crumb[];
   /** The emergency hero sits on a dark band and needs the reversed treatment. */
   invert?: boolean;
 }
@@ -11,6 +18,13 @@ const { trail, invert = false } = Astro.props;
 <nav class:list={['crumb', invert && 'crumb--invert']} aria-label="Breadcrumb">
   <div class="crumb-inner">
     <a href="/">Home</a>
-    {trail.map((label) => (<><span class="crumb-sep">/</span>{label}</>))}
+    {
+      trail.map((item) => (
+        <>
+          <span class="crumb-sep">/</span>
+          {typeof item === 'string' ? item : <a href={item.href}>{item.label}</a>}
+        </>
+      ))
+    }
   </div>
 </nav>

@@ -11,7 +11,15 @@ export default defineConfig({
   build: { format: 'directory' },
   trailingSlash: 'always',
 
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      // /work/ is excluded until it has photographs on it: it currently shows a
+      // "coming shortly" panel, has no internal links pointing at it, and would
+      // be submitted to Google as thin content. Delete this filter when
+      // src/assets/photos/ is populated.
+      filter: (page) => !page.endsWith('/work/'),
+    }),
+  ],
 
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
 

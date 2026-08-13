@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Corners from '../components/Corners.astro';
 import Hero from '../components/Hero.astro';
 import Gallery from '../components/Gallery.astro';
-import { hasPhotos, heroImage } from '../data/photos';
+import { hasPhotos, heroImage, heroImageMobile } from '../data/photos';
 import EstimateForm from '../components/EstimateForm.astro';
 import ReviewCard from '../components/ReviewCard.astro';
 import { SITE } from '../consts';
@@ -44,7 +44,7 @@ const stats = [
   ['01', 'Same-day<br>service', 'Call in the morning, fixed the same day in most cases.'],
   ['02', 'No service<br>call fee', 'Within a 30-mile radius of Idaho Falls. You pay for the work, not the drive.'],
   ['03', 'Free<br>estimates', 'Scope and price before anyone picks up a tool.'],
-  ['04', 'After hours<br>available', "Electrical problems don't keep business hours. Neither do we."],
+  ['04', 'Open 24 hours<br>Mon&ndash;Sat', "Electrical problems don't keep business hours. Neither do we, six days a week."],
 ];
 
 const capabilities = [
@@ -61,10 +61,14 @@ const towns = [
 <Base
   title="Idaho Falls Electrician — Same-Day | Scott Lind Electric"
   description="Licensed Idaho Falls electrician. Same-day residential, commercial and after-hours repair in Idaho Falls and Ammon. Free estimates, no service-call fee."
-  faqs={homeFaqs}
 >
+  {/* No faqs={} here on purpose. Three of the four questions in the block below
+      are repeated verbatim on /answers/, and emitting FAQPage on both URLs puts
+      the same Question entities on two pages. /answers/ owns them. */}
   <Hero
     image={heroImage}
+    imageMobile={heroImageMobile}
+    slogan={SITE.slogan}
     alt="Scott Lind Electric service van on the road outside Idaho Falls, Idaho"
     eyebrow="Idaho Falls electrician · Licensed & insured"
     headingLines={['No job too small.', 'Same-day repair.']}
@@ -213,7 +217,15 @@ const towns = [
             ))
           }
         </div>
-        <p class="after"><a href="/ammon/" class="link-arrow">Electrician in Ammon →</a></p>
+        <p class="after">
+          <a href="/service-area/idaho-falls/" class="link-arrow">Electrician in Idaho Falls →</a>
+        </p>
+        <p class="after-sm">
+          <a href="/service-area/ammon/" class="link-arrow">Electrician in Ammon →</a>
+        </p>
+        <p class="after-sm">
+          <a href="/service-area/" class="link-arrow">All towns we cover →</a>
+        </p>
       </div>
 
       <div class="panel-half panel-half--tint">
