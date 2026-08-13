@@ -20,21 +20,18 @@ import { photos as allPhotos } from '../data/photos';
 interface Props {
   /** Cap the number shown — the home page uses a short strip. */
   limit?: number;
-  /** Start Fig. numbering here, so home and /work/ don't both start at 01. */
-  figureStart?: number;
   /** The lightbox is for /work/; the home strip just links through. */
   lightbox?: boolean;
 }
 
-const { limit, figureStart = 1, lightbox = true } = Astro.props;
+const { limit, lightbox = true } = Astro.props;
 const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
 ---
 
 {
   photos.length > 0 && (
     <div class="gal">
-      {photos.map((p, i) => {
-        const fig = String(figureStart + i).padStart(2, '0');
+      {photos.map((p) => {
         return (
           <figure class="gal-item">
             <div class="blueprint duotone gal-frame">
@@ -45,7 +42,6 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
                   type="button"
                   data-lightbox
                   data-caption={p.caption}
-                  data-fig={fig}
                   aria-label={`Enlarge: ${p.caption}`}
                 >
                   <Image src={p.src} alt={p.alt} widths={[400, 800, 1200]} sizes="(max-width:700px) 100vw, 45vw" />
@@ -55,7 +51,6 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
               )}
             </div>
             <figcaption>
-              <span class="gal-fig">Fig. {fig}</span>
               {p.category && <span class="gal-cat">{p.category}</span>}
               <span class="gal-cap">{p.caption}</span>
             </figcaption>
@@ -72,7 +67,7 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
       <form method="dialog" class="gal-dialog-close-form">
         <button class="gal-close" aria-label="Close">✕</button>
       </form>
-      <img data-gal-dialog-img alt="" />
+      <img data-gal-dialog-img alt="" aria-hidden="true" />
       <p class="gal-dialog-cap" data-gal-dialog-cap />
     </dialog>
   )
@@ -91,7 +86,8 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
         // lightbox reuses the already-downloaded file rather than fetching again.
         img.src = source.currentSrc || source.src;
         img.alt = source.alt;
-        cap.textContent = `Fig. ${btn.dataset.fig} — ${btn.dataset.caption}`;
+        img.removeAttribute('aria-hidden');
+        cap.textContent = btn.dataset.caption ?? '';
         dialog.showModal();
       });
     });
@@ -114,6 +110,14 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
   .gal-item { grid-column: span 4; margin: 0; min-width: 0; }
   .gal-item:nth-child(5n + 1) { grid-column: span 7; }
   .gal-item:nth-child(5n + 2) { grid-column: span 5; }
+
+  /* The design system's duotone is a full-strength colour wash. Over the
+     placeholder era that read as a treatment; over real job photos it erases
+     the thing the customer came to look at. Held back to a tint here so the
+     grid still reads as one family, and dropped entirely in the lightbox where
+     someone is actually inspecting the work. */
+  .gal-frame :global(.duotone)::after,
+  .gal-frame::after { opacity: 0.18; }
 
   .gal-frame { overflow: hidden; aspect-ratio: 4 / 3; }
   /* The 7/5 pair shares a row, so it shares a fixed height instead of an aspect
@@ -141,10 +145,6 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
   figcaption {
     display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
     margin-top: 10px;
-  }
-  .gal-fig {
-    font-family: var(--font-heading); font-size: 12px; letter-spacing: .16em;
-    color: var(--color-accent-2-700);
   }
   .gal-cat {
     font-family: var(--font-heading); font-size: 10px; letter-spacing: .1em;

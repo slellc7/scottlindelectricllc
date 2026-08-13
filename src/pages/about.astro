@@ -56,7 +56,7 @@ const customers = [
         label="Photo — Scott / the crew"
         icon="person"
         size="xtall"
-        caption="Fig. 05 — Scott Lind, Idaho Falls, ID"
+        caption="Scott Lind, Idaho Falls, ID"
       />
     </div>
   </section>
@@ -67,9 +67,8 @@ const customers = [
       <span class="rule-line" aria-hidden="true"></span>
     </div>
     <div class="u-grid cell-grid cell-grid--4">
-      {how.map(([title, body], i) => (
+      {how.map(([title, body]) => (
         <div class="cell">
-          <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
           <h3>{title}</h3>
           <p>{body}</p>
         </div>

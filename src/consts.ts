@@ -69,6 +69,8 @@ export const SITE = {
     'After-hours emergency electrical service',
     'Parking lot light repair',
     'Security lighting installation and repair',
+    'Illuminated sign and channel letter repair',
+    'Canopy and forecourt lighting',
     'Commercial building electrical maintenance and repair',
     'LED conversion',
   ],

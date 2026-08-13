@@ -12,7 +12,7 @@ import { homeReviews } from '../data/reviews';
 
 const services = [
   {
-    num: '01 / Homeowners',
+    num: 'Homeowners',
     title: 'Residential',
     href: '/residential/',
     cta: 'Residential service →',
@@ -21,7 +21,7 @@ const services = [
     dark: false,
   },
   {
-    num: '02 / Business',
+    num: 'Business',
     title: 'Commercial',
     href: '/commercial/',
     cta: 'Commercial work →',
@@ -30,7 +30,7 @@ const services = [
     dark: false,
   },
   {
-    num: '03 / Urgent',
+    num: 'Urgent',
     title: 'After hours',
     href: '/after-hours/',
     cta: 'Emergency service →',
@@ -41,15 +41,15 @@ const services = [
 ];
 
 const stats = [
-  ['01', 'Same-day<br>service', 'Call in the morning, fixed the same day in most cases.'],
-  ['02', 'No service<br>call fee', 'Within a 30-mile radius of Idaho Falls. You pay for the work, not the drive.'],
-  ['03', 'Free<br>estimates', 'Scope and price before anyone picks up a tool.'],
-  ['04', 'Open 24 hours<br>Mon&ndash;Sat', "Electrical problems don't keep business hours. Neither do we, six days a week."],
+  ['Same-day<br>service', 'Call in the morning, fixed the same day in most cases.'],
+  ['No service<br>call fee', 'Within a 30-mile radius of Idaho Falls. You pay for the work, not the drive.'],
+  ['Free<br>estimates', 'Scope and price before anyone picks up a tool.'],
+  ['Open 24 hours<br>Mon&ndash;Sat', "Electrical problems don't keep business hours. Neither do we, six days a week."],
 ];
 
 const capabilities = [
   'New construction', 'Remodels', 'Service & repair', 'After hours',
-  'Parking lot & security lighting', 'LED conversions', 'Panels & breakers', 'Troubleshooting',
+  'Parking lot & security lighting', 'Signs & canopies', 'LED conversions', 'Troubleshooting',
 ];
 
 const towns = [
@@ -73,16 +73,15 @@ const towns = [
     eyebrow="Idaho Falls electrician · Licensed & insured"
     headingLines={['No job too small.', 'Same-day repair.']}
     lead="Scott Lind Electric is a state-licensed electrical contractor serving Idaho Falls, Ammon and everywhere within 30 miles — residential, commercial and industrial. One dead outlet or a full build-out, you get the same answer: we'll come fix it."
-    caption="Fig. 01 — Scott Lind Electric service van, Idaho Falls, ID"
+    caption="Scott Lind Electric service van, Idaho Falls, ID"
     placeholder="Photo — service van"
   />
 
   <section class="section section--strip">
     <div class="u-grid stat-strip">
       {
-        stats.map(([num, title, body]) => (
+        stats.map(([title, body]) => (
           <div class="stat">
-            <div class="u-num">{num}</div>
             <h2 class="stat-title" set:html={title} />
             <p>{body}</p>
           </div>
@@ -128,9 +127,8 @@ const towns = [
     </div>
     <div class="u-grid cap-grid">
       {
-        capabilities.map((label, i) => (
+        capabilities.map((label) => (
           <div class="cap-cell">
-            <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
             <h3>{label}</h3>
           </div>
         ))
@@ -183,7 +181,7 @@ const towns = [
             All work →
           </a>
         </div>
-        <Gallery limit={3} figureStart={2} lightbox={false} />
+        <Gallery limit={3} lightbox={false} />
       </section>
     )
   }

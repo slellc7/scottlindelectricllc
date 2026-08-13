@@ -66,9 +66,9 @@ const toc = headings.filter((h) => h.depth === 2);
                 In this post
               </div>
               <div class="toc">
-                {toc.map((h, i) => (
+                {toc.map((h) => (
                   <a href={`#${h.slug}`}>
-                    {String(i + 1).padStart(2, '0')} &nbsp; {h.text}
+                    {h.text}
                   </a>
                 ))}
               </div>

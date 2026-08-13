@@ -111,9 +111,8 @@ const idahoFallsFaqs: Faq[] = [
     </div>
     <div class="u-grid cell-grid cell-grid--3">
       {
-        work.map(([title, body], i) => (
+        work.map(([title, body]) => (
           <div class="cell">
-            <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
             <h3 set:html={title} />
             <p set:html={body} />
           </div>

@@ -12,17 +12,21 @@ const capabilities = [
   ['Tenant remodels', 'Re-lighting, re-circuiting and re-feeding a space for its next use — often phased so the neighbouring units keep trading.'],
   ['Parking lot light repair', 'Pole lights, wall packs and the underground feeds nobody wants to chase. Dark lots are a liability — we fix them, including after close.'],
   ['Security lighting', 'Install and repair for floodlights, wall packs, motion sensors and dusk-to-dawn photocells — around entrances, yards, loading areas and blind corners.'],
+  ['Signs, canopies &amp; menu boards', 'Illuminated signs, channel letters, pylon signs, fuel-station canopies and drive-thru menu boards — power runs, LED retrofits and the repairs that bring a dark sign back.'],
   ['LED conversions', 'Retrofit or full fixture replacement across shops, warehouses and lots — less maintenance, better light, lower draw.'],
   ['Building maintenance & repair', 'Ongoing electrical maintenance for a building you own or manage: panel work, circuit additions for new equipment, failing fixtures and the running repairs that keep an older building operating.'],
   ['Industrial', 'Equipment feeds, three-phase work and shop electrical for the machines your operation runs on.'],
 ];
 
+// Reordered to lead with the sectors the job photographs actually show.
 const sectors = [
-  'Retail & restaurants', 'Offices & clinics', 'Warehouses', 'Shops & garages',
-  'Property managers', 'General contractors', 'Churches & schools', 'Agricultural',
+  'Restaurants & drive-thrus', 'Fuel stations & c-stores', 'Car dealerships', 'Retail',
+  'Offices & clinics', 'Warehouses', 'Shops & garages', 'Property managers',
+  'General contractors', 'Churches & schools', 'Agricultural',
 ];
 
 const situations = [
+  ['Sign or canopy dark', 'Trace the feed, driver or module; relight it', 'Often same day'],
   ['Lot lights out', 'Assess pole, fixture and feed; restore light', 'After close if needed'],
   ['Circuit down', 'Isolate the fault, get the load back on', 'Same day, typical'],
   ['New equipment', 'Verify capacity, run the dedicated feed', 'Scheduled'],
@@ -33,7 +37,7 @@ const situations = [
 
 <Base
   title="Commercial Electrician Idaho Falls | Scott Lind Electric"
-  description="Commercial electrician in Idaho Falls: new construction, tenant remodels, security and parking lot lighting, building maintenance and LED conversions."
+  description="Commercial electrician in Idaho Falls: illuminated signs, canopy and menu-board lighting, new construction, tenant remodels and building maintenance."
   breadcrumb="Commercial"
   faqs={commercialFaqs}
   service="Commercial electrical contracting"
@@ -83,9 +87,8 @@ const situations = [
     </div>
     <div class="u-grid cell-grid cell-grid--2">
       {
-        capabilities.map(([title, body], i) => (
+        capabilities.map(([title, body]) => (
           <div class="cell cell--wide">
-            <div class="u-num">{String(i + 1).padStart(2, '0')}</div>
             <h3>{title}</h3>
             <p>{body}</p>
           </div>

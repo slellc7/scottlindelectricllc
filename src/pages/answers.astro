@@ -13,9 +13,9 @@ import {
 } from '../data/faqs';
 
 const sections = [
-  { id: 'a-hiring', num: '01', title: 'Hiring us & what it costs you', items: answersHiring },
-  { id: 'a-problems', num: '02', title: 'Common problems, explained', items: answersProblems },
-  { id: 'a-safety', num: '03', title: 'Safety, code & permits', items: answersSafety },
+  { id: 'a-hiring', title: 'Hiring us & what it costs you', items: answersHiring },
+  { id: 'a-problems', title: 'Common problems, explained', items: answersProblems },
+  { id: 'a-safety', title: 'Safety, code & permits', items: answersSafety },
 ];
 
 const whoDoesIt = [
@@ -56,12 +56,10 @@ const whoDoesIt = [
         <div class="toc">
           {
             sections.map((s) => (
-              <a href={`#${s.id}`}>
-                {s.num} &nbsp; {s.title}
-              </a>
+              <a href={`#${s.id}`}>{s.title}</a>
             ))
           }
-          <a href="#a-who">04 &nbsp; Who should do the work</a>
+          <a href="#a-who">Who should do the work</a>
         </div>
       </nav>
     </div>
@@ -71,7 +69,6 @@ const whoDoesIt = [
     sections.map((s) => (
       <section class="section section--sub" id={s.id}>
         <div class="section-num">
-          <span class="u-num">{s.num}</span>
           <h2>{s.title}</h2>
           <span class="rule-line" aria-hidden="true" />
         </div>
@@ -82,7 +79,6 @@ const whoDoesIt = [
 
   <section class="section section--sub" id="a-who">
     <div class="section-num section-num--tight">
-      <span class="u-num">04</span>
       <h2>Handyman or licensed electrician?</h2>
       <span class="rule-line" aria-hidden="true"></span>
     </div>
