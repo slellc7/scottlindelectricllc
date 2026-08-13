@@ -32,6 +32,8 @@ export const SITE = {
     'Commercial electrical contracting',
     'After-hours emergency electrical service',
     'Parking lot light repair',
+    'Security lighting installation and repair',
+    'Commercial building electrical maintenance and repair',
     'LED conversion',
   ],
 
@@ -65,6 +67,7 @@ export const FOOTER = {
     { href: '/residential/', label: 'Residential electrical' },
     { href: '/commercial/', label: 'Commercial electrical' },
     { href: '/after-hours/', label: 'After-hours emergency' },
+    { href: '/work/', label: 'Recent work' },
     { href: '/contact/', label: 'Free estimates' },
   ],
   company: [

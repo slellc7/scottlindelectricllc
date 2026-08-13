@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import Crumb from '../components/Crumb.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Gallery from '../components/Gallery.astro';
+import Corners from '../components/Corners.astro';
+import { SITE } from '../consts';
+import { hasPhotos } from '../data/photos';
+---
+
+<Base
+  title="Recent Work | Scott Lind Electric, Idaho Falls"
+  description="Photographs of recent electrical work by Scott Lind Electric across Idaho Falls and Ammon — panels, lighting, remodels, parking lots and after-hours calls."
+  breadcrumb="Recent work"
+>
+  <Crumb trail={['Recent work']} />
+
+  <section class="section section--page">
+    <div class="grid-lead grid-lead--even">
+      <div>
+        <p class="eyebrow eyebrow--sub">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">Job photographs · Idaho Falls &amp; Ammon</span>
+        </p>
+        <h1 class="h-page h-page--sm">The work, as it actually looks</h1>
+        <p class="lead lead--narrow">
+          Real jobs across Idaho Falls, Ammon and the surrounding towns — panels, lighting,
+          remodels, parking lots and the after-hours calls nobody plans for.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    {
+      hasPhotos ? (
+        <Gallery figureStart={1} />
+      ) : (
+        <div class="blueprint panel panel--roomy">
+          <Corners />
+          <div class="u-num">Photographs</div>
+          <h2 class="h-block" style="margin-top:12px">Job photos coming shortly</h2>
+          <p class="prose">
+            We are putting together a set of photographs from recent jobs across Idaho Falls and
+            Ammon. In the meantime, call and we will happily talk you through work we have done
+            like yours.
+          </p>
+          <p class="after">
+            <a href={SITE.telHref} class="btn btn-primary blueprint btn-lg">
+              <Corners />
+              Call {SITE.phone}
+            </a>
+          </p>
+        </div>
+      )
+    }
+  </section>
+
+  <CtaBand
+    heading="Want yours to look like this?"
+    copy="Free estimate, no service-call fee within 30 miles of Idaho Falls."
+    secondary={{ href: '/contact/', label: 'Free estimate' }}
+  />
+</Base>

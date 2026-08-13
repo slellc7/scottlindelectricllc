@@ -72,7 +72,16 @@ main { flex: 1; }
 .section--page  { padding-top: 64px; }   /* subpage hero */
 .section--sub   { padding-top: 80px; }   /* subpage body sections */
 .section--tight { padding-top: 48px; }
-.section--strip { margin-top: 56px; padding-top: 0; }
+/* The numbered strip breaks the hero's bottom edge and sits on the photograph —
+   a spec block registered over the drawing. Its cells are opaque (.u-grid > *
+   paints --color-bg), so the overlap needs no scrim of its own. */
+.section--strip {
+  margin-top: -64px;
+  padding-top: 0;
+  position: relative;
+  z-index: 5;
+  box-shadow: 0 -1px 0 0 var(--color-divider), var(--shadow-lg);
+}
 
 /* ── emergency banner ────────────────────────────────────────────────────── */
 
@@ -263,6 +272,11 @@ main { flex: 1; }
 /* ── FAQ cells ───────────────────────────────────────────────────────────── */
 
 .faq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--color-divider); }
+
+/* An odd item count in a two-up grid leaves an empty track, and the hairline
+   bed shows through it as a grey block. Let the last cell span the row. */
+.cell-grid--2 > :last-child:nth-child(odd),
+.faq-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
 .faq-item { padding: 28px; }
 .faq-item--roomy { padding: 30px; }
 /* Question headings stay sentence case: they are read as questions, not as
@@ -657,7 +671,7 @@ h1.u-num, h2.u-num, h3.u-num, h4.u-num, h5.u-num, h6.u-num {
   .section--page { padding-top: 44px; }
   .section--sub  { padding-top: 56px; }
   .section--tight{ padding-top: 36px; }
-  .section--strip{ margin-top: 40px; }
+  .section--strip{ margin-top: -40px; }
 
   .grid-hero, .grid-lead, .grid-lead--even, .grid-even, .grid-duo, .band-split {
     grid-template-columns: minmax(0, 1fr); gap: 36px;

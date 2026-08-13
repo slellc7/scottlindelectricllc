@@ -1,7 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import Corners from '../components/Corners.astro';
-import Figure from '../components/Figure.astro';
+import Hero from '../components/Hero.astro';
+import Gallery from '../components/Gallery.astro';
+import { hasPhotos, heroImage } from '../data/photos';
 import EstimateForm from '../components/EstimateForm.astro';
 import ReviewCard from '../components/ReviewCard.astro';
 import { SITE } from '../consts';
@@ -24,7 +26,7 @@ const services = [
     href: '/commercial/',
     cta: 'Commercial work →',
     body: 'New construction, tenant remodels, service work, parking lot lights and LED conversions — scheduled around your hours, not ours.',
-    points: ['Ground-up new construction', 'Parking lot light repair', 'LED conversions'],
+    points: ['Ground-up new construction', 'Parking lot & security lighting', 'Building maintenance & repair'],
     dark: false,
   },
   {
@@ -47,7 +49,7 @@ const stats = [
 
 const capabilities = [
   'New construction', 'Remodels', 'Service & repair', 'After hours',
-  'Parking lot lights', 'LED conversions', 'Panels & breakers', 'Troubleshooting',
+  'Parking lot & security lighting', 'LED conversions', 'Panels & breakers', 'Troubleshooting',
 ];
 
 const towns = [
@@ -61,35 +63,15 @@ const towns = [
   description="Licensed Idaho Falls electrician. Same-day residential, commercial and after-hours repair in Idaho Falls and Ammon. Free estimates, no service-call fee."
   faqs={homeFaqs}
 >
-  <section class="section section--hero">
-    <div class="grid-hero">
-      <div>
-        <p class="eyebrow">
-          <span class="eyebrow-rule" aria-hidden="true"></span>
-          <span class="eyebrow-text">Idaho Falls electrician · Licensed &amp; insured</span>
-        </p>
-        <h1 class="h-display">No job too small.<br />Same-day repair.</h1>
-        <p class="lead lead--narrow">
-          Scott Lind Electric is a state-licensed electrical contractor serving Idaho Falls, Ammon
-          and everywhere within 30 miles — residential, commercial and industrial. One dead outlet
-          or a full build-out, you get the same answer: we'll come fix it.
-        </p>
-        <p class="hero-actions">
-          <a href={SITE.telHref} class="btn btn-primary blueprint btn-lg">
-            <Corners />
-            Call {SITE.phone}
-          </a>
-          <a href="/contact/" class="btn btn-secondary btn-lg">Request a free estimate</a>
-        </p>
-      </div>
-
-      <Figure
-        label="Photo — service van"
-        size="tall"
-        caption="Fig. 01 — Scott Lind Electric service van, Idaho Falls, ID"
-      />
-    </div>
-  </section>
+  <Hero
+    image={heroImage}
+    alt="Scott Lind Electric service van on the road outside Idaho Falls, Idaho"
+    eyebrow="Idaho Falls electrician · Licensed & insured"
+    headingLines={['No job too small.', 'Same-day repair.']}
+    lead="Scott Lind Electric is a state-licensed electrical contractor serving Idaho Falls, Ammon and everywhere within 30 miles — residential, commercial and industrial. One dead outlet or a full build-out, you get the same answer: we'll come fix it."
+    caption="Fig. 01 — Scott Lind Electric service van, Idaho Falls, ID"
+    placeholder="Photo — service van"
+  />
 
   <section class="section section--strip">
     <div class="u-grid stat-strip">
@@ -187,17 +169,20 @@ const towns = [
     </div>
   </section>
 
-  <section class="section">
-    <h2 class="visually-hidden">Recent work</h2>
-    <div class="grid-3">
-      <Figure label="Photo — job site" caption="Fig. 02 — Panel work, residential service call" />
-      <Figure label="Photo — crew" caption="Fig. 03 — The crew on a commercial remodel" />
-      <Figure
-        label="Photo — parking lot light"
-        caption="Fig. 04 — Parking lot light repair, after hours"
-      />
-    </div>
-  </section>
+  {
+    hasPhotos && (
+      <section class="section">
+        <div class="rule-head">
+          <h2>Recent work</h2>
+          <span class="rule-line" aria-hidden="true" />
+          <a href="/work/" class="link-arrow">
+            All work →
+          </a>
+        </div>
+        <Gallery limit={3} figureStart={2} lightbox={false} />
+      </section>
+    )
+  }
 
   <section class="section">
     <div class="rule-head">

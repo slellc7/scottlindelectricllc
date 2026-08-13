@@ -119,12 +119,50 @@ actively harmful if made up.
 | **Google reviews** | `src/data/reviews.ts` | Eight placeholder slots. Paste real reviews word for word from the Business Profile with the customer's name and town. **Do not write review text** — fabricated reviews are an FTC problem, not just an SEO one. Don't add `AggregateRating` schema for reviews hosted on Google. |
 | **Idaho contractor licence number** | `src/pages/about.astro` | Row reads "Add license number". The highest-value single addition to the site. |
 | **Business hours** | `src/pages/contact.astro` | Row reads "Confirm business hours". Then add `openingHoursSpecification` to `Schema.astro` so "open now" searches can surface the business. |
-| **Photos** (6) | hero van, 3 job-site shots, Scott/crew, 2 maps | Drop the file in `src/assets/`, import it in the page, pass it to `<Figure src={...} alt="…">`. Astro then generates WebP + srcset, and the duotone treatment switches itself back on. |
+| **Photos** | hero + job gallery | See "Adding photos" below — it's a file copy, no code edit. |
 | **Google review link** | `src/consts.ts` → `reviewUrl` | Placeholder `placeid`. |
 | **Estimate form endpoint** | `src/consts.ts` → `formEndpoint` | See below. |
 
 Before launch, check the name, address and phone in `src/consts.ts` match the
 Google Business Profile **character for character**.
+
+### Adding photos
+
+Two slots, both drop-in — no code change:
+
+| What | Where | Notes |
+|---|---|---|
+| **Hero** | `src/assets/hero.jpg` | Landscape, 2000px+ wide. Runs full-bleed behind the headline. |
+| **Job gallery** | `src/assets/photos/*.jpg` | Any number. Appear on `/work/` and in the home strip. |
+
+Astro converts both to WebP with responsive `srcset` at build time, so send
+originals rather than phone-compressed copies — it resizes down well and cannot
+invent detail back.
+
+Then describe the gallery shots in `src/data/gallery.ts`, keyed by filename:
+
+```ts
+'panel-swap-ammon': {
+  alt: 'Open electrical panel with new breakers installed, Ammon home',
+  caption: 'Panel replacement, Ammon',
+  category: 'Residential',
+  feature: true,   // gives it the wide plate in the grid
+},
+```
+
+`alt` describes what's in frame for someone who can't see it; `caption` is the
+visible line about the job. They're different jobs — don't reuse one sentence
+for both. A photo with no entry still renders, but with generic alt text, and
+the build prints a warning naming it.
+
+Filenames set the order after featured items, so prefix `01-`, `02-` to control
+the sequence. While there are no photos at all, the home strip hides itself and
+`/work/` shows a customer-facing "coming shortly" panel rather than an empty
+grid — and the footer doesn't link `/work/`, so a thin page isn't advertised
+site-wide.
+
+Don't put photos in `public/` — files there are copied verbatim and skip
+optimization entirely.
 
 ### Wiring up the estimate form
 
@@ -187,6 +225,13 @@ Faithful to the design's look. Five deliberate departures:
    the dark cards they vanished. They now flip to the page ground.
 5. **Clean URLs.** `/residential/` rather than `/residential.html`. Nothing had
    launched, and every old path is redirected regardless.
+6. **Full-bleed hero.** The design put the photo in a framed plate beside the
+   type. It now runs edge to edge with the type registered onto it, a viewfinder
+   frame inset over it, and the numbered stat strip breaking its bottom edge.
+   Legibility is guaranteed rather than hoped for: the scrim holds ≥88%
+   `--color-accent-900` across the full width of the copy column, which measures
+   **8.67:1** against `--color-bg` in the worst case (a blown-out white sky).
+   AAA is 7:1, so any photo works without anyone having to check.
 
 Plus the production work the prototype had no reason to carry: skip link,
 `aria-current` on the active nav item, table captions and `scope` attributes,

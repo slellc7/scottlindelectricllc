@@ -1,0 +1,212 @@
+---
+import { Image } from 'astro:assets';
+import { photos as allPhotos } from '../data/photos';
+
+/**
+ * Customer-supplied job photos.
+ *
+ * Reads `src/assets/photos/` (via data/photos.ts), so adding a picture is a
+ * file copy — no code edit. Captions and alt text come from data/gallery.ts,
+ * keyed by filename.
+ *
+ * The grid is deliberately asymmetric on a 12-column bed: a wide plate, then a
+ * narrow one, then a row of three. Job photos arrive in mixed aspect ratios and
+ * mixed quality, and a uniform square grid makes that unevenness the first
+ * thing you notice. Varied plates make it read as intentional.
+ *
+ * Renders nothing when there are no photos — the caller decides whether to show
+ * a section at all, so a customer never reads a developer-facing empty state.
+ */
+interface Props {
+  /** Cap the number shown — the home page uses a short strip. */
+  limit?: number;
+  /** Start Fig. numbering here, so home and /work/ don't both start at 01. */
+  figureStart?: number;
+  /** The lightbox is for /work/; the home strip just links through. */
+  lightbox?: boolean;
+}
+
+const { limit, figureStart = 1, lightbox = true } = Astro.props;
+const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
+---
+
+{
+  photos.length > 0 && (
+    <div class="gal">
+      {photos.map((p, i) => {
+        const fig = String(figureStart + i).padStart(2, '0');
+        return (
+          <figure class="gal-item">
+            <div class="blueprint duotone gal-frame">
+              <i class="corner tl" /><i class="corner tr" /><i class="corner bl" /><i class="corner br" />
+              {lightbox ? (
+                <button
+                  class="gal-btn"
+                  type="button"
+                  data-lightbox
+                  data-caption={p.caption}
+                  data-fig={fig}
+                  aria-label={`Enlarge: ${p.caption}`}
+                >
+                  <Image src={p.src} alt={p.alt} widths={[400, 800, 1200]} sizes="(max-width:700px) 100vw, 45vw" />
+                </button>
+              ) : (
+                <Image src={p.src} alt={p.alt} widths={[400, 800, 1200]} sizes="(max-width:700px) 100vw, 33vw" />
+              )}
+            </div>
+            <figcaption>
+              <span class="gal-fig">Fig. {fig}</span>
+              {p.category && <span class="gal-cat">{p.category}</span>}
+              <span class="gal-cap">{p.caption}</span>
+            </figcaption>
+          </figure>
+        );
+      })}
+    </div>
+  )
+}
+
+{
+  lightbox && photos.length > 0 && (
+    <dialog class="gal-dialog" data-gal-dialog>
+      <form method="dialog" class="gal-dialog-close-form">
+        <button class="gal-close" aria-label="Close">✕</button>
+      </form>
+      <img data-gal-dialog-img alt="" />
+      <p class="gal-dialog-cap" data-gal-dialog-cap />
+    </dialog>
+  )
+}
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-gal-dialog]');
+  if (dialog) {
+    const img = dialog.querySelector<HTMLImageElement>('[data-gal-dialog-img]')!;
+    const cap = dialog.querySelector<HTMLElement>('[data-gal-dialog-cap]')!;
+
+    document.querySelectorAll<HTMLButtonElement>('[data-lightbox]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const source = btn.querySelector('img')!;
+        // currentSrc is the srcset candidate the browser actually picked, so the
+        // lightbox reuses the already-downloaded file rather than fetching again.
+        img.src = source.currentSrc || source.src;
+        img.alt = source.alt;
+        cap.textContent = `Fig. ${btn.dataset.fig} — ${btn.dataset.caption}`;
+        dialog.showModal();
+      });
+    });
+
+    // Click the backdrop (outside the image) to close.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  }
+</script>
+
+<style>
+  /* 12-column bed. Spans cycle every five items: wide, narrow, then a row of
+     three — so the rhythm never settles into a uniform grid. */
+  .gal {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 28px;
+  }
+  .gal-item { grid-column: span 4; margin: 0; min-width: 0; }
+  .gal-item:nth-child(5n + 1) { grid-column: span 7; }
+  .gal-item:nth-child(5n + 2) { grid-column: span 5; }
+
+  .gal-frame { overflow: hidden; aspect-ratio: 4 / 3; }
+  /* The 7/5 pair shares a row, so it shares a fixed height instead of an aspect
+     ratio — two different widths at one ratio give two different heights, and
+     the captions go ragged. Columns are fluid and gaps are not, so no pair of
+     ratios matches at every viewport. */
+  .gal-item:nth-child(5n + 1) .gal-frame,
+  .gal-item:nth-child(5n + 2) .gal-frame {
+    aspect-ratio: auto;
+    height: clamp(300px, 32vw, 470px);
+  }
+
+  .gal-frame :global(img) { width: 100%; height: 100%; object-fit: cover; }
+
+  .gal-btn {
+    display: block;
+    width: 100%; height: 100%;
+    padding: 0; border: 0; margin: 0;
+    background: none; cursor: zoom-in;
+  }
+  .gal-btn :global(img) { transition: transform 500ms cubic-bezier(.22,.61,.36,1); }
+  .gal-btn:hover :global(img) { transform: scale(1.04); }
+  .gal-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+  figcaption {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
+    margin-top: 10px;
+  }
+  .gal-fig {
+    font-family: var(--font-heading); font-size: 12px; letter-spacing: .16em;
+    color: var(--color-accent-700);
+  }
+  .gal-cat {
+    font-family: var(--font-heading); font-size: 10px; letter-spacing: .1em;
+    text-transform: uppercase; padding: 2px 8px;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+  }
+  .gal-cap {
+    font-size: 12px;
+    color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  }
+
+  /* ── lightbox ──────────────────────────────────────────────────────────── */
+
+  .gal-dialog {
+    width: min(1100px, 92vw);
+    max-width: none;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--color-bg) 30%, transparent);
+    background: var(--color-accent-900);
+    color: var(--color-bg);
+    overflow: visible;
+  }
+  .gal-dialog::backdrop {
+    background: color-mix(in srgb, #0b1219 88%, transparent);
+    backdrop-filter: blur(3px);
+  }
+  .gal-dialog img { width: 100%; max-height: 78vh; object-fit: contain; display: block; }
+  .gal-dialog-cap {
+    margin: 0; padding: 14px 18px;
+    font-family: var(--font-heading); font-size: 13px; letter-spacing: .1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-bg) 70%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--color-bg) 18%, transparent);
+  }
+  .gal-dialog-close-form { position: absolute; top: -1px; right: -1px; z-index: 2; }
+  .gal-close {
+    width: 42px; height: 42px;
+    background: var(--color-accent-900);
+    border: 1px solid color-mix(in srgb, var(--color-bg) 30%, transparent);
+    color: var(--color-bg);
+    font-size: 15px; cursor: pointer;
+  }
+  .gal-close:hover { background: var(--color-accent-800); }
+
+  @media (max-width: 900px) {
+    .gal { gap: 20px; }
+    .gal-item,
+    .gal-item:nth-child(5n + 1),
+    .gal-item:nth-child(5n + 2) { grid-column: span 6; }
+    .gal-item:nth-child(5n + 1) .gal-frame,
+    .gal-item:nth-child(5n + 2) .gal-frame { aspect-ratio: 4 / 3; height: auto; }
+  }
+
+  @media (max-width: 640px) {
+    .gal-item,
+    .gal-item:nth-child(5n + 1),
+    .gal-item:nth-child(5n + 2) { grid-column: span 12; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gal-btn :global(img) { transition: none; }
+    .gal-btn:hover :global(img) { transform: none; }
+  }
+</style>

@@ -1,9 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import { SITE, FOOTER } from '../consts';
+import { hasPhotos } from '../data/photos';
 import logo from '../assets/sle-logo.png';
 
 const year = new Date().getFullYear();
+
+// Don't link /work/ site-wide while it has no photographs on it — a page whose
+// only message is "coming shortly" is thin content, and linking it from every
+// page is the fastest way to get it indexed as such.
+const services = FOOTER.services.filter((l) => l.href !== '/work/' || hasPhotos);
 ---
 
 <footer class="site-footer">
@@ -22,7 +28,7 @@ const year = new Date().getFullYear();
       <div>
         <h2 class="u-num">Services</h2>
         <nav class="foot-links" aria-label="Services">
-          {FOOTER.services.map(({ href, label }) => <a href={href}>{label}</a>)}
+          {services.map(({ href, label }) => <a href={href}>{label}</a>)}
         </nav>
       </div>
 
