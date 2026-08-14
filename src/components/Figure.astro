@@ -18,7 +18,7 @@ interface Props {
   label: string;
   caption?: string;
   icon?: 'photo' | 'person' | 'map' | 'pin';
-  size?: 'med' | 'tall' | 'xtall' | 'map';
+  size?: 'med' | 'tall' | 'xtall' | 'map' | 'portrait';
   /** The duotone colour wash — off for maps, on for photography. */
   duotone?: boolean;
   /** Frame-less variant used inside the Ammon split panel. */
@@ -41,6 +41,7 @@ const sizeClass = {
   tall: 'fig-frame--tall',
   xtall: 'fig-frame--xtall',
   map: 'fig-frame--map',
+  portrait: 'fig-frame--portrait',
 }[size];
 ---
 

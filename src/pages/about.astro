@@ -5,6 +5,7 @@ import Corners from '../components/Corners.astro';
 import Crumb from '../components/Crumb.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Figure from '../components/Figure.astro';
+import scottPortrait from '../assets/scott-portrait.jpg';
 import { SITE } from '../consts';
 
 const how = [
@@ -53,9 +54,10 @@ const customers = [
       </div>
 
       <Figure
-        label="Photo — Scott / the crew"
-        icon="person"
-        size="xtall"
+        src={scottPortrait}
+        alt="Scott Lind, owner of Scott Lind Electric LLC, seated on his Harley-Davidson"
+        label="Photo — Scott Lind"
+        size="portrait"
         caption="Scott Lind, Idaho Falls, ID"
       />
     </div>

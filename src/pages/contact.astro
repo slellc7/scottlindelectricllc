@@ -3,7 +3,7 @@ import PageHeading from '../components/PageHeading.astro';
 import Base from '../layouts/Base.astro';
 import Corners from '../components/Corners.astro';
 import Crumb from '../components/Crumb.astro';
-import Figure from '../components/Figure.astro';
+import ServiceMap from '../components/ServiceMap.astro';
 import EstimateForm from '../components/EstimateForm.astro';
 import { SITE } from '../consts';
 ---
@@ -67,12 +67,15 @@ import { SITE } from '../consts';
           <EstimateForm source="Contact page — request an estimate" idPrefix="c" full />
         </div>
 
-        <Figure
-          label="Map — 1302 Taylor Ave"
-          icon="pin"
-          duotone={false}
-          caption={`${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postalCode}`}
-        />
+        <figure class="fig fig--stacked">
+          <div class="blueprint map-panel">
+            <Corners />
+            <div class="map-frame"><ServiceMap /></div>
+          </div>
+          <figcaption>
+            {SITE.address.street}, {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}
+          </figcaption>
+        </figure>
       </div>
     </div>
   </section>
