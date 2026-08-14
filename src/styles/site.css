@@ -89,7 +89,7 @@ main { flex: 1; }
 .topbar-inner {
   max-width: 1240px; margin: 0 auto; padding: 9px 24px;
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px;
-  font-family: var(--font-heading); font-size: 12px;
+  font-family: var(--font-heading); font-size: 13px;
   letter-spacing: .1em; text-transform: uppercase;
 }
 .topbar-lead { display: flex; align-items: center; gap: 8px; }
@@ -111,12 +111,12 @@ main { flex: 1; }
   display: flex; align-items: center; gap: 28px;
 }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex: none; }
-.brand img { height: 42px; width: auto; }
+.brand img { height: 48px; width: auto; }
 
 .nav-main {
   display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px;
   margin-left: auto;
-  font-family: var(--font-heading); font-size: 14px;
+  font-family: var(--font-heading); font-size: 16px;
   letter-spacing: .06em; text-transform: uppercase;
 }
 .nav-main a { color: var(--color-text); text-decoration: none; white-space: nowrap; }
@@ -126,7 +126,7 @@ main { flex: 1; }
   box-shadow: inset 0 -1px 0 0 var(--color-accent);
 }
 
-.header-cta { flex: none; font-size: 15px; letter-spacing: .06em; padding: 11px 18px; }
+.header-cta { flex: none; font-size: 16px; letter-spacing: .06em; padding: 12px 20px; }
 
 /* The toggle only exists once JS is running — without it the nav stays a
    plain wrapped list, which is usable if cramped. */
