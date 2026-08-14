@@ -1,6 +1,6 @@
 # Scott Lind Electric — website
 
-Astro site for Scott Lind Electric LLC, Idaho Falls, ID.
+site for Scott Lind Electric LLC, Idaho Falls, ID.
 
 Implemented from the Claude Design source `Scott Lind Electric Site.dc.html`
 (kept for reference in [`design-src/`](design-src/)). The design is a single
@@ -18,12 +18,12 @@ npm run dev
 
 Then <http://localhost:4321>.
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | Dev server with hot reload |
-| `npm run build` | Static build into `dist/` |
-| `npm run preview` | Serve the built `dist/` locally |
-| `npm run check` | Type-check `.astro` and `.ts` files |
+| Command           | What it does                        |
+| ----------------- | ----------------------------------- |
+| `npm run dev`     | Dev server with hot reload          |
+| `npm run build`   | Static build into `dist/`           |
+| `npm run preview` | Serve the built `dist/` locally     |
+| `npm run check`   | Type-check `.astro` and `.ts` files |
 
 ---
 
@@ -75,14 +75,14 @@ than shipping quietly:
 
 ```yaml
 ---
-title: 'Why does my breaker keep tripping?'   # ≤ 70 chars
-description: 'Sentence that becomes the meta description.'  # 80–165 chars
+title: "Why does my breaker keep tripping?" # ≤ 70 chars
+description: "Sentence that becomes the meta description." # 80–165 chars
 pubDate: 2026-08-13
-updatedDate: 2026-09-01        # optional
-tags: ['Troubleshooting']      # optional
-draft: false                   # true = excluded from the build
-heroImage: './breaker.jpg'     # optional, relative to the post
-heroAlt: 'Description'         # required if heroImage is set
+updatedDate: 2026-09-01 # optional
+tags: ["Troubleshooting"] # optional
+draft: false # true = excluded from the build
+heroImage: "./breaker.jpg" # optional, relative to the post
+heroAlt: "Description" # required if heroImage is set
 ---
 ```
 
@@ -124,14 +124,14 @@ The design shipped with deliberate blanks. They are still blank — inventing th
 content would be worse than leaving it visible, and two of these would be
 actively harmful if made up.
 
-| What | Where | Notes |
-|---|---|---|
-| **Google reviews** | `src/data/reviews.ts` | Eight placeholder slots. Paste real reviews word for word from the Business Profile with the customer's name and town. **Do not write review text** — fabricated reviews are an FTC problem, not just an SEO one. Don't add `AggregateRating` schema for reviews hosted on Google. |
-| **Idaho contractor licence number** | `src/pages/about.astro` | Row reads "Add license number". The highest-value single addition to the site. |
-| **Business hours** | `src/pages/contact.astro` | Row reads "Confirm business hours". Then add `openingHoursSpecification` to `Schema.astro` so "open now" searches can surface the business. |
-| **Photos** | hero + job gallery | See "Adding photos" below — it's a file copy, no code edit. |
-| **Google review link** | `src/consts.ts` → `reviewUrl` | Placeholder `placeid`. |
-| **Estimate form endpoint** | `src/consts.ts` → `formEndpoint` | See below. |
+| What                                | Where                            | Notes                                                                                                                                                                                                                                                                              |
+| ----------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Google reviews**                  | `src/data/reviews.ts`            | Eight placeholder slots. Paste real reviews word for word from the Business Profile with the customer's name and town. **Do not write review text** — fabricated reviews are an FTC problem, not just an SEO one. Don't add `AggregateRating` schema for reviews hosted on Google. |
+| **Idaho contractor licence number** | `src/pages/about.astro`          | Row reads "Add license number". The highest-value single addition to the site.                                                                                                                                                                                                     |
+| **Business hours**                  | `src/pages/contact.astro`        | Row reads "Confirm business hours". Then add `openingHoursSpecification` to `Schema.astro` so "open now" searches can surface the business.                                                                                                                                        |
+| **Photos**                          | hero + job gallery               | See "Adding photos" below — it's a file copy, no code edit.                                                                                                                                                                                                                        |
+| **Google review link**              | `src/consts.ts` → `reviewUrl`    | Placeholder `placeid`.                                                                                                                                                                                                                                                             |
+| **Estimate form endpoint**          | `src/consts.ts` → `formEndpoint` | See below.                                                                                                                                                                                                                                                                         |
 
 Before launch, check the name, address and phone in `src/consts.ts` match the
 Google Business Profile **character for character**.
@@ -140,10 +140,10 @@ Google Business Profile **character for character**.
 
 Two slots, both drop-in — no code change:
 
-| What | Where | Notes |
-|---|---|---|
-| **Hero** | `src/assets/hero.jpg` | Landscape, 2000px+ wide. Runs full-bleed behind the headline. |
-| **Job gallery** | `src/assets/photos/*.jpg` | Any number. Appear on `/work/` and in the home strip. |
+| What            | Where                     | Notes                                                         |
+| --------------- | ------------------------- | ------------------------------------------------------------- |
+| **Hero**        | `src/assets/hero.jpg`     | Landscape, 2000px+ wide. Runs full-bleed behind the headline. |
+| **Job gallery** | `src/assets/photos/*.jpg` | Any number. Appear on `/work/` and in the home strip.         |
 
 Astro converts both to WebP with responsive `srcset` at build time, so send
 originals rather than phone-compressed copies — it resizes down well and cannot
@@ -195,13 +195,13 @@ publish directory and cache headers, so nothing needs filling in by hand.
 
 `public/_redirects` maps every URL from the old ASP.NET site with a 301:
 
-| Old | New |
-|---|---|
-| `/default.aspx` | `/` |
-| `/Residential.aspx` | `/residential/` |
-| `/commercial.aspx` | `/commercial/` |
-| `/after_hours.aspx` | `/after-hours/` |
-| `/free-estimates.aspx` | `/contact/` |
+| Old                       | New             |
+| ------------------------- | --------------- |
+| `/default.aspx`           | `/`             |
+| `/Residential.aspx`       | `/residential/` |
+| `/commercial.aspx`        | `/commercial/`  |
+| `/after_hours.aspx`       | `/after-hours/` |
+| `/free-estimates.aspx`    | `/contact/`     |
 | `/same-day-services.aspx` | `/residential/` |
 
 The old site was IIS, so its paths were case-insensitive; Netlify's are not, and
