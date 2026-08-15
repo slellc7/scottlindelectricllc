@@ -20,9 +20,15 @@
       either variant sends — anything omitted here is silently dropped from
       captured submissions. Keep it a superset of EstimateForm.astro's fields.
 
-      Not linked from anywhere; visitors never see it.
+      Not linked from anywhere; visitors never see it..
     -->
-    <form name="estimate" method="POST" data-netlify="true" netlify-honeypot="company" hidden>
+    <form
+      name="estimate"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="company"
+      hidden
+    >
       <input type="hidden" name="form-name" value="estimate" />
       <input type="hidden" name="_source" />
       <input type="text" name="name" />
