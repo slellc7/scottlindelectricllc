@@ -181,12 +181,12 @@ main { flex: 1; }
 .h1-line { display: block; }
 
 .lead {
-  font-size: 19px; line-height: 1.55; max-width: 60ch; margin: 0 0 20px;
+  font-size: 20px; line-height: 1.55; max-width: 60ch; margin: 0 0 20px;
   color: color-mix(in srgb, var(--color-text) 82%, transparent);
 }
 .lead--narrow { max-width: 56ch; }
 .prose {
-  font-size: 16px; line-height: 1.68; max-width: 62ch; margin: 0 0 16px;
+  font-size: 17px; line-height: 1.68; max-width: 62ch; margin: 0 0 16px;
   color: color-mix(in srgb, var(--color-text) 75%, transparent);
 }
 .prose--wide { max-width: 70ch; }
@@ -244,7 +244,7 @@ main { flex: 1; }
 
 .svc-card { padding: 28px; display: flex; flex-direction: column; }
 .svc-card h3 { font-size: 30px; text-transform: uppercase; margin: 10px 0 12px; }
-.svc-card > p { font-size: 15px; line-height: 1.6; margin: 0; color: color-mix(in srgb, var(--color-text) 78%, transparent); }
+.svc-card > p { font-size: 16px; line-height: 1.6; margin: 0; color: color-mix(in srgb, var(--color-text) 78%, transparent); }
 .svc-card--dark { background: var(--color-accent-900); color: var(--color-bg); }
 .svc-card--dark .u-num { color: var(--color-accent-2-300); }
 .svc-card--dark h3 { color: var(--color-bg); }
@@ -274,8 +274,8 @@ main { flex: 1; }
 .cell--wide { padding: 28px; }
 .cell h3 { font-size: 23px; text-transform: uppercase; margin: 8px 0; }
 .cell--wide h3 { font-size: 25px; }
-.cell p { margin: 0; font-size: 14px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 70%, transparent); }
-.cell--wide p { font-size: 15px; }
+.cell p { margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 70%, transparent); }
+.cell--wide p { font-size: 16px; }
 
 /* ── FAQ cells ───────────────────────────────────────────────────────────── */
 
@@ -291,7 +291,7 @@ main { flex: 1; }
    the condensed all-caps display type. */
 .faq-item h3 { font-size: 24px; margin: 0 0 10px; text-transform: none; }
 .faq-item--roomy h3 { font-size: 25px; }
-.faq-item p { margin: 0; font-size: 15px; line-height: 1.68; color: color-mix(in srgb, var(--color-text) 77%, transparent); }
+.faq-item p { margin: 0; font-size: 16px; line-height: 1.68; color: color-mix(in srgb, var(--color-text) 77%, transparent); }
 
 /* ── panels (bordered blueprint boxes) ───────────────────────────────────── */
 
@@ -369,7 +369,7 @@ main { flex: 1; }
 .qa-item:first-child { padding-top: 0; }
 .qa-item:last-child { padding-bottom: 0; }
 .qa-item h3 { font-size: 22px; margin: 0 0 8px; color: var(--color-bg); text-transform: none; }
-.qa-item p { margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-bg) 76%, transparent); }
+.qa-item p { margin: 0; font-size: 16px; line-height: 1.6; color: color-mix(in srgb, var(--color-bg) 76%, transparent); }
 
 /* ── CTA band ────────────────────────────────────────────────────────────── */
 
@@ -442,12 +442,12 @@ main { flex: 1; }
 .review-card--dark .star { fill: var(--color-accent-2-400); }
 .review-card--dark { background: var(--color-accent-900); color: var(--color-bg); }
 .review-card--dark h3 { font-size: 27px; text-transform: uppercase; margin: 12px 0; color: var(--color-bg); }
-.review-card--dark p { font-size: 15px; line-height: 1.6; margin: 0 0 18px; color: color-mix(in srgb, var(--color-bg) 80%, transparent); }
+.review-card--dark p { font-size: 16px; line-height: 1.6; margin: 0 0 18px; color: color-mix(in srgb, var(--color-bg) 80%, transparent); }
 .review-note { margin: 26px 0 0; font-size: 13px; font-style: italic; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
 
 /* ── emergency steps ─────────────────────────────────────────────────────── */
 
-.steps { margin: 16px 0 0; padding-left: 22px; display: grid; gap: 14px; font-size: 15px; line-height: 1.6; }
+.steps { margin: 16px 0 0; padding-left: 22px; display: grid; gap: 14px; font-size: 16px; line-height: 1.6; }
 .steps strong { font-family: var(--font-heading); font-size: 17px; letter-spacing: .02em; }
 .panel--outline-light { border-color: color-mix(in srgb, var(--color-bg) 30%, transparent); }
 .panel--outline-light > .corner { color: color-mix(in srgb, var(--color-bg) 60%, transparent); }
@@ -455,7 +455,7 @@ main { flex: 1; }
 
 /* ── contents nav (answers page) ─────────────────────────────────────────── */
 
-.toc { display: grid; gap: 10px; margin-top: 14px; font-size: 15px; }
+.toc { display: grid; gap: 10px; margin-top: 14px; font-size: 16px; }
 .toc a { text-decoration: none; }
 .toc a:hover { text-decoration: underline; }
 
@@ -478,7 +478,7 @@ main { flex: 1; }
 .form-status a { color: var(--color-accent-800); }
 .form-error { color: #8a2b2b; font-size: 14px; margin: 0; }
 .form-offline { padding: 6px 0 2px; }
-.form-offline p { font-size: 15px; line-height: 1.6; margin: 0 0 18px; max-width: 42ch; color: color-mix(in srgb, var(--color-text) 75%, transparent); }
+.form-offline p { font-size: 16px; line-height: 1.6; margin: 0 0 18px; max-width: 42ch; color: color-mix(in srgb, var(--color-text) 75%, transparent); }
 [hidden] { display: none !important; }
 
 /* ── footer ──────────────────────────────────────────────────────────────── */
@@ -495,13 +495,13 @@ main { flex: 1; }
   font-family: var(--font-heading); font-size: 15px; letter-spacing: .02em;
   color: var(--color-accent-700); margin: 0 0 16px;
 }
-.foot-addr { font-size: 15px; line-height: 1.7; font-style: normal; }
+.foot-addr { font-size: 16px; line-height: 1.7; font-style: normal; }
 .foot-addr strong { font-family: var(--font-heading); font-size: 17px; letter-spacing: .02em; }
 .foot-tel { font-family: var(--font-heading); font-size: 19px; letter-spacing: .04em; text-decoration: none; }
-.foot-links { display: grid; gap: 9px; font-size: 14px; }
+.foot-links { display: grid; gap: 9px; font-size: 15px; }
 .foot-links a { text-decoration: none; }
 .foot-links a:hover { text-decoration: underline; }
-.foot-area p { font-size: 14px; line-height: 1.7; margin: 0; color: color-mix(in srgb, var(--color-text) 70%, transparent); }
+.foot-area p { font-size: 15px; line-height: 1.7; margin: 0; color: color-mix(in srgb, var(--color-text) 70%, transparent); }
 .foot-badge {
   margin-top: 16px; font-family: var(--font-heading); font-size: 13px;
   letter-spacing: .1em; text-transform: uppercase; color: var(--color-accent-700);
