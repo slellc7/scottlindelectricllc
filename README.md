@@ -131,7 +131,7 @@ actively harmful if made up.
 | **Business hours**                  | `src/pages/contact.astro`        | Row reads "Confirm business hours". Then add `openingHoursSpecification` to `Schema.astro` so "open now" searches can surface the business.                                                                                                                                        |
 | **Photos**                          | hero + job gallery               | See "Adding photos" below — it's a file copy, no code edit.                                                                                                                                                                                                                        |
 | **Google review link**              | `src/consts.ts` → `reviewUrl`    | Placeholder `placeid`.                                                                                                                                                                                                                                                             |
-| **Estimate form endpoint**          | `src/consts.ts` → `formEndpoint` | See below.                                                                                                                                                                                                                                                                         |
+| **Estimate form (Netlify)**         | Netlify UI → Forms               | Code is wired to Netlify Forms — no endpoint to fill in. Enable form detection and add a notification recipient so leads reach a person. See "The estimate form" below.                                                                                                              |
 
 Before launch, check the name, address and phone in `src/consts.ts` match the
 Google Business Profile **character for character**.
@@ -174,17 +174,44 @@ site-wide.
 Don't put photos in `public/` — files there are copied verbatim and skip
 optimization entirely.
 
-### Wiring up the estimate form
+### The estimate form (Netlify Forms)
 
-There is no backend. Until `formEndpoint` is a real form service (Formspree,
-Basin, Netlify Forms, Getform — any that accepts a plain POST), both form slots
-render a **call-us panel** instead.
+The form is wired to **Netlify Forms** — no backend, no third-party service, no
+API key. Both slots (home short, contact full) are one `<EstimateForm>` posting
+to a single form named `estimate`; the existing `_source` field records which
+page each lead came from, so one inbox stays sortable.
 
-That's deliberate. A form whose action is a placeholder would POST to a 404 and
-silently eat the enquiry — on a site whose whole promise is "you'll reach a
-person", losing one is the worst failure available. Set the endpoint and the
-forms appear, with a honeypot field, an inline success state, and a fallback to
-a normal POST if the fetch fails.
+How it holds together, and why it's built this way:
+
+- **`public/__forms.html`** is the detection file. Astro copies `public/`
+  verbatim into `dist/`, so Netlify's deploy-time crawler parses it untouched by
+  `compressHTML`. It declares the `estimate` form and the **union of every
+  field** either variant sends. A field missing from it is silently dropped from
+  captured submissions, so keep it a superset of `EstimateForm.astro`.
+- The visible form deliberately carries **no `data-netlify`** — one shared
+  component on two pages with different field sets would register the form twice
+  with conflicting schemas (the same-name partial-detection trap). Detection
+  lives only in `__forms.html`.
+- Submission is a `fetch()` in `Base.astro`: a url-encoded POST to
+  `/__forms.html` with a hidden `form-name=estimate` in the body (Netlify
+  silently drops JSON). The honeypot is the hidden `company` field
+  (`netlify-honeypot="company"`), also guarded client-side. Inline success/error
+  states, with a fallback to a native POST if the fetch throws.
+
+**Capture only works on the deployed Netlify site** — `astro dev` has no form
+handler, so local submits fail by design. After deploying:
+
+1. Netlify → **Site configuration → Forms** → confirm **form detection** is on.
+2. Trigger a fresh deploy (detection runs at deploy time; if the form doesn't
+   show up, use "Clear cache and deploy site").
+3. Netlify → **Forms → form notifications** → add an email (Scott's) so leads
+   reach a person instead of sitting in the dashboard. **Do this — it's the
+   entire point of the form.**
+4. Test from both the home and contact pages on the live URL and confirm the
+   submission lands under **Forms** (check the **Spam** tab too, and try one with
+   the hidden `company` field filled via devtools to confirm it's rejected).
+
+Free-plan cap is 100 submissions/month — ample here.
 
 ---
 

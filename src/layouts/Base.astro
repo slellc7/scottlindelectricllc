@@ -161,8 +161,12 @@ const ogImage = new URL('/images/sle-logo.png', Astro.site).href;
           try {
             const res = await fetch(endpoint, {
               method: 'POST',
-              body: new FormData(form),
-              headers: { Accept: 'application/json' },
+              // Netlify Forms: url-encoded body (not JSON, not raw multipart) with
+              // form-name inside it — new FormData(form) carries the hidden
+              // form-name input. Accept:json makes Netlify answer 200 JSON rather
+              // than redirect to an HTML success page.
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json' },
+              body: new URLSearchParams(new FormData(form) as any).toString(),
             });
             if (!res.ok) throw new Error(String(res.status));
             form.hidden = true;

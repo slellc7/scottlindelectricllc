@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Netlify form detection — estimate</title>
+  </head>
+  <body>
+    <!--
+      Static detection target for Netlify Forms. Astro copies everything in
+      public/ verbatim into dist/, so this ships as /__forms.html untouched by
+      the build pipeline (compressHTML included) — which is why Netlify's
+      deploy-time crawler can reliably register it. A JS/AJAX-submitted form in
+      a built page is the case that silently fails to register, so detection is
+      delegated ENTIRELY to this file; the visible <EstimateForm> deliberately
+      carries no data-netlify attribute.
+
+      The real form (home + contact) submits by fetch() to /__forms.html,
+      url-encoded, with a hidden form-name="estimate". This file is the single
+      source of truth for that form and MUST list the UNION of every field
+      either variant sends — anything omitted here is silently dropped from
+      captured submissions. Keep it a superset of EstimateForm.astro's fields.
+
+      Not linked from anywhere; visitors never see it.
+    -->
+    <form name="estimate" method="POST" data-netlify="true" netlify-honeypot="company" hidden>
+      <input type="hidden" name="form-name" value="estimate" />
+      <input type="hidden" name="_source" />
+      <input type="text" name="name" />
+      <input type="tel" name="phone" />
+      <input type="text" name="city" />
+      <input type="email" name="email" />
+      <input type="radio" name="kind" value="residential" />
+      <input type="radio" name="kind" value="commercial" />
+      <input type="radio" name="kind" value="urgent" />
+      <textarea name="message"></textarea>
+      <input type="text" name="company" />
+    </form>
+  </body>
+</html>

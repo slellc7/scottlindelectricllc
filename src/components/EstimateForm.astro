@@ -43,6 +43,9 @@ const id = (name: string) => `${idPrefix}-${name}`;
       </p>
 
       <form class="form" data-estimate-form action={SITE.formEndpoint} method="post">
+        {/* Netlify Forms: tells Netlify which detected form this submission is.
+            Must byte-match <form name="estimate"> in public/__forms.html. */}
+        <input type="hidden" name="form-name" value="estimate" />
         <input type="hidden" name="_source" value={source} />
         <div class="form-hp" aria-hidden="true">
           <label>

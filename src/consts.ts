@@ -76,12 +76,15 @@ export const SITE = {
   ],
 
   /**
-   * TODO — see README, "Wiring up the estimate form".
-   * Until this is a real endpoint, every form slot renders a call-us panel
-   * instead. A form posting to a placeholder would 404 and silently eat the
-   * customer's message, which on this site is the worst failure available.
+   * Netlify Forms. The form submits (via fetch, url-encoded) to this static
+   * detection file — public/__forms.html, which Astro copies verbatim into
+   * dist/ — where Netlify's deploy-time crawler registers the "estimate" form
+   * and the union of every field either variant sends. Moving this off the
+   * 'REPLACE_ME' placeholder also flips `formEnabled` true so the real form
+   * renders instead of the call-us panel. Capture only works on the deployed
+   * Netlify site, never under `astro dev`. See README, "Wiring up the estimate form".
    */
-  formEndpoint: 'REPLACE_ME',
+  formEndpoint: '/__forms.html',
 
   /**
    * Google listing, via the CID from the Business Profile's feature id
@@ -106,6 +109,7 @@ export const NAV = [
   { href: '/about/', label: 'About' },
   { href: '/reviews/', label: 'Reviews' },
   { href: '/blog/', label: 'Blog' },
+  { href: '/contact/', label: 'Contact' },
 ] as const;
 
 export const FOOTER = {
