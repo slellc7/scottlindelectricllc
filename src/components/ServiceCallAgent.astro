@@ -398,8 +398,20 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
   .service-agent__privacy { margin: 0; padding: 0 16px 12px; color: color-mix(in srgb, var(--color-text) 58%, transparent); font-size: 10px; }
   @media (max-width: 520px) {
     .service-agent { right: 12px; bottom: 12px; }
-    .service-agent__panel { position: fixed; inset: 12px; width: auto; max-height: none; display: flex; flex-direction: column; }
-    .service-agent__messages { flex: 1; max-height: none; }
+    .service-agent__panel {
+      position: fixed;
+      inset: 12px;
+      width: auto;
+      height: calc(100dvh - 24px);
+      max-height: none;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+    .service-agent__header { position: sticky; top: 0; z-index: 2; }
+    .service-agent__messages { min-height: 0; max-height: none; overflow: visible; }
+    .service-agent__details { max-height: none; overflow: visible; }
     .service-agent__launcher { padding: 13px 15px; font-size: 13px; }
   }
 </style>
