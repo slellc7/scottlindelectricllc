@@ -4,7 +4,6 @@ import Corners from '../components/Corners.astro';
 import Hero from '../components/Hero.astro';
 import Gallery from '../components/Gallery.astro';
 import { hasPhotos, heroImage, heroImageMobile } from '../data/photos';
-import EstimateForm from '../components/EstimateForm.astro';
 import ReviewCard from '../components/ReviewCard.astro';
 import { SITE } from '../consts';
 import { homeFaqs } from '../data/faqs';
@@ -228,8 +227,17 @@ const towns = [
 
       <div class="panel-half panel-half--tint">
         <div class="u-num">Get in touch</div>
-        <h2 id="estimate">Free estimate</h2>
-        <EstimateForm source="Home page — free estimate" idPrefix="h" />
+        <h2>Need electrical help?</h2>
+        <p class="prose prose--mid">
+          Call Scott directly, or use the Chat with us button to send the details of your electrical
+          problem. For fire, smoke, shock, or immediate danger, call 911 first.
+        </p>
+        <p class="after">
+          <a href={SITE.telHref} class="btn btn-primary blueprint btn-xl">Call {SITE.phone}</a>
+        </p>
+        <p class="after-sm">
+          <a href="/contact/" class="link-arrow">Contact details →</a>
+        </p>
       </div>
     </div>
   </section>
