@@ -129,5 +129,6 @@ export const FOOTER = {
     { href: '/answers/', label: 'Answers & FAQ' },
     { href: '/blog/', label: 'Blog' },
     { href: '/contact/', label: 'Contact' },
+    { href: '/privacy/', label: 'Privacy Policy' },
   ],
 } as const;
