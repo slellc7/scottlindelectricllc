@@ -33,6 +33,7 @@ type Lead = {
 };
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
+type RequestedField = 'name' | 'phone' | 'email' | 'address';
 
 const EMPTY_LEAD: Lead = {
   name: null, phone: null, email: null, address: null,
@@ -41,17 +42,23 @@ const EMPTY_LEAD: Lead = {
 
 const SYSTEM_PROMPT = `You are the website lead coordinator for Scott Lind Electric LLC in Idaho Falls, Idaho.
 
-Briefly and warmly collect a potential customer's name, phone, optional email, service address or at least city, the electrical problem, and whether it is residential, commercial, or urgent. Ask one or two related questions at a time. Never promise an arrival time, price, diagnosis, or code compliance. Never ask a visitor to open a panel, touch wiring, test live equipment, or take any electrical risk.
+Briefly and warmly collect a potential customer's name, phone, optional email, service address, the electrical problem, and whether it is residential, commercial, or urgent. Ask one or two related questions at a time. Never promise an arrival time, price, diagnosis, or code compliance. Never ask a visitor to open a panel, touch wiring, test live equipment, or take any electrical risk.
+
+Whenever you ask for name, phone, email, or address, tell the visitor to complete the form shown below and list those exact fields in requestedFields. Do not ask them to type contact details into chat. Prefer name and phone together, followed by email and address together. Email is optional; if the conversation says it was left blank, do not ask for it again. Use an empty requestedFields array when you are not asking for contact information.
 
 If there is smoke, fire, flames, a burning smell, active sparking, a hot or buzzing panel, electrical shock, or a downed power line, tell the visitor to move away, call 911 for fire, injury, or immediate danger, call their utility for a downed line, and call Scott Lind Electric at 208-716-1240 only once safe. Mark emergency true.
 
-Email is optional. A lead is ready when name, phone, issue, and city or address are present. When ready, say you have the essentials and ask them to review and send their information to Scott Lind Electric using the button below. Keep replies under 70 words.`;
+Email is optional. A lead is ready when name, phone, issue, and service address are present. When ready, say you have the essentials and ask them to review and send their information to Scott Lind Electric using the button below. Keep replies under 70 words.`;
 
 const intakeSchema = {
   type: 'object', additionalProperties: false,
-  required: ['reply', 'ready', 'emergency', 'lead'],
+  required: ['reply', 'ready', 'emergency', 'requestedFields', 'lead'],
   properties: {
     reply: { type: 'string' }, ready: { type: 'boolean' }, emergency: { type: 'boolean' },
+    requestedFields: {
+      type: 'array', maxItems: 2,
+      items: { type: 'string', enum: ['name', 'phone', 'email', 'address'] },
+    },
     lead: {
       type: 'object', additionalProperties: false,
       required: ['name', 'phone', 'email', 'address', 'city', 'issue', 'serviceType'],
@@ -140,8 +147,8 @@ async function sendSms(to: string, body: string) {
 }
 
 async function storeAndNotify(lead: Lead, source: unknown, requestId: unknown) {
-  if (!lead.name || !lead.phone || !lead.issue || !(lead.city || lead.address)) {
-    return { status: 400, body: { error: 'Name, phone, problem, and city or address are required.' } };
+  if (!lead.name || !lead.phone || !lead.issue || !lead.address) {
+    return { status: 400, body: { error: 'Name, phone, problem, and service address are required.' } };
   }
   const id = typeof requestId === 'string' && /^[a-zA-Z0-9_-]{8,80}$/.test(requestId) ? requestId : randomUUID();
   const leadRef = db.collection('leads').doc(id);
@@ -163,6 +170,31 @@ async function storeAndNotify(lead: Lead, source: unknown, requestId: unknown) {
   return { status: 200, body: { ok: true, saved: true, delivered, notifications } };
 }
 
+async function searchAddresses(value: unknown) {
+  const query = clean(value, 200);
+  if (!query || query.length < 6) {
+    return { status: 400, body: { error: 'Enter a street address to look up.' } };
+  }
+  const address = /\b(idaho|id)\b/i.test(query) ? query : `${query}, Idaho`;
+  const url = new URL('https://geocoding.geo.census.gov/geocoder/locations/onelineaddress');
+  url.search = new URLSearchParams({ address, benchmark: 'Public_AR_Current', format: 'json' }).toString();
+  const providerResponse = await fetch(url, { headers: { Accept: 'application/json' } });
+  if (!providerResponse.ok) throw new Error(`Address provider returned ${providerResponse.status}`);
+  const data = await providerResponse.json() as {
+    result?: { addressMatches?: Array<{
+      matchedAddress?: unknown;
+      addressComponents?: { city?: unknown; state?: unknown };
+    }> };
+  };
+  const matches = (data.result?.addressMatches ?? []).flatMap((match) => {
+    const matchedAddress = clean(match.matchedAddress, 200);
+    const city = clean(match.addressComponents?.city, 100);
+    const state = clean(match.addressComponents?.state, 10);
+    return matchedAddress && city && state === 'ID' ? [{ address: matchedAddress, city }] : [];
+  }).slice(0, 5);
+  return { status: 200, body: { matches } };
+}
+
 export const serviceAgent = onRequest({
   region: 'us-central1', timeoutSeconds: 60, maxInstances: 10,
   secrets: [openaiApiKey, resendApiKey, twilioAccountSid, twilioAuthToken],
@@ -179,11 +211,15 @@ export const serviceAgent = onRequest({
       const result = await storeAndNotify(lead, body.source, body.requestId);
       response.status(result.status).json(result.body); return;
     }
+    if (body.action === 'addressSearch') {
+      const result = await searchAddresses(body.query);
+      response.status(result.status).json(result.body); return;
+    }
     const messages = cleanMessages(body.messages);
     const lastMessage = messages.at(-1)?.content ?? '';
     if (!lastMessage) { response.status(400).json({ error: 'A message is required.' }); return; }
     if (isDangerous(lastMessage)) {
-      response.json({ reply: 'Please move away from the electrical hazard. If there is fire, smoke, injury, or immediate danger, call 911 now. For a downed line, stay well clear and call your utility. Once you are safe, call Scott Lind Electric at 208-716-1240.', ready: false, emergency: true, lead });
+      response.json({ reply: 'Please move away from the electrical hazard. If there is fire, smoke, injury, or immediate danger, call 911 now. For a downed line, stay well clear and call your utility. Once you are safe, call Scott Lind Electric at 208-716-1240.', ready: false, emergency: true, requestedFields: [], lead });
       return;
     }
     const client = new OpenAI({ apiKey: openaiApiKey.value() });
@@ -192,8 +228,11 @@ export const serviceAgent = onRequest({
       input: `Known lead details:\n${JSON.stringify(lead)}\n\nConversation:\n${JSON.stringify(messages)}`,
       text: { format: { type: 'json_schema', name: 'service_intake', strict: true, schema: intakeSchema } },
     });
-    const result = JSON.parse(aiResponse.output_text) as { reply: string; ready: boolean; emergency: boolean; lead: Lead };
-    response.json({ ...result, lead: cleanLead(result.lead) });
+    const result = JSON.parse(aiResponse.output_text) as { reply: string; ready: boolean; emergency: boolean; requestedFields: RequestedField[]; lead: Lead };
+    const requestedFields = Array.isArray(result.requestedFields)
+      ? result.requestedFields.filter((field): field is RequestedField => ['name', 'phone', 'email', 'address'].includes(field)).slice(0, 2)
+      : [];
+    response.json({ ...result, requestedFields, lead: cleanLead(result.lead) });
   } catch (error) {
     console.error('serviceAgent failed', error);
     response.status(502).json({ error: 'The assistant is temporarily unavailable. Please call 208-716-1240.' });
