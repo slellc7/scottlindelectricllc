@@ -102,7 +102,9 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
       <label class="service-agent__consent">
         <input type="checkbox" data-agent-consent />
         <span>
-          I agree to send these details to Scott Lind Electric and be contacted about this request.
+          I agree to send these details to Scott Lind Electric and receive a confirmation and
+          follow-up about this request by phone, text, or email. Message and data rates may apply.
+          Reply STOP to opt out or HELP for help.
           See our <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms</a>.
         </span>
       </label>
@@ -414,13 +416,21 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
       submitButton.textContent = 'Sending…';
       error.hidden = true;
       try {
-        const result = await post({ action: 'notify', lead, requestId, source: `AI website assistant — ${location.pathname}` });
+        const result = await post({ action: 'notify', lead, requestId, consent: consent.checked, source: `AI website assistant — ${location.pathname}` });
         review.hidden = true;
         form.hidden = true;
         const delivery = result.delivered === 2
-          ? 'Your information was saved and sent to Scott Lind Electric by text and email.'
-          : 'Your information was saved. One business alert needs attention, but Scott Lind Electric can still see your request.';
-        addMessage('assistant', `${delivery} They’ll contact you directly.`);
+          ? 'Your information was saved and sent to Scott Lind Electric.'
+          : 'Your information was saved and sent to Scott Lind Electric, but one business alert needs attention.';
+        const confirmations = result.customerConfirmations ?? {};
+        const confirmation = confirmations.sms === 'sent' && confirmations.email === 'sent'
+          ? 'A confirmation text and email are on the way.'
+          : confirmations.sms === 'sent'
+            ? 'A confirmation text is on the way.'
+            : confirmations.email === 'sent'
+              ? 'A confirmation email is on the way.'
+              : 'We could not deliver a confirmation message, but Scott still received your request.';
+        addMessage('assistant', `${delivery} ${confirmation} Scott will contact you directly.`);
       } catch {
         error.hidden = false;
         submitButton.disabled = false;

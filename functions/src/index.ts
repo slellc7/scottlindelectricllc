@@ -112,6 +112,13 @@ function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]!);
 }
 
+function normalizeUsPhone(value: string) {
+  const digits = value.replace(/\D/g, '');
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  return null;
+}
+
 function setCors(origin: string | undefined, response: { set: (field: string, value: string) => unknown }) {
   const allowed = allowedOrigins.value().split(',').map((value) => value.trim());
   if (origin && allowed.includes(origin)) {
@@ -146,28 +153,53 @@ async function sendSms(to: string, body: string) {
   if (!providerResponse.ok) throw new Error(`SMS provider returned ${providerResponse.status}`);
 }
 
-async function storeAndNotify(lead: Lead, source: unknown, requestId: unknown) {
+async function storeAndNotify(lead: Lead, source: unknown, requestId: unknown, consent: unknown) {
   if (!lead.name || !lead.phone || !lead.issue || !lead.address) {
     return { status: 400, body: { error: 'Name, phone, problem, and service address are required.' } };
+  }
+  if (consent !== true) {
+    return { status: 400, body: { error: 'Consent is required before sending this request.' } };
   }
   const id = typeof requestId === 'string' && /^[a-zA-Z0-9_-]{8,80}$/.test(requestId) ? requestId : randomUUID();
   const leadRef = db.collection('leads').doc(id);
   await leadRef.set({ ...lead, source: clean(source, 300) ?? 'AI website assistant', consent: true,
-    status: 'new', createdAt: FieldValue.serverTimestamp(), notifications: { sms: 'pending', email: 'pending' } });
+    consentChannels: { phone: true, sms: true, email: Boolean(lead.email) },
+    status: 'new', createdAt: FieldValue.serverTimestamp(), notifications: {
+      sms: 'pending', email: 'pending', customerSms: 'pending', customerEmail: lead.email ? 'pending' : 'skipped',
+    } });
 
   const details = leadText(lead);
+  const customerPhone = normalizeUsPhone(lead.phone);
+  const customerSms = customerPhone
+    ? sendSms(customerPhone, 'Scott Lind Electric: We received your electrical service request. Scott will contact you directly. This is not an appointment confirmation. Reply STOP to opt out or HELP for help. Call 208-716-1240.')
+    : Promise.reject(new Error('Customer phone number is not a valid US number.'));
+  const customerEmail = lead.email
+    ? sendEmail(
+      lead.email,
+      'We received your request — Scott Lind Electric',
+      `Hi ${lead.name},\n\nWe received your electrical service request. Scott will review it and contact you directly. This message confirms receipt only; it does not confirm an appointment.\n\nIf the situation becomes urgent, call 208-716-1240. For fire, smoke, shock, or immediate danger, move away and call 911.\n\nScott Lind Electric\n208-716-1240`,
+    )
+    : null;
   const results = await Promise.allSettled([
     sendSms(businessSmsTo.value(), `New Scott Lind Electric web lead\n${details}`),
     sendEmail(businessEmailTo.value(), `New web lead from ${lead.name}`, details),
+    customerSms,
+    ...(customerEmail ? [customerEmail] : []),
   ]);
   const notifications = {
     sms: results[0].status === 'fulfilled' ? 'sent' : 'failed',
     email: results[1].status === 'fulfilled' ? 'sent' : 'failed',
+    customerSms: results[2].status === 'fulfilled' ? 'sent' : 'failed',
+    customerEmail: lead.email ? (results[3]?.status === 'fulfilled' ? 'sent' : 'failed') : 'skipped',
   };
-  const delivered = Object.values(notifications).filter((value) => value === 'sent').length;
+  const delivered = [notifications.sms, notifications.email].filter((value) => value === 'sent').length;
+  const customerConfirmations = {
+    sms: notifications.customerSms,
+    email: notifications.customerEmail,
+  };
   await leadRef.update({ notifications, notificationUpdatedAt: FieldValue.serverTimestamp() });
   if (!delivered) return { status: 502, body: { error: 'Your information was saved, but alerts could not be delivered.', saved: true } };
-  return { status: 200, body: { ok: true, saved: true, delivered, notifications } };
+  return { status: 200, body: { ok: true, saved: true, delivered, notifications, customerConfirmations } };
 }
 
 async function searchAddresses(value: unknown) {
@@ -208,7 +240,7 @@ export const serviceAgent = onRequest({
   const lead = cleanLead(body.lead ?? EMPTY_LEAD);
   try {
     if (body.action === 'notify') {
-      const result = await storeAndNotify(lead, body.source, body.requestId);
+      const result = await storeAndNotify(lead, body.source, body.requestId, body.consent);
       response.status(result.status).json(result.body); return;
     }
     if (body.action === 'addressSearch') {
