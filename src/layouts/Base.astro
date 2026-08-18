@@ -3,6 +3,7 @@ import { SITE } from '../consts';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Schema from '../components/Schema.astro';
+import ServiceCallAgent from '../components/ServiceCallAgent.astro';
 import type { Faq } from '../data/faqs';
 
 import '../styles/design-system.css';
@@ -39,6 +40,7 @@ const {
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL('/images/sle-logo.png', Astro.site).href;
+const aiChatEnabled = import.meta.env.PUBLIC_AI_CHAT_ENABLED !== 'false';
 ---
 
 <!doctype html>
@@ -114,6 +116,8 @@ const ogImage = new URL('/images/sle-logo.png', Astro.site).href;
 
       <Footer />
     </div>
+
+    {aiChatEnabled && <ServiceCallAgent />}
 
     <script>
       // Progressive enhancement only — every page works with this blocked.

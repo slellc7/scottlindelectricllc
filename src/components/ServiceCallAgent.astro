@@ -1,0 +1,212 @@
+---
+import { SITE } from '../consts';
+
+const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
+  ?? 'https://us-central1-scott-lind-electric.cloudfunctions.net/serviceAgent';
+---
+
+<aside class="service-agent" data-service-agent data-endpoint={agentEndpoint}>
+  <button class="service-agent__launcher" type="button" data-agent-open aria-expanded="false">
+    <span aria-hidden="true">⚡</span>
+    Chat with us
+  </button>
+
+  <section class="service-agent__panel" data-agent-panel hidden aria-label="Service call assistant">
+    <header class="service-agent__header">
+      <div>
+        <strong>Electrical help assistant</strong>
+        <span>Usually replies in a few seconds</span>
+      </div>
+      <button type="button" data-agent-close aria-label="Close service call assistant">×</button>
+    </header>
+
+    <div class="service-agent__safety">
+      Fire, smoke, shock, or a downed line? Move away and call 911 or your utility first.
+    </div>
+
+    <ol class="service-agent__messages" data-agent-messages aria-live="polite">
+      <li class="service-agent__message service-agent__message--assistant">
+        Hi — tell me what electrical help you need and I’ll send your information to Scott Lind Electric. What’s happening?
+      </li>
+    </ol>
+
+    <div class="service-agent__review" data-agent-review hidden>
+      <strong>Review your request</strong>
+      <dl data-agent-summary></dl>
+      <label class="service-agent__consent">
+        <input type="checkbox" data-agent-consent />
+        <span>I agree to send these details to Scott Lind Electric and be contacted about this request.</span>
+      </label>
+      <button class="btn btn-primary blueprint btn-md" type="button" data-agent-submit disabled>
+        Send my information
+      </button>
+    </div>
+
+    <form class="service-agent__composer" data-agent-form>
+      <label class="visually-hidden" for="service-agent-message">Your message</label>
+      <textarea id="service-agent-message" rows="2" maxlength="1500" data-agent-input required placeholder="Describe the electrical problem"></textarea>
+      <button type="submit" aria-label="Send message">Send</button>
+    </form>
+    <p class="service-agent__error" data-agent-error hidden>
+      The assistant couldn’t respond. Call <a href={SITE.telHref}>{SITE.phone}</a> instead.
+    </p>
+    <p class="service-agent__privacy">Don’t include payment details or sensitive personal information.</p>
+  </section>
+</aside>
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector('[data-service-agent]');
+    if (!root) return;
+    const openButton = root.querySelector('[data-agent-open]');
+    const closeButton = root.querySelector('[data-agent-close]');
+    const panel = root.querySelector('[data-agent-panel]');
+    const form = root.querySelector('[data-agent-form]');
+    const input = root.querySelector('[data-agent-input]');
+    const list = root.querySelector('[data-agent-messages]');
+    const error = root.querySelector('[data-agent-error]');
+    const review = root.querySelector('[data-agent-review]');
+    const summary = root.querySelector('[data-agent-summary]');
+    const consent = root.querySelector('[data-agent-consent]');
+    const submitButton = root.querySelector('[data-agent-submit]');
+    const endpoint = root.dataset.endpoint;
+    const requestId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const sendButton = form?.querySelector('button[type="submit"]');
+    let lead = { name: null, phone: null, email: null, address: null, city: null, issue: null, serviceType: null };
+    const messages = [{ role: 'assistant', content: 'Hi — tell me what electrical help you need and I’ll send your information to Scott Lind Electric. What’s happening?' }];
+
+    const setOpen = (open) => {
+      panel.hidden = !open;
+      openButton.setAttribute('aria-expanded', String(open));
+      if (open) setTimeout(() => input.focus(), 0);
+      else openButton.focus();
+    };
+
+    const addMessage = (role, content) => {
+      const item = document.createElement('li');
+      item.className = `service-agent__message service-agent__message--${role}`;
+      item.textContent = content;
+      list.append(item);
+      list.scrollTop = list.scrollHeight;
+      messages.push({ role, content });
+    };
+
+    const showReview = () => {
+      const values = [
+        ['Name', lead.name], ['Phone', lead.phone], ['Email', lead.email],
+        ['Location', [lead.address, lead.city].filter(Boolean).join(', ')],
+        ['Problem', lead.issue],
+      ].filter(([, value]) => value);
+      summary.replaceChildren();
+      for (const [label, value] of values) {
+        const dt = document.createElement('dt');
+        const dd = document.createElement('dd');
+        dt.textContent = label;
+        dd.textContent = value;
+        summary.append(dt, dd);
+      }
+      review.hidden = false;
+      review.scrollIntoView({ block: 'nearest' });
+    };
+
+    openButton.addEventListener('click', () => setOpen(panel.hidden));
+    closeButton.addEventListener('click', () => setOpen(false));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panel.hidden) setOpen(false);
+    });
+    consent.addEventListener('change', () => { submitButton.disabled = !consent.checked; });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const content = input.value.trim();
+      if (!content || !endpoint) return;
+      addMessage('user', content);
+      input.value = '';
+      error.hidden = true;
+      input.disabled = true;
+      sendButton.disabled = true;
+      sendButton.textContent = '…';
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'chat', messages, lead }),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+        lead = result.lead;
+        addMessage('assistant', result.reply);
+        if (result.ready && !result.emergency) showReview();
+      } catch {
+        error.hidden = false;
+      } finally {
+        input.disabled = false;
+        sendButton.disabled = false;
+        sendButton.textContent = 'Send';
+        input.focus();
+      }
+    });
+
+    submitButton.addEventListener('click', async () => {
+      if (!consent.checked || !endpoint) return;
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending…';
+      error.hidden = true;
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'notify', lead, requestId, source: `AI website assistant — ${location.pathname}` }),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+        review.hidden = true;
+        form.hidden = true;
+        const delivery = result.delivered === 2
+          ? 'Your information was saved and sent to Scott Lind Electric by text and email.'
+          : 'Your information was saved. One business alert needs attention, but Scott Lind Electric can still see your request.';
+        addMessage('assistant', `${delivery} They’ll contact you directly.`);
+      } catch {
+        error.hidden = false;
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send my information';
+      }
+    });
+  })();
+</script>
+
+<style is:global>
+  .service-agent { position: fixed; right: 20px; bottom: 20px; z-index: 80; font-family: var(--font-body); }
+  .service-agent__launcher { border: 0; padding: 14px 18px; background: var(--color-accent-900); color: white; box-shadow: var(--shadow-lg); font: 600 15px var(--font-heading); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+  .service-agent__panel { position: absolute; right: 0; bottom: calc(100% + 12px); width: min(390px, calc(100vw - 24px)); max-height: min(680px, calc(100vh - 110px)); overflow: hidden; background: var(--color-bg); border: 1px solid var(--color-divider); box-shadow: 0 20px 60px rgba(10, 28, 43, .24); }
+  .service-agent__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px; background: var(--color-accent-900); color: white; }
+  .service-agent__header strong, .service-agent__header span { display: block; }
+  .service-agent__header strong { font: 600 19px var(--font-heading); text-transform: uppercase; letter-spacing: .04em; }
+  .service-agent__header span { margin-top: 2px; font-size: 12px; opacity: .72; }
+  .service-agent__header button { border: 0; background: transparent; color: white; font-size: 28px; line-height: 1; cursor: pointer; }
+  .service-agent__safety { padding: 10px 16px; background: #fff5df; color: #5b4010; border-bottom: 1px solid #e7d3aa; font-size: 12px; line-height: 1.35; }
+  .service-agent__messages { display: flex; flex-direction: column; gap: 10px; min-height: 180px; max-height: 280px; overflow-y: auto; margin: 0; padding: 16px; list-style: none; }
+  .service-agent__message { max-width: 86%; padding: 10px 12px; font-size: 14px; line-height: 1.45; white-space: pre-wrap; }
+  .service-agent__message--assistant { align-self: flex-start; background: #eef2f4; color: var(--color-text); }
+  .service-agent__message--user { align-self: flex-end; background: var(--color-accent-900); color: white; }
+  .service-agent__review { margin: 0 16px 14px; padding: 14px; border: 1px solid var(--color-divider); background: #f7f9fa; }
+  .service-agent__review > strong { font: 600 16px var(--font-heading); text-transform: uppercase; }
+  .service-agent__review dl { display: grid; grid-template-columns: 90px 1fr; gap: 4px 10px; margin: 10px 0; font-size: 12px; line-height: 1.4; }
+  .service-agent__review dt { font-weight: 700; }
+  .service-agent__review dd { margin: 0; overflow-wrap: anywhere; }
+  .service-agent__consent { display: flex; gap: 8px; align-items: flex-start; margin: 12px 0; font-size: 11px; line-height: 1.4; }
+  .service-agent__consent input { margin-top: 2px; }
+  .service-agent__composer { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--color-divider); }
+  .service-agent__composer textarea { resize: none; min-height: 44px; padding: 10px; border: 1px solid var(--color-divider); background: white; color: var(--color-text); font: inherit; }
+  .service-agent__composer textarea:focus { outline: 2px solid var(--color-accent); outline-offset: 1px; }
+  .service-agent__composer button { border: 0; padding: 0 14px; background: var(--color-accent-700); color: white; font: 600 13px var(--font-heading); text-transform: uppercase; cursor: pointer; }
+  .service-agent__composer button:disabled { opacity: .55; }
+  .service-agent__error { margin: 0; padding: 0 16px 10px; color: #8a1c1c; font-size: 12px; }
+  .service-agent__privacy { margin: 0; padding: 0 16px 12px; color: color-mix(in srgb, var(--color-text) 58%, transparent); font-size: 10px; }
+  @media (max-width: 520px) {
+    .service-agent { right: 12px; bottom: 12px; }
+    .service-agent__panel { position: fixed; inset: 12px; width: auto; max-height: none; display: flex; flex-direction: column; }
+    .service-agent__messages { flex: 1; max-height: none; }
+    .service-agent__launcher { padding: 13px 15px; font-size: 13px; }
+  }
+</style>

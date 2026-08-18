@@ -8,6 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "firebase:check": "npm --prefix functions run check",
+    "firebase:emulators": "npm --prefix functions run serve",
+    "firebase:deploy": "npm --prefix functions run deploy",
     "astro": "astro"
   },
   "engines": {

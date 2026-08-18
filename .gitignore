@@ -4,6 +4,16 @@ dist/
 
 node_modules/
 .DS_Store
+.env
+.env.*
+!.env.example
+functions/lib/
+functions/.secret.local
+functions/.env.local
+.firebaserc
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
 
 # Netlify CLI
 .netlify/

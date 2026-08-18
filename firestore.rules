@@ -1,0 +1,10 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Leads are written only by the trusted Firebase Admin SDK in Cloud Functions.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

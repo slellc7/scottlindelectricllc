@@ -18,6 +18,11 @@ npm run dev
 
 Then <http://localhost:4321>.
 
+The site-wide lead assistant uses Firebase Functions, Firestore, OpenAI,
+Twilio, and Resend to save and send potential-customer details to the business. See
+[`docs/AI-SERVICE-AGENT.md`](docs/AI-SERVICE-AGENT.md) for architecture, environment
+variables, safety behavior, and launch checks.
+
 | Command           | What it does                        |
 | ----------------- | ----------------------------------- |
 | `npm run dev`     | Dev server with hot reload          |

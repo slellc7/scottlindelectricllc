@@ -1,0 +1,26 @@
+{
+  "name": "scott-lind-agent-functions",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "build": "tsc",
+    "check": "tsc --noEmit",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
+    "deploy": "firebase deploy --only functions,firestore",
+    "logs": "firebase functions:log"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.27.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.2.0",
+    "firebase-functions": "^7.3.2",
+    "openai": "^7.4.0"
+  }
+}
