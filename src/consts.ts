@@ -130,5 +130,6 @@ export const FOOTER = {
     { href: '/blog/', label: 'Blog' },
     { href: '/contact/', label: 'Contact' },
     { href: '/privacy/', label: 'Privacy Policy' },
+    { href: '/terms/', label: 'Terms & Conditions' },
   ],
 } as const;

@@ -1,0 +1,221 @@
+---
+import Base from '../layouts/Base.astro';
+import Crumb from '../components/Crumb.astro';
+import PageHeading from '../components/PageHeading.astro';
+import { SITE } from '../consts';
+
+const effectiveDate = 'August 17, 2026';
+const smsNumber = '(208) 516-2090';
+---
+
+<Base
+  title="Terms and Conditions | Scott Lind Electric"
+  description="Website, electrical-service inquiry, AI assistant, and SMS messaging terms for Scott Lind Electric LLC."
+  breadcrumb="Terms and Conditions"
+>
+  <Crumb trail={['Terms and Conditions']} />
+
+  <section class="section section--page legal-page">
+    <PageHeading kicker={`Effective ${effectiveDate}`} size="h-page--sm" tight>
+      Terms and Conditions
+    </PageHeading>
+    <p class="lead lead--narrow gap-lead">
+      These terms govern your use of the Scott Lind Electric website, website assistant, service
+      inquiry tools, and text-messaging program.
+    </p>
+
+    <div class="legal-grid">
+      <article class="legal-content">
+        <section id="acceptance">
+          <h2>Acceptance of these terms</h2>
+          <p>
+            By using this website or its communication tools, you agree to these Terms and
+            Conditions and our <a href="/privacy/">Privacy Policy</a>. If you do not agree, do not
+            use the website assistant or text-messaging program. Specific estimates, proposals,
+            invoices, or service agreements may contain additional terms; those terms control if
+            they conflict with this page.
+          </p>
+        </section>
+
+        <section id="service-requests">
+          <h2>Service requests and estimates</h2>
+          <p>
+            A website form, chat, email, call, or text is a request for contact, not a confirmed
+            appointment or agreement to perform work. Scheduling, scope, pricing, availability, and
+            payment terms must be confirmed directly by Scott Lind Electric. Website information
+            and preliminary communications are not binding estimates or guarantees.
+          </p>
+        </section>
+
+        <section id="safety">
+          <h2>Electrical safety and emergencies</h2>
+          <p>
+            This website is not an emergency service. For fire, smoke, electrical shock, active
+            sparking, or immediate danger, move away and call 911. Stay clear of downed power lines
+            and contact the utility. Do not open an electrical panel, touch wiring, or attempt live
+            electrical work based on website or message content.
+          </p>
+        </section>
+
+        <section id="ai-assistant">
+          <h2>AI assistant</h2>
+          <p>
+            The website assistant and some initial communications may use artificial intelligence
+            to collect and summarize service-request information. AI output may be incomplete or
+            inaccurate and does not provide an electrical diagnosis, quote, code determination, or
+            professional safety advice. Important details must be confirmed with a qualified person.
+          </p>
+        </section>
+
+        <section id="sms-terms" class="sms-section">
+          <h2>Scott Lind Electric Service Updates — SMS terms</h2>
+          <p>
+            The Scott Lind Electric Service Updates program provides messages about electrical-
+            service requests, scheduling, technician or service updates, follow-up questions, and
+            related customer care. Messages may initially be handled by an AI assistant.
+          </p>
+          <p>
+            To opt in, text <strong>START</strong> to {smsNumber}. By doing so, you expressly consent
+            to receive service-related SMS messages from Scott Lind Electric at the mobile number
+            you use. Consent is not a condition of purchasing services. Message frequency varies.
+            Message and data rates may apply.
+          </p>
+          <p>
+            You can cancel the SMS service at any time by replying <strong>STOP</strong>. We may send
+            one final message confirming that you have been unsubscribed. After that, you will no
+            longer receive messages unless you opt in again by texting <strong>START</strong>.
+          </p>
+          <p>
+            For assistance, reply <strong>HELP</strong>, call <a href={SITE.telHref}>{SITE.phone}</a>,
+            or email <a href="mailto:scott@scottlindelectric.com"
+              >scott@scottlindelectric.com</a
+            >. Carriers are not liable for delayed or undelivered messages. Questions about your
+            wireless plan should be directed to your carrier.
+          </p>
+          <p>
+            Your participation is also governed by our <a href="/privacy/">Privacy Policy</a>, which
+            explains how we handle personal information and mobile opt-in data.
+          </p>
+          <a class="btn btn-primary blueprint btn-md" href="sms:+12085162090?body=START">
+            Text START to {smsNumber}
+          </a>
+        </section>
+
+        <section id="acceptable-use">
+          <h2>Acceptable use</h2>
+          <p>
+            You may not misuse the website, attempt unauthorized access, interfere with its
+            operation, submit unlawful or fraudulent requests, impersonate another person, or use
+            automated means to overload or abuse our services. Do not submit payment-card details,
+            passwords, government identifiers, or other highly sensitive information through chat.
+          </p>
+        </section>
+
+        <section id="website-content">
+          <h2>Website content and third-party services</h2>
+          <p>
+            Website content is provided for general information and may change without notice.
+            Links to third-party websites and services are provided for convenience; Scott Lind
+            Electric does not control and is not responsible for their content, availability, or
+            privacy practices. The website design, text, branding, and original materials are owned
+            by or licensed to Scott Lind Electric and may not be copied for commercial use without
+            permission.
+          </p>
+        </section>
+
+        <section id="disclaimers">
+          <h2>Availability and disclaimers</h2>
+          <p>
+            We aim to keep the website and communication tools available, but we do not guarantee
+            uninterrupted, secure, or error-free operation. To the extent permitted by law, the
+            website and its content are provided “as is” without warranties of any kind. Nothing in
+            these terms limits rights or remedies that cannot lawfully be limited.
+          </p>
+        </section>
+
+        <section id="liability">
+          <h2>Limitation of liability</h2>
+          <p>
+            To the extent permitted by law, Scott Lind Electric will not be liable for indirect,
+            incidental, special, or consequential losses arising solely from use of, or inability
+            to use, this website or its automated communication tools. These terms do not replace
+            any warranties or responsibilities stated in a signed service agreement or required by
+            applicable law.
+          </p>
+        </section>
+
+        <section id="governing-law">
+          <h2>Governing law</h2>
+          <p>
+            These website terms are governed by the laws of the State of Idaho, without regard to
+            conflict-of-law principles. Any dispute concerning these terms will be handled in a
+            court with jurisdiction in Bonneville County, Idaho, unless applicable law requires a
+            different forum.
+          </p>
+        </section>
+
+        <section id="changes">
+          <h2>Changes to these terms</h2>
+          <p>
+            We may update these terms as our services, technology, or legal obligations change.
+            Updated terms take effect when posted, as shown by the effective date at the top of the
+            page. Continued use after an update means you accept the revised terms.
+          </p>
+        </section>
+
+        <section id="contact-us">
+          <h2>Contact us</h2>
+          <address>
+            <strong>{SITE.legalName}</strong><br />
+            {SITE.address.street}<br />
+            {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}<br />
+            <a href={SITE.telHref}>{SITE.phone}</a><br />
+            <a href="mailto:scott@scottlindelectric.com">scott@scottlindelectric.com</a>
+          </address>
+        </section>
+      </article>
+
+      <aside class="legal-nav" aria-label="Terms and conditions sections">
+        <strong>On this page</strong>
+        <a href="#acceptance">Acceptance</a>
+        <a href="#service-requests">Service requests</a>
+        <a href="#safety">Electrical safety</a>
+        <a href="#ai-assistant">AI assistant</a>
+        <a href="#sms-terms">SMS terms</a>
+        <a href="#acceptable-use">Acceptable use</a>
+        <a href="#disclaimers">Disclaimers</a>
+        <a href="#liability">Liability</a>
+        <a href="#governing-law">Governing law</a>
+        <a href="#contact-us">Contact us</a>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal-page { padding-bottom: 96px; }
+  .legal-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 760px) minmax(210px, 1fr);
+    gap: 72px;
+    align-items: start;
+  }
+  .legal-content { min-width: 0; }
+  .legal-content section { scroll-margin-top: 120px; padding: 34px 0; border-top: 1px solid var(--color-divider); }
+  .legal-content section:first-child { border-top: 0; padding-top: 0; }
+  .legal-content h2 { margin: 0 0 12px; font-size: clamp(1.4rem, 2vw, 1.85rem); text-transform: uppercase; }
+  .legal-content p { max-width: 70ch; margin: 0 0 16px; line-height: 1.75; color: color-mix(in srgb, var(--color-text) 72%, transparent); }
+  .legal-content a:not(.btn) { color: var(--color-accent); text-underline-offset: 3px; overflow-wrap: anywhere; }
+  .legal-content address { font-style: normal; line-height: 1.7; }
+  .sms-section { padding: 34px !important; border: 1px solid var(--color-divider) !important; background: var(--color-surface); }
+  .legal-nav { position: sticky; top: 110px; display: grid; gap: 10px; padding: 24px; border-left: 3px solid var(--color-accent); background: var(--color-surface); }
+  .legal-nav strong { margin-bottom: 4px; text-transform: uppercase; }
+  .legal-nav a { color: color-mix(in srgb, var(--color-text) 65%, transparent); text-decoration: none; }
+  .legal-nav a:hover, .legal-nav a:focus-visible { color: var(--color-accent); }
+  @media (max-width: 820px) {
+    .legal-page { padding-bottom: 64px; }
+    .legal-grid { grid-template-columns: 1fr; gap: 36px; }
+    .legal-nav { position: static; grid-row: 1; }
+    .sms-section { padding: 24px !important; }
+  }
+</style>
