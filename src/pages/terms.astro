@@ -5,7 +5,6 @@ import PageHeading from '../components/PageHeading.astro';
 import { SITE } from '../consts';
 
 const effectiveDate = 'August 17, 2026';
-const smsNumber = '(208) 516-2090';
 ---
 
 <Base
@@ -70,12 +69,14 @@ const smsNumber = '(208) 516-2090';
         <section id="sms-terms" class="sms-section">
           <h2>Scott Lind Electric Service Updates — SMS terms</h2>
           <p>
+            The public opt-in page for this program is
+            <a href="https://scottlindelectric.com/sms/">https://scottlindelectric.com/sms/</a>.
             The Scott Lind Electric Service Updates program provides messages about electrical-
             service requests, scheduling, technician or service updates, follow-up questions, and
             related customer care. Messages may initially be handled by an AI assistant.
           </p>
           <p>
-            To opt in, text <strong>START</strong> to {smsNumber}. By doing so, you expressly consent
+            To opt in, text <strong>START</strong> to {SITE.smsPhone}. By doing so, you expressly consent
             to receive service-related SMS messages from Scott Lind Electric at the mobile number
             you use. Consent is not a condition of purchasing services. Message frequency varies.
             Message and data rates may apply.
@@ -96,8 +97,8 @@ const smsNumber = '(208) 516-2090';
             Your participation is also governed by our <a href="/privacy/">Privacy Policy</a>, which
             explains how we handle personal information and mobile opt-in data.
           </p>
-          <a class="btn btn-primary blueprint btn-md" href="sms:+12085162090?body=START">
-            Text START to {smsNumber}
+          <a class="btn btn-primary blueprint btn-md" href={SITE.smsHref}>
+            Text START to {SITE.smsPhone}
           </a>
         </section>
 

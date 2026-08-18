@@ -19,6 +19,11 @@ export const SITE = {
   telephoneE164: '+1-208-716-1240',
   telHref: 'tel:+12087161240',
 
+  /** Twilio Messaging Service number for customer SMS (A2P campaign). */
+  smsPhone: '(208) 516-2090',
+  smsTelephoneE164: '+12085162090',
+  smsHref: 'sms:+12085162090?body=START',
+
   address: {
     street: '1302 Taylor Avenue',
     city: 'Idaho Falls',
@@ -131,5 +136,6 @@ export const FOOTER = {
     { href: '/contact/', label: 'Contact' },
     { href: '/privacy/', label: 'Privacy Policy' },
     { href: '/terms/', label: 'Terms & Conditions' },
+    { href: '/sms/', label: 'SMS updates' },
   ],
 } as const;

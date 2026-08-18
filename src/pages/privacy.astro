@@ -5,7 +5,6 @@ import PageHeading from '../components/PageHeading.astro';
 import { SITE } from '../consts';
 
 const effectiveDate = 'August 17, 2026';
-const smsNumber = '(208) 516-2090';
 ---
 
 <Base
@@ -59,16 +58,16 @@ const smsNumber = '(208) 516-2090';
         <section id="sms-terms" class="sms-section">
           <h2>SMS opt-in and terms</h2>
           <p class="sms-disclosure">
-            Customers opt in by visiting <a href="https://scottlindelectric.com/privacy/"
-              >https://scottlindelectric.com/privacy/</a
-            >, where they are instructed to text START to (208) 516-2090 and explicitly agree to
+            Customers opt in by visiting
+            <a href="https://scottlindelectric.com/sms/">https://scottlindelectric.com/sms/</a>,
+            where they are instructed to text START to {SITE.smsPhone} and explicitly agree to
             receive SMS messages from Scott Lind Electric. Messages concern electrical-service
             requests, scheduling, and service updates and may initially be handled by an AI
-            assistant. Message frequency varies. Message and data rates may apply. Reply HELP for
-            help or STOP to opt out.
+            assistant. Message frequency varies. Message and data rates may apply. Consent is not
+            a condition of purchase. Reply HELP for help or STOP to opt out.
           </p>
           <p>
-            By texting <strong>START</strong> to {smsNumber}, you expressly consent to receive
+            By texting <strong>START</strong> to {SITE.smsPhone}, you expressly consent to receive
             service-related text messages from Scott Lind Electric at the number you use. Consent
             is not a condition of purchasing services. You may withdraw consent at any time by
             replying <strong>STOP</strong>. For assistance, reply <strong>HELP</strong> or call
@@ -76,10 +75,11 @@ const smsNumber = '(208) 516-2090';
             undelivered messages.
           </p>
           <p>
-            See the <a href="/terms/">Terms and Conditions</a> for complete program terms.
+            See the <a href="/sms/">SMS opt-in page</a> and
+            <a href="/terms/">Terms and Conditions</a> for complete program terms.
           </p>
-          <a class="btn btn-primary blueprint btn-md" href="sms:+12085162090?body=START">
-            Text START to {smsNumber}
+          <a class="btn btn-primary blueprint btn-md" href={SITE.smsHref}>
+            Text START to {SITE.smsPhone}
           </a>
         </section>
 
