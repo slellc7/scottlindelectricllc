@@ -77,6 +77,12 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
       <form method="dialog" class="gal-dialog-close-form">
         <button class="gal-close" aria-label="Close">✕</button>
       </form>
+      {photos.length > 1 && (
+        <>
+          <button class="gal-dialog-nav gal-dialog-prev" type="button" data-dialog-prev aria-label="Previous work photo">←</button>
+          <button class="gal-dialog-nav gal-dialog-next" type="button" data-dialog-next aria-label="Next work photo">→</button>
+        </>
+      )}
       <img data-gal-dialog-img alt="" aria-hidden="true" />
       <p class="gal-dialog-cap" data-gal-dialog-cap />
     </dialog>
@@ -88,18 +94,31 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
   if (dialog) {
     const img = dialog.querySelector<HTMLImageElement>('[data-gal-dialog-img]')!;
     const cap = dialog.querySelector<HTMLElement>('[data-gal-dialog-cap]')!;
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-lightbox]'));
+    let currentIndex = 0;
 
-    document.querySelectorAll<HTMLButtonElement>('[data-lightbox]').forEach((btn) => {
+    const showImage = (index: number) => {
+      currentIndex = (index + buttons.length) % buttons.length;
+      const button = buttons[currentIndex];
+      const source = button.querySelector('img')!;
+      img.src = source.currentSrc || source.src;
+      img.alt = source.alt;
+      img.removeAttribute('aria-hidden');
+      cap.textContent = button.dataset.caption ?? '';
+    };
+
+    buttons.forEach((btn, index) => {
       btn.addEventListener('click', () => {
-        const source = btn.querySelector('img')!;
-        // currentSrc is the srcset candidate the browser actually picked, so the
-        // lightbox reuses the already-downloaded file rather than fetching again.
-        img.src = source.currentSrc || source.src;
-        img.alt = source.alt;
-        img.removeAttribute('aria-hidden');
-        cap.textContent = btn.dataset.caption ?? '';
+        showImage(index);
         dialog.showModal();
       });
+    });
+
+    dialog.querySelector('[data-dialog-prev]')?.addEventListener('click', () => showImage(currentIndex - 1));
+    dialog.querySelector('[data-dialog-next]')?.addEventListener('click', () => showImage(currentIndex + 1));
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') showImage(currentIndex - 1);
+      if (event.key === 'ArrowRight') showImage(currentIndex + 1);
     });
 
     // Click the backdrop (outside the image) to close.
@@ -153,7 +172,8 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
   }
   .gal--carousel .gal-item,
   .gal--carousel .gal-item:nth-child(5n + 1),
-  .gal--carousel .gal-item:nth-child(5n + 2) { grid-column: auto; scroll-snap-align: start; }
+  .gal--carousel .gal-item:nth-child(5n + 2) { grid-column: auto; scroll-snap-align: start; display: flex; flex-direction: column; }
+  .gal--carousel .gal-frame { width: 100%; aspect-ratio: 4 / 3; height: auto; }
   .gal--carousel .gal-item:nth-child(5n + 1) .gal-frame,
   .gal--carousel .gal-item:nth-child(5n + 2) .gal-frame { aspect-ratio: 4 / 3; height: auto; }
   .gal-controls { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
@@ -242,6 +262,15 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
     font-size: 15px; cursor: pointer;
   }
   .gal-close:hover { background: var(--color-accent-800); }
+  .gal-dialog-nav {
+    position: absolute; top: 50%; z-index: 2; transform: translateY(-50%);
+    width: 48px; height: 60px; border: 1px solid color-mix(in srgb, var(--color-bg) 35%, transparent);
+    background: color-mix(in srgb, var(--color-accent-900) 86%, transparent);
+    color: var(--color-bg); font: 700 24px/1 var(--font-heading); cursor: pointer;
+  }
+  .gal-dialog-prev { left: 12px; }
+  .gal-dialog-next { right: 12px; }
+  .gal-dialog-nav:hover, .gal-dialog-nav:focus-visible { background: var(--color-accent); }
 
   @media (max-width: 900px) {
     .gal { gap: 20px; }
