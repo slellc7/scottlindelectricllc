@@ -269,17 +269,17 @@ const mobile = imageMobile
 
   .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 0; }
 
-  /* Reversed-out secondary button — the light-theme .btn-secondary is invisible here. */
-  :global(.btn-hero-ghost) {
-    color: var(--color-bg);
-    border-color: color-mix(in srgb, var(--color-bg) 45%, transparent);
-    background: color-mix(in srgb, var(--color-accent-900) 45%, transparent);
-    backdrop-filter: blur(3px);
-  }
-  :global(.btn-hero-ghost:hover) {
-    background: color-mix(in srgb, var(--color-bg) 14%, transparent);
-    color: var(--color-bg);
+  /* High-contrast secondary action for the dark photographic hero. The extra
+     specificity keeps the global light-theme .btn color from overriding it. */
+  .hero-actions :global(.btn.btn-hero-ghost) {
+    color: var(--color-accent-900);
     border-color: var(--color-bg);
+    background: var(--color-bg);
+  }
+  .hero-actions :global(.btn.btn-hero-ghost:hover) {
+    color: var(--color-accent-900);
+    border-color: var(--color-accent-300);
+    background: var(--color-accent-300);
   }
 
   .hero-caption {
