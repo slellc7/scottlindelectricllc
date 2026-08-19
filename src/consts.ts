@@ -19,6 +19,8 @@ export const SITE = {
   telephoneE164: '+1-208-716-1240',
   telHref: 'tel:+12087161240',
 
+  contractorLicense: 'ELE-J-22437',
+
   /** Twilio Messaging Service number for customer SMS (A2P campaign). */
   smsPhone: '(208) 516-2090',
   smsTelephoneE164: '+12085162090',
