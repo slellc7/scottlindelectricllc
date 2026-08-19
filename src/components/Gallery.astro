@@ -22,15 +22,18 @@ interface Props {
   limit?: number;
   /** The lightbox is for /work/; the home strip just links through. */
   lightbox?: boolean;
+  /** Horizontal, auto-advancing strip used for recent work on the home page. */
+  carousel?: boolean;
 }
 
-const { limit, lightbox = true } = Astro.props;
+const { limit, lightbox = true, carousel = false } = Astro.props;
 const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
 ---
 
 {
   photos.length > 0 && (
-    <div class="gal">
+    <div class:list={['gal-wrap', carousel && 'gal-wrap--carousel']} data-gallery-carousel={carousel || undefined}>
+    <div class:list={['gal', carousel && 'gal--carousel']} data-gallery-track>
       {photos.map((p) => {
         return (
           <figure class="gal-item">
@@ -57,6 +60,13 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
           </figure>
         );
       })}
+    </div>
+    {carousel && photos.length > 1 && (
+      <div class="gal-controls">
+        <button class="gal-control" type="button" data-gallery-prev aria-label="Previous work photo">←</button>
+        <button class="gal-control" type="button" data-gallery-next aria-label="Next work photo">→</button>
+      </div>
+    )}
     </div>
   )
 }
@@ -97,6 +107,27 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
       if (e.target === dialog) dialog.close();
     });
   }
+
+  document.querySelectorAll<HTMLElement>('[data-gallery-carousel]').forEach((carousel) => {
+    const track = carousel.querySelector<HTMLElement>('[data-gallery-track]');
+    if (!track) return;
+    const step = () => Math.min(track.clientWidth * .86, 520);
+    carousel.querySelector('[data-gallery-prev]')?.addEventListener('click', () => {
+      track.scrollBy({ left: -step(), behavior: 'smooth' });
+    });
+    carousel.querySelector('[data-gallery-next]')?.addEventListener('click', () => {
+      track.scrollBy({ left: step(), behavior: 'smooth' });
+    });
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let timer = window.setInterval(() => {
+        const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+        track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step(), behavior: 'smooth' });
+      }, 6000);
+      const pause = () => window.clearInterval(timer);
+      carousel.addEventListener('mouseenter', pause, { once: true });
+      carousel.addEventListener('focusin', pause, { once: true });
+    }
+  });
 </script>
 
 <style>
@@ -110,6 +141,28 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
   .gal-item { grid-column: span 4; margin: 0; min-width: 0; }
   .gal-item:nth-child(5n + 1) { grid-column: span 7; }
   .gal-item:nth-child(5n + 2) { grid-column: span 5; }
+
+  .gal--carousel {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(300px, calc((100% - 56px) / 3));
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    padding: 2px 2px 14px;
+  }
+  .gal--carousel .gal-item,
+  .gal--carousel .gal-item:nth-child(5n + 1),
+  .gal--carousel .gal-item:nth-child(5n + 2) { grid-column: auto; scroll-snap-align: start; }
+  .gal--carousel .gal-item:nth-child(5n + 1) .gal-frame,
+  .gal--carousel .gal-item:nth-child(5n + 2) .gal-frame { aspect-ratio: 4 / 3; height: auto; }
+  .gal-controls { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
+  .gal-control {
+    width: 44px; height: 44px; border: 1px solid var(--color-divider);
+    background: var(--color-surface); color: var(--color-text);
+    font: 700 22px/1 var(--font-heading); cursor: pointer;
+  }
+  .gal-control:hover, .gal-control:focus-visible { background: var(--color-accent-900); color: var(--color-bg); }
 
   /* The design system's duotone is a full-strength colour wash. Over the
      placeholder era that read as a treatment; over real job photos it erases
@@ -197,12 +250,17 @@ const photos = limit ? allPhotos.slice(0, limit) : allPhotos;
     .gal-item:nth-child(5n + 2) { grid-column: span 6; }
     .gal-item:nth-child(5n + 1) .gal-frame,
     .gal-item:nth-child(5n + 2) .gal-frame { aspect-ratio: 4 / 3; height: auto; }
+    .gal--carousel { grid-auto-columns: minmax(280px, calc((100% - 20px) / 2)); }
   }
 
   @media (max-width: 640px) {
     .gal-item,
     .gal-item:nth-child(5n + 1),
     .gal-item:nth-child(5n + 2) { grid-column: span 12; }
+    .gal--carousel { grid-auto-columns: 88%; }
+    .gal--carousel .gal-item,
+    .gal--carousel .gal-item:nth-child(5n + 1),
+    .gal--carousel .gal-item:nth-child(5n + 2) { grid-column: auto; }
   }
 
   @media (prefers-reduced-motion: reduce) {
