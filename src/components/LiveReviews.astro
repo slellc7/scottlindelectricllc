@@ -1,0 +1,91 @@
+---
+import ReviewCard from './ReviewCard.astro';
+import type { Review } from '../data/reviews';
+
+type Props = { fallback: Review[]; mode: 'home' | 'page' };
+const { fallback, mode } = Astro.props;
+const endpoint = import.meta.env.PUBLIC_GOOGLE_REVIEWS_URL || '';
+const initial = mode === 'page' ? fallback.slice(0, 6) : fallback.slice(0, 3);
+---
+
+<div class:list={['live-reviews', `live-reviews--${mode}`]} data-live-reviews data-mode={mode} data-endpoint={endpoint}>
+  <div class:list={[mode === 'home' ? 'review-rail' : 'grid-3', 'live-reviews__list']} data-review-list aria-live="polite">
+    {initial.map((review) => <ReviewCard {...review} />)}
+  </div>
+  <div class="live-reviews__controls">
+    {mode === 'home' && <><button class="review-control" type="button" data-review-prev aria-label="Previous review">←</button><button class="review-control" type="button" data-review-next aria-label="Next review">→</button></>}
+    {mode === 'page' && <button class="btn btn-primary blueprint btn-md" type="button" data-review-more hidden>Show more reviews</button>}
+  </div>
+  <p class="review-feed-note" data-review-status>{endpoint ? 'Loading the latest Google reviews…' : 'Reviews from our Google Business Profile.'}</p>
+</div>
+
+<script>
+  type FeedReview = { by: string; quote: string; rating: number; relativeTime?: string };
+  type FeedResponse = { reviews: FeedReview[]; totalReviewCount?: number; averageRating?: number; nextPageToken?: string };
+
+  const makeCard = (review: FeedReview) => {
+    const card = document.createElement('article');
+    card.className = 'blueprint review-card';
+    const kicker = document.createElement('div');
+    kicker.className = 'u-num';
+    kicker.textContent = review.relativeTime ? `Google review · ${review.relativeTime}` : 'Google review';
+    const stars = document.createElement('p');
+    stars.className = 'stars';
+    stars.setAttribute('aria-label', `${review.rating} out of 5 stars`);
+    for (let index = 0; index < 5; index += 1) {
+      const star = document.createElement('span');
+      star.className = index < review.rating ? 'review-star' : 'review-star review-star--off';
+      star.textContent = '★';
+      star.setAttribute('aria-hidden', 'true');
+      stars.append(star);
+    }
+    const quote = document.createElement('blockquote');
+    quote.className = 'review-quote';
+    quote.textContent = review.quote || 'Rated Scott Lind Electric on Google.';
+    const by = document.createElement('cite');
+    by.className = 'review-by';
+    by.textContent = review.by;
+    card.append(kicker, stars, quote, by);
+    return card;
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-live-reviews]').forEach((root) => {
+    const list = root.querySelector<HTMLElement>('[data-review-list]');
+    const status = root.querySelector<HTMLElement>('[data-review-status]');
+    const more = root.querySelector<HTMLButtonElement>('[data-review-more]');
+    if (!list || !status) return;
+    const endpoint = root.dataset.endpoint;
+    const mode = root.dataset.mode;
+    let nextPageToken = '';
+    const load = async (append = false) => {
+      if (!endpoint) return;
+      try {
+        const url = new URL(endpoint);
+        url.searchParams.set('pageSize', mode === 'page' ? '6' : '12');
+        if (append && nextPageToken) url.searchParams.set('pageToken', nextPageToken);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Review feed unavailable');
+        const data = await response.json() as FeedResponse;
+        if (!Array.isArray(data.reviews) || !data.reviews.length) throw new Error('No reviews returned');
+        if (!append) list.replaceChildren();
+        data.reviews.forEach((review) => list.append(makeCard(review)));
+        nextPageToken = data.nextPageToken || '';
+        if (more) more.hidden = !nextPageToken;
+        status.textContent = `${data.totalReviewCount || data.reviews.length} Google reviews · ${data.averageRating || '5.0'} average rating`;
+      } catch {
+        status.textContent = 'Showing verified Google reviews. View Google for the latest.';
+      }
+    };
+    more?.addEventListener('click', () => load(true));
+    root.querySelector('[data-review-prev]')?.addEventListener('click', () => list.scrollBy({ left: -list.clientWidth * .85, behavior: 'smooth' }));
+    root.querySelector('[data-review-next]')?.addEventListener('click', () => list.scrollBy({ left: list.clientWidth * .85, behavior: 'smooth' }));
+    if (mode === 'home' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const timer = window.setInterval(() => {
+        const atEnd = list.scrollLeft + list.clientWidth >= list.scrollWidth - 8;
+        list.scrollTo({ left: atEnd ? 0 : list.scrollLeft + list.clientWidth * .85, behavior: 'smooth' });
+      }, 6500);
+      root.addEventListener('mouseenter', () => window.clearInterval(timer), { once: true });
+    }
+    load();
+  });
+</script>

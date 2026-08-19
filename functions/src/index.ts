@@ -12,6 +12,9 @@ const openaiApiKey = defineSecret('OPENAI_API_KEY');
 const resendApiKey = defineSecret('RESEND_API_KEY');
 const twilioAccountSid = defineSecret('TWILIO_ACCOUNT_SID');
 const twilioAuthToken = defineSecret('TWILIO_AUTH_TOKEN');
+const googleClientId = defineSecret('GOOGLE_BUSINESS_CLIENT_ID');
+const googleClientSecret = defineSecret('GOOGLE_BUSINESS_CLIENT_SECRET');
+const googleRefreshToken = defineSecret('GOOGLE_BUSINESS_REFRESH_TOKEN');
 
 const openaiModel = defineString('OPENAI_MODEL', { default: 'gpt-5.6' });
 const allowedOrigins = defineString('ALLOWED_ORIGINS', {
@@ -21,6 +24,8 @@ const resendFromEmail = defineString('RESEND_FROM_EMAIL');
 const businessEmailTo = defineString('BUSINESS_EMAIL_TO');
 const twilioFromNumber = defineString('TWILIO_FROM_NUMBER');
 const businessSmsTo = defineString('BUSINESS_SMS_TO');
+const googleBusinessAccountId = defineString('GOOGLE_BUSINESS_ACCOUNT_ID');
+const googleBusinessLocationId = defineString('GOOGLE_BUSINESS_LOCATION_ID');
 
 type Lead = {
   name: string | null;
@@ -268,5 +273,43 @@ export const serviceAgent = onRequest({
   } catch (error) {
     console.error('serviceAgent failed', error);
     response.status(502).json({ error: 'The assistant is temporarily unavailable. Please call 208-716-1240.' });
+  }
+});
+
+type GoogleReview = { reviewer?: { displayName?: string }; starRating?: string; comment?: string; createTime?: string; updateTime?: string };
+const starNumbers: Record<string, number> = { ONE: 1, TWO: 2, THREE: 3, FOUR: 4, FIVE: 5 };
+
+export const googleReviews = onRequest({
+  region: 'us-central1', timeoutSeconds: 30, maxInstances: 5,
+  secrets: [googleClientId, googleClientSecret, googleRefreshToken],
+}, async (request, response) => {
+  response.set('Access-Control-Allow-Origin', '*');
+  response.set('Cache-Control', 'public, max-age=900, s-maxage=3600, stale-while-revalidate=86400');
+  if (request.method !== 'GET') { response.status(405).json({ error: 'Method not allowed.' }); return; }
+  try {
+    const pageSize = Math.min(Math.max(Number(request.query.pageSize) || 6, 1), 50);
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ client_id: googleClientId.value(), client_secret: googleClientSecret.value(), refresh_token: googleRefreshToken.value(), grant_type: 'refresh_token' }),
+    });
+    if (!tokenResponse.ok) throw new Error(`Google OAuth returned ${tokenResponse.status}`);
+    const token = await tokenResponse.json() as { access_token?: string };
+    if (!token.access_token) throw new Error('Google OAuth returned no access token');
+    const reviewsUrl = new URL(`https://mybusiness.googleapis.com/v4/accounts/${googleBusinessAccountId.value()}/locations/${googleBusinessLocationId.value()}/reviews`);
+    reviewsUrl.searchParams.set('pageSize', String(pageSize));
+    reviewsUrl.searchParams.set('orderBy', 'updateTime desc');
+    if (typeof request.query.pageToken === 'string') reviewsUrl.searchParams.set('pageToken', request.query.pageToken);
+    const reviewsResponse = await fetch(reviewsUrl, { headers: { Authorization: `Bearer ${token.access_token}` } });
+    if (!reviewsResponse.ok) throw new Error(`Google reviews returned ${reviewsResponse.status}`);
+    const data = await reviewsResponse.json() as { reviews?: GoogleReview[]; averageRating?: number; totalReviewCount?: number; nextPageToken?: string };
+    const reviews = (data.reviews ?? []).map((review) => ({
+      by: review.reviewer?.displayName || 'Google customer', quote: review.comment || '',
+      rating: starNumbers[review.starRating || ''] || 5, publishedAt: review.updateTime || review.createTime || '',
+      relativeTime: review.updateTime || review.createTime ? new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(-Math.max(0, Math.round((Date.now() - Date.parse(review.updateTime || review.createTime || '')) / 86400000)), 'day') : '',
+    }));
+    response.json({ reviews, averageRating: data.averageRating, totalReviewCount: data.totalReviewCount, nextPageToken: data.nextPageToken });
+  } catch (error) {
+    console.error('googleReviews failed', error);
+    response.status(502).json({ error: 'Google reviews are temporarily unavailable.' });
   }
 });

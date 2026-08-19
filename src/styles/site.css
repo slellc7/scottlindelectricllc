@@ -444,6 +444,17 @@ main { flex: 1; }
 .review-card--dark h3 { font-size: 27px; text-transform: uppercase; margin: 12px 0; color: var(--color-bg); }
 .review-card--dark p { font-size: 16px; line-height: 1.6; margin: 0 0 18px; color: color-mix(in srgb, var(--color-bg) 80%, transparent); }
 .review-note { margin: 26px 0 0; font-size: 13px; font-style: italic; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.review-rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(300px, calc((100% - 48px) / 3)); gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; padding: 2px 2px 14px; }
+.review-rail .review-card { scroll-snap-align: start; min-height: 100%; }
+.live-reviews__controls { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+.review-control { width: 44px; height: 44px; border: 1px solid var(--color-divider); background: var(--color-surface); color: var(--color-text); font: 700 22px/1 var(--font-heading); cursor: pointer; }
+.review-control:hover, .review-control:focus-visible { background: var(--color-accent-900); color: var(--color-bg); }
+.review-feed-note { margin: 12px 0 0; text-align: center; font-size: 13px; color: color-mix(in srgb, var(--color-text) 60%, transparent); }
+.review-star { color: var(--color-accent-2-500); font-size: 17px; line-height: 1; }
+.review-star--off { color: color-mix(in srgb, var(--color-text) 18%, transparent); }
+.review-cta-grid { margin-top: 24px; }
+@media (max-width: 900px) { .review-rail { grid-auto-columns: minmax(290px, calc((100% - 24px) / 2)); } }
+@media (max-width: 600px) { .review-rail { grid-auto-columns: 88%; } }
 
 /* ── emergency steps ─────────────────────────────────────────────────────── */
 

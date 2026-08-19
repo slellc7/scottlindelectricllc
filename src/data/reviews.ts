@@ -21,6 +21,8 @@ export type Review = {
   rating: 5 | 4 | 3 | 2 | 1;
   /** Show on the home page. Keep this to three. */
   featured?: boolean;
+  publishedAt?: string;
+  googleMapsUrl?: string;
 };
 
 export const allReviews: Review[] = [

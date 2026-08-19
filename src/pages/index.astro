@@ -4,7 +4,7 @@ import Corners from '../components/Corners.astro';
 import Hero from '../components/Hero.astro';
 import Gallery from '../components/Gallery.astro';
 import { hasPhotos, heroImage, heroImageMobile } from '../data/photos';
-import ReviewCard from '../components/ReviewCard.astro';
+import LiveReviews from '../components/LiveReviews.astro';
 import { SITE } from '../consts';
 import { homeFaqs } from '../data/faqs';
 import { homeReviews } from '../data/reviews';
@@ -191,9 +191,7 @@ const towns = [
       <span class="rule-line" aria-hidden="true"></span>
       <a href="/reviews/" class="link-arrow">All reviews →</a>
     </div>
-    <div class="grid-3">
-      {homeReviews.map((r) => <ReviewCard {...r} />)}
-    </div>
+    <LiveReviews fallback={homeReviews} mode="home" />
   </section>
 
   <section class="section">

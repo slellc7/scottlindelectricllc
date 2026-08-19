@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import Corners from '../components/Corners.astro';
 import Crumb from '../components/Crumb.astro';
 import CtaBand from '../components/CtaBand.astro';
-import ReviewCard from '../components/ReviewCard.astro';
+import LiveReviews from '../components/LiveReviews.astro';
 import { SITE } from '../consts';
 import { allReviews } from '../data/reviews';
 ---
@@ -33,9 +33,8 @@ import { allReviews } from '../data/reviews';
   </section>
 
   <section class="section section--tight">
-    <div class="grid-3">
-      {allReviews.map((r) => <ReviewCard {...r} />)}
-
+    <LiveReviews fallback={allReviews} mode="page" />
+    <div class="grid-3 review-cta-grid">
       <div class="blueprint review-card review-card--dark">
         <Corners />
         <div class="panel-kicker">Worked with us?</div>
@@ -51,7 +50,7 @@ import { allReviews } from '../data/reviews';
     </div>
 
     <p class="review-note">
-      Every review above is quoted word for word from our Google Business Profile.
+      Reviews are loaded from our Google Business Profile and shown word for word.
     </p>
   </section>
 
