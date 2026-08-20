@@ -6,6 +6,13 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
 ---
 
 <aside class="service-agent" data-service-agent data-endpoint={agentEndpoint}>
+  <div class="service-agent__invite" data-agent-invite>
+    <button class="service-agent__invite-close" type="button" data-agent-invite-close aria-label="Dismiss chat invitation">×</button>
+    <strong><span aria-hidden="true">●</span> Electrical help available</strong>
+    <p>Tell us what’s going on. Our AI assistant can collect the details for Scott.</p>
+    <button class="service-agent__invite-action" type="button" data-agent-invite-open>Chat now</button>
+  </div>
+
   <button class="service-agent__launcher" type="button" data-agent-open aria-expanded="false">
     <span aria-hidden="true">⚡</span>
     Chat with us
@@ -18,7 +25,6 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
         <span>Usually replies in a few seconds</span>
       </div>
       <div class="service-agent__header-actions">
-        <button type="button" data-agent-sound aria-pressed="true" aria-label="Mute assistant sounds">Sound on</button>
         <button type="button" data-agent-close aria-label="Close service call assistant">×</button>
       </div>
     </header>
@@ -137,7 +143,9 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     if (!root) return;
     const openButton = root.querySelector('[data-agent-open]');
     const closeButton = root.querySelector('[data-agent-close]');
-    const soundButton = root.querySelector('[data-agent-sound]');
+    const invite = root.querySelector('[data-agent-invite]');
+    const inviteOpen = root.querySelector('[data-agent-invite-open]');
+    const inviteClose = root.querySelector('[data-agent-invite-close]');
     const panel = root.querySelector('[data-agent-panel]');
     const scrollArea = root.querySelector('[data-agent-body]');
     const triageForm = root.querySelector('[data-agent-triage]');
@@ -167,60 +175,12 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     let lead = { name: null, phone: null, email: null, address: null, city: null, issue: null, serviceType: null };
     let requestedFields = [];
     let selectedAddress = null;
-    let audioContext = null;
-    let audioUnlocked = false;
-    let soundEnabled = true;
-    try { soundEnabled = localStorage.getItem('service-agent-sound') !== 'off'; } catch {}
     const messages = [{ role: 'assistant', content: 'Hi — I’ll collect a few details and send your request to Scott Lind Electric. First, choose the options below.' }];
-
-    const updateSoundButton = () => {
-      soundButton.textContent = soundEnabled ? 'Sound on' : 'Sound off';
-      soundButton.setAttribute('aria-pressed', String(soundEnabled));
-      soundButton.setAttribute('aria-label', soundEnabled ? 'Mute assistant sounds' : 'Enable assistant sounds');
-    };
-
-    const unlockAudio = async () => {
-      if (audioUnlocked || !soundEnabled) return;
-      const AudioContext = globalThis.AudioContext || globalThis.webkitAudioContext;
-      if (!AudioContext) return;
-      audioContext ??= new AudioContext();
-      try {
-        await audioContext.resume();
-        audioUnlocked = audioContext.state === 'running';
-      } catch {}
-    };
-
-    const playTone = (frequency, delay = 0, duration = .09, volume = .025) => {
-      if (!soundEnabled || !audioUnlocked || audioContext?.state !== 'running') return;
-      const start = audioContext.currentTime + delay;
-      const oscillator = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(frequency, start);
-      gain.gain.setValueAtTime(.0001, start);
-      gain.gain.exponentialRampToValueAtTime(volume, start + .012);
-      gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
-      oscillator.connect(gain).connect(audioContext.destination);
-      oscillator.start(start);
-      oscillator.stop(start + duration + .02);
-    };
-
-    const playBounceSound = () => {
-      playTone(520, .25, .07, .018);
-      playTone(640, .84, .06, .014);
-    };
-
-    const playReplySound = () => {
-      playTone(660, 0, .09, .025);
-      playTone(880, .1, .12, .022);
-    };
-
-    updateSoundButton();
-    document.addEventListener('pointerdown', unlockAudio, { capture: true });
-    document.addEventListener('keydown', unlockAudio, { capture: true });
+    try { invite.hidden = sessionStorage.getItem('service-agent-invite-dismissed') === 'true'; } catch {}
 
     const setOpen = (open) => {
       panel.hidden = !open;
+      if (open) invite.hidden = true;
       openButton.setAttribute('aria-expanded', String(open));
       if (open) setTimeout(() => {
         const nextInput = !triageForm.hidden
@@ -259,7 +219,6 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
       item.textContent = content;
       list.append(item);
       messages.push({ role, content });
-      if (role === 'assistant') playReplySound();
       requestAnimationFrame(() => { scrollArea.scrollTop = scrollArea.scrollHeight; });
     };
 
@@ -385,17 +344,10 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     };
 
     openButton.addEventListener('click', () => setOpen(panel.hidden));
-    openButton.addEventListener('animationiteration', (event) => {
-      if (event.animationName === 'service-agent-bounce' && panel.hidden) playBounceSound();
-    });
-    soundButton.addEventListener('click', async () => {
-      soundEnabled = !soundEnabled;
-      try { localStorage.setItem('service-agent-sound', soundEnabled ? 'on' : 'off'); } catch {}
-      updateSoundButton();
-      if (soundEnabled) {
-        await unlockAudio();
-        playReplySound();
-      }
+    inviteOpen.addEventListener('click', () => setOpen(true));
+    inviteClose.addEventListener('click', () => {
+      invite.hidden = true;
+      try { sessionStorage.setItem('service-agent-invite-dismissed', 'true'); } catch {}
     });
     closeButton.addEventListener('click', () => setOpen(false));
     document.addEventListener('keydown', (event) => {
@@ -529,6 +481,15 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
 
 <style is:global>
   .service-agent { position: fixed; right: 20px; bottom: 20px; z-index: 80; font-family: var(--font-body); }
+  .service-agent__invite { position: absolute; right: 0; bottom: calc(100% + 14px); width: min(340px, calc(100vw - 24px)); padding: 20px 20px 18px; background: white; border: 1px solid var(--color-divider); box-shadow: 0 18px 48px rgba(10, 28, 43, .2); }
+  .service-agent__invite[hidden] { display: none; }
+  .service-agent__invite::after { content: ''; position: absolute; right: 36px; bottom: -9px; width: 16px; height: 16px; transform: rotate(45deg); background: white; border-right: 1px solid var(--color-divider); border-bottom: 1px solid var(--color-divider); }
+  .service-agent__invite strong { display: block; padding-right: 28px; color: var(--color-accent-900); font: 600 18px var(--font-heading); text-transform: uppercase; letter-spacing: .03em; }
+  .service-agent__invite strong span { color: #2ca66f; font-size: 12px; vertical-align: 2px; }
+  .service-agent__invite p { margin: 10px 0 16px; color: color-mix(in srgb, var(--color-text) 72%, transparent); font-size: 14px; line-height: 1.45; }
+  .service-agent__invite-close { position: absolute; top: 9px; right: 11px; border: 0; padding: 2px 6px; background: transparent; color: var(--color-text); font-size: 25px; line-height: 1; cursor: pointer; }
+  .service-agent__invite-action { display: block; margin-left: auto; border: 0; padding: 11px 18px; background: var(--color-accent-900); color: white; font: 600 14px var(--font-heading); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+  .service-agent__invite-action:hover, .service-agent__invite-action:focus-visible { background: var(--color-accent-700); }
   .service-agent__launcher { border: 0; padding: 14px 18px; background: var(--color-accent-900); color: white; box-shadow: var(--shadow-lg); font: 600 15px var(--font-heading); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; animation: service-agent-bounce 5s ease-in-out infinite; }
   .service-agent__launcher[aria-expanded='true'] { animation-play-state: paused; }
   @keyframes service-agent-bounce {
@@ -548,8 +509,6 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
   .service-agent__header span { margin-top: 2px; font-size: 12px; opacity: .72; }
   .service-agent__header-actions { display: flex; align-items: center; gap: 8px; }
   .service-agent__header-actions button { border: 0; background: transparent; color: white; line-height: 1; cursor: pointer; }
-  .service-agent__header-actions [data-agent-sound] { padding: 6px; border: 1px solid color-mix(in srgb, white 35%, transparent); font: 600 10px var(--font-body); text-transform: uppercase; }
-  .service-agent__header-actions [data-agent-sound][aria-pressed='false'] { opacity: .58; }
   .service-agent__header-actions [data-agent-close] { padding: 2px; font-size: 28px; }
   .service-agent__safety { flex: 0 0 auto; padding: 10px 16px; background: #fff5df; color: #5b4010; border-bottom: 1px solid #e7d3aa; font-size: 12px; line-height: 1.35; }
   .service-agent__body { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
@@ -616,5 +575,6 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     }
     .service-agent__messages { min-height: 0; }
     .service-agent__launcher { padding: 13px 15px; font-size: 13px; }
+    .service-agent__invite { width: min(320px, calc(100vw - 24px)); padding: 18px; }
   }
 </style>
