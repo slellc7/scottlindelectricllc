@@ -12,9 +12,6 @@ const openaiApiKey = defineSecret('OPENAI_API_KEY');
 const resendApiKey = defineSecret('RESEND_API_KEY');
 const twilioAccountSid = defineSecret('TWILIO_ACCOUNT_SID');
 const twilioAuthToken = defineSecret('TWILIO_AUTH_TOKEN');
-const googleClientId = defineSecret('GOOGLE_BUSINESS_CLIENT_ID');
-const googleClientSecret = defineSecret('GOOGLE_BUSINESS_CLIENT_SECRET');
-const googleRefreshToken = defineSecret('GOOGLE_BUSINESS_REFRESH_TOKEN');
 
 const openaiModel = defineString('OPENAI_MODEL', { default: 'gpt-5.6' });
 const allowedOrigins = defineString('ALLOWED_ORIGINS', {
@@ -24,8 +21,6 @@ const resendFromEmail = defineString('RESEND_FROM_EMAIL');
 const businessEmailTo = defineString('BUSINESS_EMAIL_TO');
 const twilioFromNumber = defineString('TWILIO_FROM_NUMBER');
 const businessSmsTo = defineString('BUSINESS_SMS_TO');
-const googleBusinessAccountId = defineString('GOOGLE_BUSINESS_ACCOUNT_ID');
-const googleBusinessLocationId = defineString('GOOGLE_BUSINESS_LOCATION_ID');
 
 type Lead = {
   name: string | null;
@@ -33,6 +28,8 @@ type Lead = {
   email: string | null;
   address: string | null;
   city: string | null;
+  state: string | null;
+  addressConfirmed: boolean;
   issue: string | null;
   serviceType: 'residential' | 'commercial' | 'urgent' | null;
 };
@@ -42,18 +39,20 @@ type RequestedField = 'name' | 'phone' | 'email' | 'address';
 
 const EMPTY_LEAD: Lead = {
   name: null, phone: null, email: null, address: null,
-  city: null, issue: null, serviceType: null,
+  city: null, state: null, addressConfirmed: false, issue: null, serviceType: null,
 };
 
 const SYSTEM_PROMPT = `You are the website lead coordinator for Scott Lind Electric LLC in Idaho Falls, Idaho.
 
-Briefly and warmly collect a potential customer's name, phone, optional email, service address, the electrical problem, and whether it is residential, commercial, or urgent. Ask one or two related questions at a time. Never promise an arrival time, price, diagnosis, or code compliance. Never ask a visitor to open a panel, touch wiring, test live equipment, or take any electrical risk.
+Briefly and warmly collect a potential customer's name, phone, optional email, service address, and electrical problem. Residential or commercial is already collected before this conversation. Ask one clear question at a time and let the visitor type every answer. Never promise an arrival time, price, diagnosis, or code compliance. Never ask a visitor to open a panel, touch wiring, test live equipment, or take any electrical risk.
 
-Whenever you ask for name, phone, email, or address, tell the visitor to complete the form shown below and list those exact fields in requestedFields. Do not ask them to type contact details into chat. Prefer name and phone together, followed by email and address together. Email is optional; if the conversation says it was left blank, do not ask for it again. Use an empty requestedFields array when you are not asking for contact information.
+Ask for details conversationally in this order when they are missing: electrical problem, name, phone, optional email, then full service address including city, state, and ZIP. Tell the visitor they may type "skip" when asked for optional email. Extract typed details into lead. Use an empty requestedFields array; the website no longer shows contact-detail forms.
+
+When extracting an address, keep the street address in address, city in city, and two-letter state abbreviation in state when known. Never set addressConfirmed true yourself; the server confirms the address with the visitor. Scott Lind Electric only accepts requests in Idaho. Do not mark a lead ready until addressConfirmed is true.
 
 If there is smoke, fire, flames, a burning smell, active sparking, a hot or buzzing panel, electrical shock, or a downed power line, tell the visitor to move away, call 911 for fire, injury, or immediate danger, call their utility for a downed line, and call Scott Lind Electric at 208-716-1240 only once safe. Mark emergency true.
 
-Email is optional. A lead is ready when name, phone, issue, and service address are present. When ready, say you have the essentials and ask them to review and send their information to Scott Lind Electric using the button below. Keep replies under 70 words.`;
+Email is optional. A lead is ready when name, phone, issue, service address, and address confirmation are present. When ready, say you have the essentials and ask them to review and send their information to Scott Lind Electric using the button below. Keep replies under 70 words.`;
 
 const intakeSchema = {
   type: 'object', additionalProperties: false,
@@ -66,11 +65,12 @@ const intakeSchema = {
     },
     lead: {
       type: 'object', additionalProperties: false,
-      required: ['name', 'phone', 'email', 'address', 'city', 'issue', 'serviceType'],
+      required: ['name', 'phone', 'email', 'address', 'city', 'state', 'addressConfirmed', 'issue', 'serviceType'],
       properties: {
         name: { type: ['string', 'null'] }, phone: { type: ['string', 'null'] },
         email: { type: ['string', 'null'] }, address: { type: ['string', 'null'] },
-        city: { type: ['string', 'null'] }, issue: { type: ['string', 'null'] },
+        city: { type: ['string', 'null'] }, state: { type: ['string', 'null'] },
+        addressConfirmed: { type: 'boolean' }, issue: { type: ['string', 'null'] },
         serviceType: { type: ['string', 'null'], enum: ['residential', 'commercial', 'urgent', null] },
       },
     },
@@ -87,7 +87,8 @@ function cleanLead(value: unknown): Lead {
     ? (lead.serviceType as Lead['serviceType']) : null;
   return {
     name: clean(lead.name, 100), phone: clean(lead.phone, 40), email: clean(lead.email, 200),
-    address: clean(lead.address, 200), city: clean(lead.city, 100), issue: clean(lead.issue, 1000),
+    address: clean(lead.address, 200), city: clean(lead.city, 100), state: clean(lead.state, 20),
+    addressConfirmed: lead.addressConfirmed === true, issue: clean(lead.issue, 1000),
     serviceType,
   };
 }
@@ -109,7 +110,8 @@ function isDangerous(text: string) {
 function leadText(lead: Lead) {
   return [`Name: ${lead.name ?? 'Not provided'}`, `Phone: ${lead.phone ?? 'Not provided'}`,
     `Email: ${lead.email ?? 'Not provided'}`, `Address: ${lead.address ?? 'Not provided'}`,
-    `City: ${lead.city ?? 'Not provided'}`, `Type: ${lead.serviceType ?? 'Not specified'}`,
+    `City: ${lead.city ?? 'Not provided'}`, `State: ${lead.state ?? 'Not provided'}`,
+    `Address confirmed: ${lead.addressConfirmed ? 'Yes' : 'No'}`, `Type: ${lead.serviceType ?? 'Not specified'}`,
     `Problem: ${lead.issue ?? 'Not provided'}`].join('\n');
 }
 
@@ -162,6 +164,9 @@ async function storeAndNotify(lead: Lead, source: unknown, requestId: unknown, c
   if (!lead.name || !lead.phone || !lead.issue || !lead.address) {
     return { status: 400, body: { error: 'Name, phone, problem, and service address are required.' } };
   }
+  if (!lead.addressConfirmed || !['ID', 'IDAHO'].includes((lead.state ?? '').toUpperCase())) {
+    return { status: 400, body: { error: 'A confirmed Idaho service address is required.' } };
+  }
   if (consent !== true) {
     return { status: 400, body: { error: 'Consent is required before sending this request.' } };
   }
@@ -207,12 +212,9 @@ async function storeAndNotify(lead: Lead, source: unknown, requestId: unknown, c
   return { status: 200, body: { ok: true, saved: true, delivered, notifications, customerConfirmations } };
 }
 
-async function searchAddresses(value: unknown) {
-  const query = clean(value, 200);
-  if (!query || query.length < 6) {
-    return { status: 400, body: { error: 'Enter a street address to look up.' } };
-  }
-  const address = /\b(idaho|id)\b/i.test(query) ? query : `${query}, Idaho`;
+type AddressMatch = { address: string; city: string; state: string };
+
+async function fetchAddressMatches(address: string): Promise<AddressMatch[]> {
   const url = new URL('https://geocoding.geo.census.gov/geocoder/locations/onelineaddress');
   url.search = new URLSearchParams({ address, benchmark: 'Public_AR_Current', format: 'json' }).toString();
   const providerResponse = await fetch(url, { headers: { Accept: 'application/json' } });
@@ -223,13 +225,36 @@ async function searchAddresses(value: unknown) {
       addressComponents?: { city?: unknown; state?: unknown };
     }> };
   };
-  const matches = (data.result?.addressMatches ?? []).flatMap((match) => {
+  return (data.result?.addressMatches ?? []).flatMap((match) => {
     const matchedAddress = clean(match.matchedAddress, 200);
     const city = clean(match.addressComponents?.city, 100);
     const state = clean(match.addressComponents?.state, 10);
-    return matchedAddress && city && state === 'ID' ? [{ address: matchedAddress, city }] : [];
+    return matchedAddress && city && state ? [{ address: matchedAddress, city, state: state.toUpperCase() }] : [];
   }).slice(0, 5);
+}
+
+async function findAddressMatches(query: string) {
+  const directMatches = await fetchAddressMatches(query);
+  const includesState = /\b(?:Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming)\b|(?:,\s*|\s)(?:AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)(?:\s+\d{5}(?:-\d{4})?|\s*$)/i.test(query);
+  if (directMatches.length || includesState) return directMatches;
+  return fetchAddressMatches(`${query}, Idaho`);
+}
+
+async function searchAddresses(value: unknown) {
+  const query = clean(value, 200);
+  if (!query || query.length < 6) {
+    return { status: 400, body: { error: 'Enter a street address to look up.' } };
+  }
+  const matches = await findAddressMatches(query);
   return { status: 200, body: { matches } };
+}
+
+function isAffirmative(value: string) {
+  return /^(yes|yep|yeah|correct|that'?s correct|right|looks? (?:good|right)|it is)\b/i.test(value.trim());
+}
+
+function isNegative(value: string) {
+  return /^(no|nope|incorrect|wrong|not correct|that'?s wrong)\b/i.test(value.trim());
 }
 
 export const serviceAgent = onRequest({
@@ -259,6 +284,18 @@ export const serviceAgent = onRequest({
       response.json({ reply: 'Please move away from the electrical hazard. If there is fire, smoke, injury, or immediate danger, call 911 now. For a downed line, stay well clear and call your utility. Once you are safe, call Scott Lind Electric at 208-716-1240.', ready: false, emergency: true, requestedFields: [], lead });
       return;
     }
+    if (lead.address && !lead.addressConfirmed) {
+      if (isNegative(lastMessage)) {
+        const revisedLead = { ...lead, address: null, city: null, state: null, addressConfirmed: false };
+        response.json({ reply: 'No problem. Please type the full service address again, including the city, state, and ZIP code.', ready: false, emergency: false, outOfArea: false, requestedFields: [], lead: revisedLead });
+        return;
+      }
+      if (!isAffirmative(lastMessage)) {
+        response.json({ reply: `Please answer yes or no: is ${lead.address} the correct service address?`, ready: false, emergency: false, outOfArea: false, requestedFields: [], lead });
+        return;
+      }
+      lead.addressConfirmed = true;
+    }
     const client = new OpenAI({ apiKey: openaiApiKey.value() });
     const aiResponse = await client.responses.create({
       model: openaiModel.value(), store: false, instructions: SYSTEM_PROMPT,
@@ -266,10 +303,33 @@ export const serviceAgent = onRequest({
       text: { format: { type: 'json_schema', name: 'service_intake', strict: true, schema: intakeSchema } },
     });
     const result = JSON.parse(aiResponse.output_text) as { reply: string; ready: boolean; emergency: boolean; requestedFields: RequestedField[]; lead: Lead };
-    const requestedFields = Array.isArray(result.requestedFields)
-      ? result.requestedFields.filter((field): field is RequestedField => ['name', 'phone', 'email', 'address'].includes(field)).slice(0, 2)
-      : [];
-    response.json({ ...result, requestedFields, lead: cleanLead(result.lead) });
+    const resultLead = cleanLead(result.lead);
+    if (resultLead.address && !lead.address && !resultLead.addressConfirmed) {
+      const matches = await findAddressMatches([resultLead.address, resultLead.city, resultLead.state].filter(Boolean).join(', '));
+      const match = matches[0];
+      if (match) {
+        resultLead.address = match.address;
+        resultLead.city = match.city;
+        resultLead.state = match.state;
+      }
+      const state = (match?.state ?? resultLead.state ?? '').toUpperCase();
+      if (state && state !== 'ID' && state !== 'IDAHO') {
+        response.json({ reply: 'Thanks for checking with us. That address is outside Idaho, so it is outside Scott Lind Electric’s service area. Please contact a licensed electrician who serves your area.', ready: false, emergency: false, outOfArea: true, requestedFields: [], lead: resultLead });
+        return;
+      }
+      if (!state) {
+        resultLead.address = null;
+        resultLead.city = null;
+        resultLead.state = null;
+        response.json({ reply: 'I couldn’t confirm that location. Please type the full service address, including the city, state, and ZIP code.', ready: false, emergency: false, outOfArea: false, requestedFields: [], lead: resultLead });
+        return;
+      }
+      response.json({ reply: `I found ${resultLead.address}. Is this the correct service address?`, ready: false, emergency: false, outOfArea: false, requestedFields: [], lead: resultLead });
+      return;
+    }
+    resultLead.addressConfirmed = lead.addressConfirmed;
+    const ready = Boolean(resultLead.name && resultLead.phone && resultLead.issue && resultLead.address && resultLead.addressConfirmed);
+    response.json({ ...result, ready, outOfArea: false, requestedFields: [], lead: resultLead });
   } catch (error) {
     console.error('serviceAgent failed', error);
     response.status(502).json({ error: 'The assistant is temporarily unavailable. Please call 208-716-1240.' });
@@ -281,7 +341,7 @@ const starNumbers: Record<string, number> = { ONE: 1, TWO: 2, THREE: 3, FOUR: 4,
 
 export const googleReviews = onRequest({
   region: 'us-central1', timeoutSeconds: 30, maxInstances: 5,
-  secrets: [googleClientId, googleClientSecret, googleRefreshToken],
+  secrets: ['GOOGLE_BUSINESS_CLIENT_ID', 'GOOGLE_BUSINESS_CLIENT_SECRET', 'GOOGLE_BUSINESS_REFRESH_TOKEN'],
 }, async (request, response) => {
   response.set('Access-Control-Allow-Origin', '*');
   response.set('Cache-Control', 'public, max-age=900, s-maxage=3600, stale-while-revalidate=86400');
@@ -290,12 +350,17 @@ export const googleReviews = onRequest({
     const pageSize = Math.min(Math.max(Number(request.query.pageSize) || 6, 1), 50);
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ client_id: googleClientId.value(), client_secret: googleClientSecret.value(), refresh_token: googleRefreshToken.value(), grant_type: 'refresh_token' }),
+      body: new URLSearchParams({
+        client_id: process.env.GOOGLE_BUSINESS_CLIENT_ID ?? '',
+        client_secret: process.env.GOOGLE_BUSINESS_CLIENT_SECRET ?? '',
+        refresh_token: process.env.GOOGLE_BUSINESS_REFRESH_TOKEN ?? '',
+        grant_type: 'refresh_token',
+      }),
     });
     if (!tokenResponse.ok) throw new Error(`Google OAuth returned ${tokenResponse.status}`);
     const token = await tokenResponse.json() as { access_token?: string };
     if (!token.access_token) throw new Error('Google OAuth returned no access token');
-    const reviewsUrl = new URL(`https://mybusiness.googleapis.com/v4/accounts/${googleBusinessAccountId.value()}/locations/${googleBusinessLocationId.value()}/reviews`);
+    const reviewsUrl = new URL(`https://mybusiness.googleapis.com/v4/accounts/${process.env.GOOGLE_BUSINESS_ACCOUNT_ID}/locations/${process.env.GOOGLE_BUSINESS_LOCATION_ID}/reviews`);
     reviewsUrl.searchParams.set('pageSize', String(pageSize));
     reviewsUrl.searchParams.set('orderBy', 'updateTime desc');
     if (typeof request.query.pageToken === 'string') reviewsUrl.searchParams.set('pageToken', request.query.pageToken);

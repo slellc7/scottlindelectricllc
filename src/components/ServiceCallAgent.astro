@@ -71,40 +71,6 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
         <button class="btn btn-primary blueprint btn-md" type="submit">Continue</button>
       </form>
 
-      <form class="service-agent__details" data-agent-details hidden>
-      <strong data-agent-details-title>Your details</strong>
-
-      <div class="service-agent__field" data-detail-field="name" hidden>
-        <label for="service-agent-name">Name</label>
-        <input id="service-agent-name" name="name" type="text" maxlength="100" autocomplete="name" data-detail-input="name" />
-      </div>
-
-      <div class="service-agent__field" data-detail-field="phone" hidden>
-        <label for="service-agent-phone">Phone</label>
-        <input id="service-agent-phone" name="phone" type="tel" maxlength="40" autocomplete="tel" inputmode="tel" data-detail-input="phone" />
-      </div>
-
-      <div class="service-agent__field" data-detail-field="email" hidden>
-        <label for="service-agent-email">Email <span>(optional)</span></label>
-        <input id="service-agent-email" name="email" type="email" maxlength="200" autocomplete="email" data-detail-input="email" />
-      </div>
-
-      <div class="service-agent__field" data-detail-field="address" hidden>
-        <label for="service-agent-address">Service address</label>
-        <div class="service-agent__address-row">
-          <input id="service-agent-address" name="address" type="search" maxlength="200" autocomplete="street-address" placeholder="Street, city, or ZIP" data-detail-input="address" />
-          <button type="button" data-address-search>Look up</button>
-        </div>
-        <p class="service-agent__address-status" data-address-status aria-live="polite"></p>
-        <div class="service-agent__address-results" data-address-results hidden aria-label="Address matches"></div>
-        <small>Address lookup provided by the U.S. Census Bureau.</small>
-      </div>
-
-      <button class="btn btn-primary blueprint btn-md" type="submit" data-details-submit>
-        Continue
-      </button>
-      </form>
-
       <div class="service-agent__review" data-agent-review hidden>
       <strong>Review your request</strong>
       <dl data-agent-summary></dl>
@@ -126,7 +92,7 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
 
       <form class="service-agent__composer" data-agent-form hidden>
         <label class="visually-hidden" for="service-agent-message">Your message</label>
-        <textarea id="service-agent-message" rows="2" maxlength="1500" data-agent-input required placeholder="Describe the electrical problem"></textarea>
+        <textarea id="service-agent-message" rows="2" maxlength="1500" data-agent-input required placeholder="Type your answer"></textarea>
         <button type="submit" aria-label="Send message">Send</button>
       </form>
       <p class="service-agent__error" data-agent-error hidden>
@@ -159,22 +125,10 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     const summary = root.querySelector('[data-agent-summary]');
     const consent = root.querySelector('[data-agent-consent]');
     const submitButton = root.querySelector('[data-agent-submit]');
-    const detailsForm = root.querySelector('[data-agent-details]');
-    const detailsTitle = root.querySelector('[data-agent-details-title]');
-    const detailsSubmit = root.querySelector('[data-details-submit]');
-    const detailFields = [...root.querySelectorAll('[data-detail-field]')];
-    const detailInputs = Object.fromEntries(
-      [...root.querySelectorAll('[data-detail-input]')].map((element) => [element.dataset.detailInput, element]),
-    );
-    const addressSearch = root.querySelector('[data-address-search]');
-    const addressStatus = root.querySelector('[data-address-status]');
-    const addressResults = root.querySelector('[data-address-results]');
     const endpoint = root.dataset.endpoint;
     const requestId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const sendButton = form?.querySelector('button[type="submit"]');
-    let lead = { name: null, phone: null, email: null, address: null, city: null, issue: null, serviceType: null };
-    let requestedFields = [];
-    let selectedAddress = null;
+    let lead = { name: null, phone: null, email: null, address: null, city: null, state: null, addressConfirmed: false, issue: null, serviceType: null };
     let audioContext = null;
     let audioUnlocked = false;
     let typingSoundTimer = null;
@@ -227,13 +181,7 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
       if (open) invite.hidden = true;
       openButton.setAttribute('aria-expanded', String(open));
       if (open) setTimeout(() => {
-        const nextInput = !triageForm.hidden
-          ? triageForm.querySelector('input')
-          : !detailsForm.hidden
-            ? detailsForm.querySelector('[data-detail-field]:not([hidden]) input')
-            : !form.hidden
-              ? input
-              : closeButton;
+        const nextInput = !triageForm.hidden ? triageForm.querySelector('input') : !form.hidden ? input : closeButton;
         nextInput?.focus();
       }, 0);
       else openButton.focus();
@@ -254,7 +202,6 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
       input.disabled = busy;
       sendButton.disabled = busy;
       sendButton.textContent = busy ? '…' : 'Send';
-      detailsSubmit.disabled = busy;
     };
 
     const addMessage = (role, content) => {
@@ -291,7 +238,7 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     const showReview = () => {
       const values = [
         ['Name', lead.name], ['Phone', lead.phone], ['Email', lead.email],
-        ['Location', [lead.address, lead.city].filter(Boolean).join(', ')],
+        ['Location', lead.address],
         ['Problem', lead.issue],
       ].filter(([, value]) => value);
       summary.replaceChildren();
@@ -303,41 +250,8 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
         summary.append(dt, dd);
       }
       review.hidden = false;
-      detailsForm.hidden = true;
       form.hidden = true;
       review.scrollIntoView({ block: 'nearest' });
-    };
-
-    const renderDetails = (fields) => {
-      requestedFields = fields.filter((field) => {
-        if (field === 'address') return !lead.address;
-        return !lead[field];
-      });
-      for (const wrapper of detailFields) {
-        const active = requestedFields.includes(wrapper.dataset.detailField);
-        wrapper.hidden = !active;
-        const fieldInput = wrapper.querySelector('input');
-        if (fieldInput) fieldInput.required = active && wrapper.dataset.detailField !== 'email';
-      }
-      if (!requestedFields.length) {
-        detailsForm.hidden = true;
-        form.hidden = false;
-        input.focus();
-        return;
-      }
-      detailsTitle.textContent = requestedFields.includes('address') ? 'Contact and service address' : 'Contact details';
-      detailInputs.name.value = lead.name ?? '';
-      detailInputs.phone.value = lead.phone ?? '';
-      detailInputs.email.value = lead.email ?? '';
-      detailInputs.address.value = lead.address ?? '';
-      selectedAddress = lead.address ? { address: lead.address, city: lead.city } : null;
-      addressStatus.textContent = '';
-      addressResults.replaceChildren();
-      addressResults.hidden = true;
-      review.hidden = true;
-      form.hidden = true;
-      detailsForm.hidden = false;
-      detailsForm.querySelector('[data-detail-field]:not([hidden]) input')?.focus();
     };
 
     const applyAssistantResult = (result) => {
@@ -345,8 +259,10 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
       addMessage('assistant', result.reply);
       if (result.ready && !result.emergency) {
         showReview();
-      } else if (!result.emergency) {
-        renderDetails(Array.isArray(result.requestedFields) ? result.requestedFields : []);
+      } else if (result.emergency || result.outOfArea) {
+        form.hidden = true;
+      } else {
+        form.hidden = false;
       }
     };
 
@@ -366,32 +282,6 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
         setChatBusy(false);
         if (!form.hidden) input.focus();
       }
-    };
-
-    const selectAddress = (match, button) => {
-      selectedAddress = match;
-      detailInputs.address.value = match.address;
-      for (const option of addressResults.querySelectorAll('button')) option.setAttribute('aria-pressed', 'false');
-      button.setAttribute('aria-pressed', 'true');
-      addressStatus.textContent = 'Address selected.';
-    };
-
-    const showAddressMatches = (matches, enteredAddress) => {
-      addressResults.replaceChildren();
-      const options = matches.length ? matches : [{ address: enteredAddress, city: null }];
-      for (const match of options) {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'service-agent__address-option';
-        button.textContent = matches.length ? match.address : `Use “${enteredAddress}”`;
-        button.setAttribute('aria-pressed', 'false');
-        button.addEventListener('click', () => selectAddress(match, button));
-        addressResults.append(button);
-      }
-      addressResults.hidden = false;
-      addressStatus.textContent = matches.length
-        ? 'Select the correct address.'
-        : 'No exact match was found. You can use the address as entered.';
     };
 
     openButton.addEventListener('click', () => setOpen(panel.hidden));
@@ -448,55 +338,6 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
       if (!content || !endpoint) return;
       addMessage('user', content);
       input.value = '';
-      await requestAssistant();
-    });
-
-    addressSearch.addEventListener('click', async () => {
-      const query = detailInputs.address.value.trim();
-      if (query.length < 6 || !endpoint) {
-        addressStatus.textContent = 'Enter a street address, city, or ZIP first.';
-        return;
-      }
-      selectedAddress = null;
-      addressSearch.disabled = true;
-      addressSearch.textContent = 'Looking…';
-      addressStatus.textContent = 'Looking for Idaho address matches…';
-      addressResults.hidden = true;
-      try {
-        const result = await post({ action: 'addressSearch', query });
-        showAddressMatches(result.matches ?? [], query);
-      } catch {
-        addressStatus.textContent = 'Address lookup is temporarily unavailable. Try again or call us.';
-      } finally {
-        addressSearch.disabled = false;
-        addressSearch.textContent = 'Look up';
-      }
-    });
-
-    detailInputs.address.addEventListener('input', () => {
-      selectedAddress = null;
-      addressResults.hidden = true;
-      addressStatus.textContent = '';
-    });
-
-    detailsForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (!detailsForm.reportValidity()) return;
-      if (requestedFields.includes('address') && !selectedAddress) {
-        addressStatus.textContent = 'Look up and select the service address before continuing.';
-        detailInputs.address.focus();
-        return;
-      }
-      if (requestedFields.includes('name')) lead.name = detailInputs.name.value.trim() || null;
-      if (requestedFields.includes('phone')) lead.phone = detailInputs.phone.value.trim() || null;
-      if (requestedFields.includes('email')) lead.email = detailInputs.email.value.trim() || null;
-      if (requestedFields.includes('address')) {
-        lead.address = selectedAddress.address;
-        lead.city = selectedAddress.city;
-      }
-      const emailNote = requestedFields.includes('email') && !lead.email ? ' Email was left blank.' : '';
-      detailsForm.hidden = true;
-      addMessage('user', `I completed the requested form.${emailNote}`);
       await requestAssistant();
     });
 
@@ -575,7 +416,7 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     0%, 80%, 100% { transform: translateY(0); opacity: .35; }
     40% { transform: translateY(-4px); opacity: 1; }
   }
-  .service-agent__triage, .service-agent__details { margin: 0 16px 14px; padding: 14px; border: 1px solid var(--color-divider); background: #f7f9fa; }
+  .service-agent__triage { margin: 0 16px 14px; padding: 14px; border: 1px solid var(--color-divider); background: #f7f9fa; }
   .service-agent__triage fieldset { min-width: 0; margin: 0 0 14px; padding: 0; border: 0; }
   .service-agent__triage legend { margin-bottom: 8px; font-size: 13px; font-weight: 700; }
   .service-agent__choice-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
@@ -584,23 +425,6 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
   .service-agent__choice input { flex: 0 0 auto; margin: 2px 0 0; accent-color: var(--color-accent-700); }
   .service-agent__choice--danger:has(input:checked) { border-color: #a33b2e; background: #fff0ed; }
   .service-agent__triage-error { margin: -4px 0 10px; color: #8a1c1c; font-size: 12px; }
-  .service-agent__details { overflow: visible; }
-  .service-agent__details > strong { display: block; margin-bottom: 10px; font: 600 16px var(--font-heading); text-transform: uppercase; }
-  .service-agent__field { margin-bottom: 10px; }
-  .service-agent__field[hidden] { display: none; }
-  .service-agent__field label { display: block; margin-bottom: 4px; font-size: 12px; font-weight: 700; }
-  .service-agent__field label span, .service-agent__field small { font-weight: 400; color: color-mix(in srgb, var(--color-text) 58%, transparent); }
-  .service-agent__field input { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid var(--color-divider); background: white; color: var(--color-text); font: inherit; }
-  .service-agent__field input:focus { outline: 2px solid var(--color-accent); outline-offset: 1px; }
-  .service-agent__address-row { display: grid; grid-template-columns: 1fr auto; gap: 6px; }
-  .service-agent__address-row button { border: 0; padding: 0 10px; background: var(--color-accent-700); color: white; font: 600 12px var(--font-heading); text-transform: uppercase; cursor: pointer; }
-  .service-agent__address-row button:disabled { opacity: .55; }
-  .service-agent__address-status { margin: 6px 0 0; font-size: 11px; line-height: 1.35; }
-  .service-agent__address-results { display: grid; gap: 5px; margin-top: 7px; }
-  .service-agent__address-results[hidden] { display: none; }
-  .service-agent__address-option { width: 100%; border: 1px solid var(--color-divider); padding: 8px; background: white; color: var(--color-text); text-align: left; font: 500 11px/1.35 var(--font-body); cursor: pointer; }
-  .service-agent__address-option[aria-pressed='true'] { border-color: var(--color-accent-700); background: var(--color-accent-100); }
-  .service-agent__details > .btn { margin-top: 4px; }
   .service-agent__review { margin: 0 16px 14px; padding: 14px; border: 1px solid var(--color-divider); background: #f7f9fa; }
   .service-agent__review > strong { font: 600 16px var(--font-heading); text-transform: uppercase; }
   .service-agent__review dl { display: grid; grid-template-columns: 90px 1fr; gap: 4px 10px; margin: 10px 0; font-size: 12px; line-height: 1.4; }
