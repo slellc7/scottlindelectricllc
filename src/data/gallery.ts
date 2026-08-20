@@ -99,6 +99,11 @@ export const photoMeta: Record<string, PhotoMeta> = {
     caption: 'Panel and conduit work, electrical room',
     category: 'Commercial',
   },
+  '15-universal-gym': {
+    alt: 'Large commercial gym interior under construction with suspended linear lighting, exposed steel framing and an elevated running track',
+    caption: 'Universal gym',
+    category: 'Commercial',
+  },
 };
 
 /** Fallback when a file has no entry above. Honest, if unspecific. */
