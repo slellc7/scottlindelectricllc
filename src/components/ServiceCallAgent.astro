@@ -175,8 +175,44 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     let lead = { name: null, phone: null, email: null, address: null, city: null, issue: null, serviceType: null };
     let requestedFields = [];
     let selectedAddress = null;
+    let audioContext = null;
+    let audioUnlocked = false;
     const messages = [{ role: 'assistant', content: 'Hi — I’ll collect a few details and send your request to Scott Lind Electric. First, choose the options below.' }];
     try { invite.hidden = sessionStorage.getItem('service-agent-invite-dismissed') === 'true'; } catch {}
+
+    const unlockAudio = async () => {
+      if (audioUnlocked) return;
+      const AudioContext = globalThis.AudioContext || globalThis.webkitAudioContext;
+      if (!AudioContext) return;
+      audioContext ??= new AudioContext();
+      try {
+        await audioContext.resume();
+        audioUnlocked = audioContext.state === 'running';
+      } catch {}
+    };
+
+    const playTone = (frequency, delay = 0, duration = .09, volume = .025) => {
+      if (!audioUnlocked || audioContext?.state !== 'running') return;
+      const start = audioContext.currentTime + delay;
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(frequency, start);
+      gain.gain.setValueAtTime(.0001, start);
+      gain.gain.exponentialRampToValueAtTime(volume, start + .012);
+      gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+      oscillator.connect(gain).connect(audioContext.destination);
+      oscillator.start(start);
+      oscillator.stop(start + duration + .02);
+    };
+
+    const playReplySound = () => {
+      playTone(660, 0, .09, .025);
+      playTone(880, .1, .12, .022);
+    };
+
+    document.addEventListener('pointerdown', unlockAudio, { capture: true });
+    document.addEventListener('keydown', unlockAudio, { capture: true });
 
     const setOpen = (open) => {
       panel.hidden = !open;
@@ -219,6 +255,7 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
       item.textContent = content;
       list.append(item);
       messages.push({ role, content });
+      if (role === 'assistant') playReplySound();
       requestAnimationFrame(() => { scrollArea.scrollTop = scrollArea.scrollHeight; });
     };
 
@@ -481,7 +518,7 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
 
 <style is:global>
   .service-agent { position: fixed; right: 20px; bottom: 20px; z-index: 80; font-family: var(--font-body); }
-  .service-agent__invite { position: absolute; right: 0; bottom: calc(100% + 14px); width: min(340px, calc(100vw - 24px)); padding: 20px 20px 18px; background: white; border: 1px solid var(--color-divider); box-shadow: 0 18px 48px rgba(10, 28, 43, .2); }
+  .service-agent__invite { position: absolute; right: 0; bottom: calc(100% + 14px); z-index: 2; width: min(340px, calc(100vw - 24px)); padding: 20px 20px 18px; background: white; border: 1px solid var(--color-divider); box-shadow: 0 18px 48px rgba(10, 28, 43, .2); }
   .service-agent__invite[hidden] { display: none; }
   .service-agent__invite::after { content: ''; position: absolute; right: 36px; bottom: -9px; width: 16px; height: 16px; transform: rotate(45deg); background: white; border-right: 1px solid var(--color-divider); border-bottom: 1px solid var(--color-divider); }
   .service-agent__invite strong { display: block; padding-right: 28px; color: var(--color-accent-900); font: 600 18px var(--font-heading); text-transform: uppercase; letter-spacing: .03em; }
@@ -490,7 +527,7 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
   .service-agent__invite-close { position: absolute; top: 9px; right: 11px; border: 0; padding: 2px 6px; background: transparent; color: var(--color-text); font-size: 25px; line-height: 1; cursor: pointer; }
   .service-agent__invite-action { display: block; margin-left: auto; border: 0; padding: 11px 18px; background: var(--color-accent-900); color: white; font: 600 14px var(--font-heading); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
   .service-agent__invite-action:hover, .service-agent__invite-action:focus-visible { background: var(--color-accent-700); }
-  .service-agent__launcher { border: 0; padding: 14px 18px; background: var(--color-accent-900); color: white; box-shadow: var(--shadow-lg); font: 600 15px var(--font-heading); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; animation: service-agent-bounce 5s ease-in-out infinite; }
+  .service-agent__launcher { position: relative; z-index: 1; border: 0; padding: 14px 18px; background: var(--color-accent-900); color: white; box-shadow: var(--shadow-lg); font: 600 15px var(--font-heading); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; animation: service-agent-bounce 5s ease-in-out infinite; }
   .service-agent__launcher[aria-expanded='true'] { animation-play-state: paused; }
   @keyframes service-agent-bounce {
     0%, 24%, 100% { transform: translateY(0); }
@@ -502,7 +539,7 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     .service-agent__launcher { animation: none; }
     .service-agent__typing span { animation: none; opacity: .55; }
   }
-  .service-agent__panel { position: absolute; right: 0; bottom: calc(100% + 12px); display: flex; flex-direction: column; width: min(390px, calc(100vw - 24px)); max-height: min(680px, calc(100vh - 110px)); overflow: hidden; background: var(--color-bg); border: 1px solid var(--color-divider); box-shadow: 0 20px 60px rgba(10, 28, 43, .24); }
+  .service-agent__panel { position: absolute; right: 0; bottom: calc(100% + 12px); z-index: 3; display: flex; flex-direction: column; width: min(390px, calc(100vw - 24px)); max-height: min(680px, calc(100vh - 110px)); overflow: hidden; background: var(--color-bg); border: 1px solid var(--color-divider); box-shadow: 0 20px 60px rgba(10, 28, 43, .24); }
   .service-agent__header { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px; background: var(--color-accent-900); color: white; }
   .service-agent__header strong, .service-agent__header span { display: block; }
   .service-agent__header strong { font: 600 19px var(--font-heading); text-transform: uppercase; letter-spacing: .04em; }
