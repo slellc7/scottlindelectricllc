@@ -177,6 +177,7 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     let selectedAddress = null;
     let audioContext = null;
     let audioUnlocked = false;
+    let typingSoundTimer = null;
     const messages = [{ role: 'assistant', content: 'Hi — I’ll collect a few details and send your request to Scott Lind Electric. First, choose the options below.' }];
     try { invite.hidden = sessionStorage.getItem('service-agent-invite-dismissed') === 'true'; } catch {}
 
@@ -209,6 +210,13 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
     const playReplySound = () => {
       playTone(660, 0, .09, .025);
       playTone(880, .1, .12, .022);
+    };
+
+    const playTypingSound = () => {
+      if (panel.hidden) return;
+      playTone(420, 0, .045, .012);
+      playTone(510, .18, .045, .011);
+      playTone(600, .36, .045, .01);
     };
 
     document.addEventListener('pointerdown', unlockAudio, { capture: true });
@@ -267,11 +275,17 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
       item.setAttribute('aria-label', 'Assistant is typing');
       item.innerHTML = '<span></span><span></span><span></span>';
       list.append(item);
+      playTypingSound();
+      typingSoundTimer = globalThis.setInterval(playTypingSound, 1100);
       requestAnimationFrame(() => { scrollArea.scrollTop = scrollArea.scrollHeight; });
     };
 
     const hideTyping = () => {
       root.querySelector('[data-agent-typing]')?.remove();
+      if (typingSoundTimer !== null) {
+        globalThis.clearInterval(typingSoundTimer);
+        typingSoundTimer = null;
+      }
     };
 
     const showReview = () => {
