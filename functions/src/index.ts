@@ -160,7 +160,13 @@ async function sendSms(to: string, body: string) {
   if (!providerResponse.ok) throw new Error(`SMS provider returned ${providerResponse.status}`);
 }
 
-async function storeAndNotify(lead: Lead, source: unknown, requestId: unknown, consent: unknown) {
+async function storeAndNotify(
+  lead: Lead,
+  source: unknown,
+  requestId: unknown,
+  consent: unknown,
+  options: { smsConsent?: boolean; preferredContact?: string; serviceCategory?: string } = {},
+) {
   if (!lead.name || !lead.phone || !lead.issue || !lead.address) {
     return { status: 400, body: { error: 'Name, phone, problem, and service address are required.' } };
   }
@@ -170,19 +176,24 @@ async function storeAndNotify(lead: Lead, source: unknown, requestId: unknown, c
   if (consent !== true) {
     return { status: 400, body: { error: 'Consent is required before sending this request.' } };
   }
+  const smsConsent = options.smsConsent ?? true;
+  const customerPhone = normalizeUsPhone(lead.phone);
+  if (!customerPhone) {
+    return { status: 400, body: { error: 'Enter a valid 10-digit U.S. mobile phone number.' } };
+  }
   const id = typeof requestId === 'string' && /^[a-zA-Z0-9_-]{8,80}$/.test(requestId) ? requestId : randomUUID();
   const leadRef = db.collection('leads').doc(id);
   await leadRef.set({ ...lead, source: clean(source, 300) ?? 'AI website assistant', consent: true,
-    consentChannels: { phone: true, sms: true, email: Boolean(lead.email) },
+    preferredContact: clean(options.preferredContact, 20), serviceCategory: clean(options.serviceCategory, 40),
+    consentChannels: { phone: true, sms: smsConsent, email: Boolean(lead.email) },
     status: 'new', createdAt: FieldValue.serverTimestamp(), notifications: {
-      sms: 'pending', email: 'pending', customerSms: 'pending', customerEmail: lead.email ? 'pending' : 'skipped',
+      sms: 'pending', email: 'pending', customerSms: smsConsent ? 'pending' : 'skipped', customerEmail: lead.email ? 'pending' : 'skipped',
     } });
 
-  const details = leadText(lead);
-  const customerPhone = normalizeUsPhone(lead.phone);
-  const customerSms = customerPhone
+  const details = [leadText(lead), `Requested service: ${options.serviceCategory ?? 'Not specified'}`, `Preferred contact: ${options.preferredContact ?? 'Not specified'}`, `Customer SMS consent: ${smsConsent ? 'Yes' : 'No'}`].join('\n');
+  const customerSms = smsConsent
     ? sendSms(customerPhone, 'Scott Lind Electric: We received your electrical service request. Scott will contact you directly. This is not an appointment confirmation. Reply STOP to opt out or HELP for help. Call 208-716-1240.')
-    : Promise.reject(new Error('Customer phone number is not a valid US number.'));
+    : Promise.resolve();
   const customerEmail = lead.email
     ? sendEmail(
       lead.email,
@@ -199,7 +210,7 @@ async function storeAndNotify(lead: Lead, source: unknown, requestId: unknown, c
   const notifications = {
     sms: results[0].status === 'fulfilled' ? 'sent' : 'failed',
     email: results[1].status === 'fulfilled' ? 'sent' : 'failed',
-    customerSms: results[2].status === 'fulfilled' ? 'sent' : 'failed',
+    customerSms: smsConsent ? (results[2].status === 'fulfilled' ? 'sent' : 'failed') : 'skipped',
     customerEmail: lead.email ? (results[3]?.status === 'fulfilled' ? 'sent' : 'failed') : 'skipped',
   };
   const delivered = [notifications.sms, notifications.email].filter((value) => value === 'sent').length;
@@ -249,6 +260,58 @@ async function searchAddresses(value: unknown) {
   return { status: 200, body: { matches } };
 }
 
+async function storeAdLead(body: Record<string, unknown>) {
+  if (clean(body.company, 100)) return { status: 200, body: { ok: true } };
+  const name = clean(body.name, 100);
+  const phone = clean(body.phone, 40);
+  const email = clean(body.email, 200);
+  const location = clean(body.location, 200);
+  const issue = clean(body.issue, 1000);
+  const serviceCategory = clean(body.serviceCategory, 40);
+  const preferredContact = clean(body.preferredContact, 20)?.toLowerCase();
+  const smsConsent = body.smsConsent === true;
+  const allowedServices = ['residential', 'commercial', 'same-day', 'after-hours'];
+  const allowedContact = ['text', 'email', 'phone'];
+
+  if (!name || !phone || !email || !location || !issue || !serviceCategory || !preferredContact) {
+    return { status: 400, body: { error: 'Complete all required fields before sending your request.' } };
+  }
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    return { status: 400, body: { error: 'Enter a valid email address.' } };
+  }
+  if (!allowedServices.includes(serviceCategory) || !allowedContact.includes(preferredContact)) {
+    return { status: 400, body: { error: 'Choose a valid service type and preferred contact method.' } };
+  }
+  if (preferredContact === 'text' && !smsConsent) {
+    return { status: 400, body: { error: 'To choose Text as your preferred contact method, check the optional SMS consent box or select Email or Phone.' } };
+  }
+
+  const matches = await findAddressMatches(location);
+  const match = matches[0];
+  const zip = location.match(/\b(\d{5})(?:-\d{4})?\b/)?.[1] ?? null;
+  const idahoZip = Boolean(zip && /^83[2-8]\d{2}$/.test(zip));
+  if ((match && match.state !== 'ID') || (zip && !idahoZip)) {
+    return { status: 400, body: { error: 'That location is outside Idaho and outside our service area.' } };
+  }
+  const explicitlyIdaho = /\bIdaho\b|(?:,\s*|\s)ID(?:\s+\d{5}|\s*$)/i.test(location);
+  if (!match && !idahoZip && !explicitlyIdaho) {
+    return { status: 400, body: { error: 'Enter a complete Idaho service address or an Idaho ZIP code.' } };
+  }
+
+  const lead: Lead = {
+    name, phone, email,
+    address: match?.address ?? location,
+    city: match?.city ?? null,
+    state: 'ID',
+    addressConfirmed: true,
+    issue,
+    serviceType: serviceCategory === 'commercial' ? 'commercial' : serviceCategory === 'residential' ? 'residential' : 'urgent',
+  };
+  return storeAndNotify(lead, body.source ?? 'Google Ads request-service landing page', body.requestId, true, {
+    smsConsent, preferredContact, serviceCategory,
+  });
+}
+
 function isAffirmative(value: string) {
   return /^(yes|yep|yeah|correct|that'?s correct|right|looks? (?:good|right)|it is)\b/i.test(value.trim());
 }
@@ -269,6 +332,10 @@ export const serviceAgent = onRequest({
   const body = request.body && typeof request.body === 'object' ? request.body as Record<string, unknown> : {};
   const lead = cleanLead(body.lead ?? EMPTY_LEAD);
   try {
+    if (body.action === 'adLead') {
+      const result = await storeAdLead(body);
+      response.status(result.status).json(result.body); return;
+    }
     if (body.action === 'notify') {
       const result = await storeAndNotify(lead, body.source, body.requestId, body.consent);
       response.status(result.status).json(result.body); return;

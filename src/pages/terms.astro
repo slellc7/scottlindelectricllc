@@ -4,7 +4,7 @@ import Crumb from '../components/Crumb.astro';
 import PageHeading from '../components/PageHeading.astro';
 import { SITE } from '../consts';
 
-const effectiveDate = 'August 17, 2026';
+const effectiveDate = 'August 21, 2026';
 ---
 
 <Base
@@ -76,10 +76,12 @@ const effectiveDate = 'August 17, 2026';
             related customer care. Messages may initially be handled by an AI assistant.
           </p>
           <p>
-            To opt in, text <strong>START</strong> to {SITE.smsPhone}. By doing so, you expressly consent
+            To opt in, text <strong>START</strong> to {SITE.smsPhone}, or enter your mobile number and
+            affirmatively check the optional, unchecked SMS consent box on our
+            <a href="/request-service/">Request Service page</a>. By doing so, you expressly consent
             to receive service-related SMS messages from Scott Lind Electric at the mobile number
-            you use. Consent is not a condition of purchasing services. Message frequency varies.
-            Message and data rates may apply.
+            you provide. Consent is not a condition of purchasing services. Message frequency
+            varies. Message and data rates may apply.
           </p>
           <p>
             You can cancel the SMS service at any time by replying <strong>STOP</strong>. We may send

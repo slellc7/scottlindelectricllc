@@ -1,0 +1,260 @@
+---
+import Base from '../layouts/Base.astro';
+import Corners from '../components/Corners.astro';
+import PageHeading from '../components/PageHeading.astro';
+import { SITE } from '../consts';
+
+const endpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
+  ?? 'https://us-central1-scott-lind-electric.cloudfunctions.net/serviceAgent';
+---
+
+<Base
+  title="Request Electrical Service in Idaho Falls | Scott Lind Electric"
+  description="Request residential, commercial, same-day, or after-hours electrical service from Scott Lind Electric in Idaho Falls, Idaho."
+  breadcrumb="Request Service"
+  service="Electrical service request"
+>
+  <section class="request-hero">
+    <div class="request-shell">
+      <div class="request-intro">
+        <PageHeading kicker={`Licensed Idaho electrician · ${SITE.contractorLicense}`} size="h-page--sm" tight>
+          Need an Electrician in Idaho Falls?
+        </PageHeading>
+        <p class="lead">
+          Request residential, commercial, same-day, or after-hours electrical service from
+          Scott Lind Electric.
+        </p>
+        <div class="request-trust" aria-label="Service highlights">
+          <span>Free estimates</span>
+          <span>No service-call fee within 30 miles</span>
+          <span>Residential &amp; commercial</span>
+        </div>
+        <a class="btn btn-primary blueprint btn-lg" href={SITE.telHref}>
+          <Corners />Call {SITE.phone}
+        </a>
+        <p class="emergency-note">
+          Fire, smoke, shock, active sparking, or a downed line? Move away and call 911 or your
+          utility first.
+        </p>
+      </div>
+
+      <div class="blueprint panel panel--wide request-card">
+        <Corners />
+        <div class="request-card__heading">
+          <p class="eyebrow">Tell us what you need</p>
+          <h2>Request electrical service</h2>
+          <p>Submitting this form requests contact. It does not confirm an appointment.</p>
+        </div>
+
+        <div class="request-success" data-request-success hidden tabindex="-1">
+          <h2>We received your request.</h2>
+          <p data-request-confirmation>
+            Scott Lind Electric will review the details and contact you using your preferred method.
+          </p>
+          <div class="request-success__actions">
+            <button class="btn btn-primary blueprint btn-md" type="button" data-open-assistant>
+              <Corners />Ask the AI assistant
+            </button>
+            <a class="btn btn-outline blueprint btn-md" href={SITE.telHref}><Corners />Call Scott</a>
+          </div>
+        </div>
+
+        <form class="request-form" data-request-form data-endpoint={endpoint} novalidate>
+          <div class="form-hp" aria-hidden="true">
+            <label>Company <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <div class="request-row">
+            <div class="field">
+              <label for="ad-name">Name</label>
+              <input class="input" id="ad-name" name="name" autocomplete="name" maxlength="100" required />
+            </div>
+            <div class="field">
+              <label for="ad-phone">Mobile phone number</label>
+              <input class="input" id="ad-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" required placeholder="208-555-0123" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="ad-email">Email address</label>
+            <input class="input" id="ad-email" name="email" type="email" autocomplete="email" maxlength="200" required placeholder="you@example.com" />
+          </div>
+
+          <div class="field">
+            <label for="ad-location">Service address or ZIP code</label>
+            <input class="input" id="ad-location" name="location" autocomplete="street-address" maxlength="200" required placeholder="Street, city, state, ZIP — or Idaho ZIP" />
+            <small>Scott Lind Electric serves Idaho locations.</small>
+          </div>
+
+          <div class="field">
+            <label for="ad-service">Type of electrical service</label>
+            <select class="input" id="ad-service" name="serviceCategory" required>
+              <option value="">Choose one</option>
+              <option value="residential">Residential electrical service</option>
+              <option value="commercial">Commercial electrical service</option>
+              <option value="same-day">Same-day service request</option>
+              <option value="after-hours">After-hours service request</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="ad-issue">Description of the problem</label>
+            <textarea class="input textarea-tall" id="ad-issue" name="issue" maxlength="1000" required placeholder="Tell us what is happening, where it is happening, and when it started."></textarea>
+          </div>
+
+          <fieldset class="field contact-choice">
+            <legend>Preferred contact method</legend>
+            <div class="contact-choice__options">
+              <label><input type="radio" name="preferredContact" value="text" required /> Text</label>
+              <label><input type="radio" name="preferredContact" value="email" /> Email</label>
+              <label><input type="radio" name="preferredContact" value="phone" /> Phone</label>
+            </div>
+          </fieldset>
+
+          <label class="sms-consent">
+            <input type="checkbox" name="smsConsent" />
+            <span>
+              I agree to receive text messages from Scott Lind Electric LLC regarding my service
+              request, appointment scheduling, service updates, and follow-up communications.
+              Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe
+              or HELP for assistance. Consent is not a condition of purchase.
+            </span>
+          </label>
+          <p class="optional-note">SMS consent is optional and is unchecked by default.</p>
+
+          <p class="email-disclosure">
+            By providing your email address, you authorize Scott Lind Electric LLC to email you
+            regarding your service request and related follow-up communications. You may
+            unsubscribe at any time.
+          </p>
+          <p class="legal-links">
+            See our <a href="/privacy-policy/">Privacy Policy</a> and
+            <a href="/terms-and-conditions/">Terms and Conditions</a>.
+          </p>
+
+          <p class="request-error" data-request-error hidden role="alert"></p>
+          <button class="btn btn-primary blueprint btn-lg request-submit" type="submit">
+            <Corners />Request Electrical Service
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-request-form]');
+  const success = document.querySelector<HTMLElement>('[data-request-success]');
+  const confirmation = document.querySelector<HTMLElement>('[data-request-confirmation]');
+  const error = document.querySelector<HTMLElement>('[data-request-error]');
+  const openAssistant = document.querySelector<HTMLButtonElement>('[data-open-assistant]');
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    const preferredContact = String(data.get('preferredContact') ?? '');
+    const smsConsent = data.get('smsConsent') === 'on';
+    if (preferredContact === 'text' && !smsConsent) {
+      if (error) {
+        error.textContent = 'To choose Text, check the optional SMS consent box or select Email or Phone.';
+        error.hidden = false;
+      }
+      (form.elements.namedItem('smsConsent') as HTMLInputElement | null)?.focus();
+      return;
+    }
+
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const originalLabel = submit?.textContent ?? 'Request Electrical Service';
+    if (error) error.hidden = true;
+    if (submit) { submit.disabled = true; submit.textContent = 'Sending…'; }
+
+    try {
+      const response = await fetch(form.dataset.endpoint ?? '', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'adLead',
+          name: data.get('name'),
+          phone: data.get('phone'),
+          email: data.get('email'),
+          location: data.get('location'),
+          serviceCategory: data.get('serviceCategory'),
+          issue: data.get('issue'),
+          preferredContact,
+          smsConsent,
+          company: data.get('company'),
+          requestId: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-google-ads`,
+          source: `Google Ads request-service landing page — ${location.href}`,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error ?? 'Your request could not be sent.');
+      form.hidden = true;
+      if (confirmation) {
+        confirmation.textContent = smsConsent
+          ? 'A confirmation text and email are on the way. Scott will review the details and contact you using your preferred method.'
+          : 'A confirmation email is on the way. Scott will review the details and contact you using your preferred method.';
+      }
+      if (success) { success.hidden = false; success.focus(); }
+      (globalThis as typeof globalThis & { gtag?: (...args: unknown[]) => void }).gtag?.(
+        'event', 'generate_lead', { method: 'request_service_form' },
+      );
+    } catch (caught) {
+      if (error) {
+        error.textContent = caught instanceof Error ? caught.message : 'Your request could not be sent. Please call 208.716.1240.';
+        error.hidden = false;
+      }
+      if (submit) { submit.disabled = false; submit.textContent = originalLabel; }
+    }
+  });
+
+  openAssistant?.addEventListener('click', () => {
+    document.querySelector<HTMLButtonElement>('[data-agent-open]')?.click();
+  });
+</script>
+
+<style>
+  .request-hero { padding: clamp(52px, 8vw, 96px) 0; background: linear-gradient(135deg, var(--color-bg) 0 48%, var(--color-accent-100) 48% 100%); }
+  .request-shell { display: grid; grid-template-columns: minmax(0, .86fr) minmax(520px, 1.14fr); gap: clamp(40px, 6vw, 84px); align-items: start; width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+  .request-intro { position: sticky; top: 30px; padding-top: 18px; }
+  .eyebrow { margin: 0 0 14px; color: var(--color-accent-700); font: 600 14px var(--font-heading); letter-spacing: .12em; text-transform: uppercase; }
+  .request-intro .lead { max-width: 29ch; margin: 22px 0 28px; }
+  .request-trust { display: grid; gap: 10px; margin: 0 0 30px; }
+  .request-trust span { display: flex; gap: 10px; align-items: center; font-weight: 600; }
+  .request-trust span::before { content: '✓'; color: var(--color-accent-700); font-weight: 700; }
+  .emergency-note { max-width: 48ch; margin: 22px 0 0; padding-left: 13px; border-left: 3px solid #c97700; font-size: 13px; line-height: 1.5; }
+  .request-card { padding: clamp(24px, 4vw, 42px); background: white; box-shadow: 0 24px 70px rgba(20, 38, 54, .14); }
+  .request-card__heading { margin-bottom: 26px; }
+  .request-card__heading h2, .request-success h2 { margin: 0 0 8px; font: 600 clamp(28px, 4vw, 38px)/1 var(--font-heading); text-transform: uppercase; }
+  .request-card__heading p:last-child { margin: 0; color: color-mix(in srgb, var(--color-text) 68%, transparent); }
+  .request-form { display: grid; gap: 18px; }
+  .request-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field { margin: 0; }
+  .field > label, .contact-choice legend { display: block; margin-bottom: 6px; font-weight: 700; }
+  .field small { display: block; margin-top: 5px; color: color-mix(in srgb, var(--color-text) 62%, transparent); }
+  select.input { appearance: auto; }
+  .contact-choice { border: 0; padding: 0; }
+  .contact-choice__options { display: flex; flex-wrap: wrap; gap: 10px; }
+  .contact-choice__options label { display: flex; align-items: center; gap: 7px; min-width: 100px; border: 1px solid var(--color-divider); padding: 11px 13px; background: var(--color-bg); cursor: pointer; }
+  .contact-choice__options input, .sms-consent input { accent-color: var(--color-accent-700); }
+  .sms-consent { display: grid; grid-template-columns: auto 1fr; gap: 11px; align-items: start; border: 1px solid var(--color-divider); padding: 14px; background: var(--color-accent-100); font-size: 12px; line-height: 1.5; cursor: pointer; }
+  .sms-consent input { width: 18px; height: 18px; margin-top: 1px; }
+  .optional-note { margin: -12px 0 0; color: color-mix(in srgb, var(--color-text) 64%, transparent); font-size: 11px; }
+  .email-disclosure, .legal-links { margin: 0; font-size: 12px; line-height: 1.55; }
+  .request-error { margin: 0; border-left: 3px solid #b32929; padding: 10px 12px; background: #fff1f1; color: #7d1818; font-weight: 600; }
+  .request-submit { justify-self: start; }
+  .request-success { padding: 20px 0; outline: none; }
+  .request-success__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+  @media (max-width: 900px) {
+    .request-hero { background: var(--color-bg); }
+    .request-shell { grid-template-columns: 1fr; width: min(680px, calc(100% - 28px)); }
+    .request-intro { position: static; padding-top: 0; }
+  }
+  @media (max-width: 560px) {
+    .request-hero { padding: 40px 0 56px; }
+    .request-row { grid-template-columns: 1fr; }
+    .request-card { padding: 22px 18px; }
+    .contact-choice__options { display: grid; grid-template-columns: 1fr; }
+  }
+</style>

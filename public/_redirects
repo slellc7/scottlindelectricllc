@@ -2,6 +2,12 @@
 # IIS paths were case-insensitive; Netlify is not, so the casings that were
 # actually linked are listed explicitly.
 
+# Compliance aliases used by Google Ads and messaging disclosures.
+/privacy-policy             /privacy/         301
+/privacy-policy/            /privacy/         301
+/terms-and-conditions       /terms/           301
+/terms-and-conditions/      /terms/           301
+
 /default.aspx              /                 301
 /Default.aspx              /                 301
 

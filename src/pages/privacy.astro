@@ -4,7 +4,7 @@ import Crumb from '../components/Crumb.astro';
 import PageHeading from '../components/PageHeading.astro';
 import { SITE } from '../consts';
 
-const effectiveDate = 'August 17, 2026';
+const effectiveDate = 'August 21, 2026';
 ---
 
 <Base
@@ -73,6 +73,12 @@ const effectiveDate = 'August 17, 2026';
             replying <strong>STOP</strong>. For assistance, reply <strong>HELP</strong> or call
             <a href={SITE.telHref}>{SITE.phone}</a>. Carriers are not liable for delayed or
             undelivered messages.
+          </p>
+          <p>
+            Customers may also opt in on our <a href="/request-service/">Request Service page</a>
+            by entering their mobile number and affirmatively checking the optional SMS consent
+            box. The box is unchecked by default. Submitting a service request without checking
+            that box does not enroll the customer in SMS messages.
           </p>
           <p>
             See the <a href="/sms/">SMS opt-in page</a> and
