@@ -149,6 +149,15 @@ const endpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
   const error = document.querySelector<HTMLElement>('[data-request-error]');
   const openAssistant = document.querySelector<HTMLButtonElement>('[data-open-assistant]');
 
+  try {
+    if (sessionStorage.getItem('service-request-submitted') === 'chatbot') {
+      sessionStorage.removeItem('service-request-submitted');
+      if (form) form.hidden = true;
+      if (confirmation) confirmation.textContent = 'Your chatbot request was sent successfully. Scott will review the details and contact you directly.';
+      if (success) { success.hidden = false; success.focus(); }
+    }
+  } catch {}
+
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;

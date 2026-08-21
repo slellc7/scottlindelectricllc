@@ -361,7 +361,9 @@ const agentEndpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
             : confirmations.email === 'sent'
               ? 'A confirmation email is on the way.'
               : 'We could not deliver a confirmation message, but Scott still received your request.';
-        addMessage('assistant', `${delivery} ${confirmation} Scott will contact you directly.`);
+        addMessage('assistant', `${delivery} ${confirmation} Scott will contact you directly. Taking you to the request confirmation page…`);
+        try { sessionStorage.setItem('service-request-submitted', 'chatbot'); } catch {}
+        globalThis.setTimeout(() => { location.assign('/request-service/'); }, 2400);
       } catch {
         error.hidden = false;
         submitButton.disabled = false;
