@@ -1,128 +1,177 @@
 ---
-import { SITE, formEnabled } from '../consts';
+import { SITE } from '../consts';
 import Corners from './Corners.astro';
 
-/**
- * The estimate form — or, until SITE.formEndpoint is real, a call-us panel.
- *
- * A form whose action is still the placeholder would POST to a 404 and silently
- * eat the enquiry. On a site whose whole promise is "you'll reach a person",
- * losing one is the worst failure available, so the form simply isn't rendered
- * until there's somewhere for it to go.
- */
-interface Props {
-  /** Recorded in the payload so you can tell which page the enquiry came from. */
-  source: string;
-  /** The contact page carries the fuller form (e-mail + type of work). */
-  full?: boolean;
-  /** Prefix for input ids, so two forms can coexist on one page. */
-  idPrefix?: string;
-}
-
-const { source, full = false, idPrefix = 'f' } = Astro.props;
+interface Props { source: string; full?: boolean; idPrefix?: string; }
+const { source, idPrefix = 'f' } = Astro.props;
 const id = (name: string) => `${idPrefix}-${name}`;
+const endpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
+  ?? 'https://us-central1-scott-lind-electric.cloudfunctions.net/serviceAgent';
 ---
 
-{
-  !formEnabled ? (
-    <div class="form-offline">
-      <p>
-        Online estimate requests aren't switched on yet. Call and you'll reach a person, which is the
-        faster route anyway.
-      </p>
-      <a href={SITE.telHref} class="btn btn-primary blueprint btn-lg">
-        <Corners />
-        Call {SITE.phone}
-      </a>
+<div class="contact-request" data-contact-request>
+  <div class="form-status" data-contact-success hidden tabindex="-1">
+    <strong>Thanks — your request is in.</strong>
+    <p data-contact-confirmation>Scott will review your information and contact you directly.</p>
+    <p>For anything urgent, call <a href={SITE.telHref}>{SITE.phone}</a>.</p>
+  </div>
+
+  <form class="form" data-contact-service-form data-endpoint={endpoint} data-source={source} novalidate>
+    <div class="form-hp" aria-hidden="true">
+      <label>Company <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
     </div>
-  ) : (
-    <>
-      <p class="form-status" data-form-status hidden>
-        Thanks — your request is in. For anything urgent, call{' '}
-        <a href={SITE.telHref}>{SITE.phone}</a> and you'll reach a person.
-      </p>
 
-      <form class="form" data-estimate-form action={SITE.formEndpoint} method="post">
-        {/* Netlify Forms: tells Netlify which detected form this submission is.
-            Must byte-match <form name="estimate"> in public/__forms.html. */}
-        <input type="hidden" name="form-name" value="estimate" />
-        <input type="hidden" name="_source" value={source} />
-        <div class="form-hp" aria-hidden="true">
-          <label>
-            Company
-            <input type="text" name="company" tabindex="-1" autocomplete="off" />
-          </label>
-        </div>
+    <div class="form-row">
+      <div class="field">
+        <label for={id('name')}>Full name</label>
+        <input class="input" id={id('name')} name="name" autocomplete="name" maxlength="100" required placeholder="Jane Peterson" />
+      </div>
+      <div class="field">
+        <label for={id('phone')}>Mobile phone number</label>
+        <input class="input" id={id('phone')} name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" required placeholder="208-555-0123" />
+      </div>
+    </div>
 
-        <div class="form-row">
-          <div class="field">
-            <label for={id('name')}>Full name</label>
-            <input class="input" id={id('name')} name="name" autocomplete="name" required placeholder="Jane Peterson" />
-          </div>
-          <div class="field">
-            <label for={id('phone')}>Phone</label>
-            <input class="input" id={id('phone')} name="phone" type="tel" autocomplete="tel" required placeholder="208.000.0000" />
-          </div>
-        </div>
+    <div class="field">
+      <label for={id('email')}>Email address</label>
+      <input class="input" id={id('email')} name="email" type="email" autocomplete="email" maxlength="200" required placeholder="jane@example.com" />
+    </div>
 
-        {full ? (
-          <div class="form-row">
-            <div class="field">
-              <label for={id('email')}>E-mail</label>
-              <input class="input" id={id('email')} name="email" type="email" autocomplete="email" placeholder="jane@example.com" />
-            </div>
-            <div class="field">
-              <label for={id('city')}>City</label>
-              <input class="input" id={id('city')} name="city" autocomplete="address-level2" placeholder="Idaho Falls" />
-            </div>
-          </div>
-        ) : (
-          <div class="field">
-            <label for={id('city')}>City</label>
-            <input class="input" id={id('city')} name="city" autocomplete="address-level2" placeholder="Idaho Falls" />
-          </div>
-        )}
+    <div class="field">
+      <label for={id('location')}>Service address or ZIP code</label>
+      <input class="input" id={id('location')} name="location" autocomplete="street-address" maxlength="200" required placeholder="Street, city, state, ZIP — or Idaho ZIP" />
+      <small>Scott Lind Electric serves Idaho locations.</small>
+    </div>
 
-        {full && (
-          <fieldset class="field fieldset-plain">
-            <legend>Type of work</legend>
-            <div class="radio-row">
-              <label class="radio">
-                <input type="radio" name="kind" value="residential" />
-                <span class="dot" />Residential
-              </label>
-              <label class="radio">
-                <input type="radio" name="kind" value="commercial" />
-                <span class="dot" />Commercial
-              </label>
-              <label class="radio">
-                <input type="radio" name="kind" value="urgent" />
-                <span class="dot" />Urgent
-              </label>
-            </div>
-          </fieldset>
-        )}
+    <fieldset class="field fieldset-plain">
+      <legend>Type of electrical service</legend>
+      <div class="radio-row contact-service-types">
+        <label class="radio"><input type="radio" name="serviceCategory" value="residential" required /><span class="dot"></span>Residential</label>
+        <label class="radio"><input type="radio" name="serviceCategory" value="commercial" /><span class="dot"></span>Commercial</label>
+        <label class="radio"><input type="radio" name="serviceCategory" value="same-day" /><span class="dot"></span>Same-day</label>
+        <label class="radio"><input type="radio" name="serviceCategory" value="after-hours" /><span class="dot"></span>After-hours</label>
+      </div>
+    </fieldset>
 
-        <div class="field">
-          <label for={id('msg')}>{full ? 'What needs doing?' : 'What needs fixing?'}</label>
-          <textarea
-            class:list={['input', full && 'textarea-tall']}
-            id={id('msg')}
-            name="message"
-            required
-            placeholder="Two outlets in the kitchen are dead and the breaker trips when the microwave runs."
-          />
-        </div>
+    <div class="field">
+      <label for={id('issue')}>What needs doing?</label>
+      <textarea class="input textarea-tall" id={id('issue')} name="issue" maxlength="1000" required placeholder="Two outlets in the kitchen are dead and the breaker trips when the microwave runs."></textarea>
+    </div>
 
-        <p class="form-error" data-form-error hidden>
-          That didn't send. Please call {SITE.phone} and we'll take the details over the phone.
-        </p>
+    <fieldset class="field fieldset-plain">
+      <legend>Preferred contact method</legend>
+      <div class="radio-row">
+        <label class="radio"><input type="radio" name="preferredContact" value="text" required /><span class="dot"></span>Text</label>
+        <label class="radio"><input type="radio" name="preferredContact" value="email" /><span class="dot"></span>Email</label>
+        <label class="radio"><input type="radio" name="preferredContact" value="phone" /><span class="dot"></span>Phone</label>
+      </div>
+    </fieldset>
 
-        <button type="submit" class:list={['btn btn-primary blueprint', full ? 'btn-lg' : 'btn-md']}>
-          <Corners />
-          Send request
-        </button>
-      </form>
-    </>
-  )
-}
+    <label class="contact-sms-consent">
+      <input type="checkbox" name="smsConsent" />
+      <span>
+        I agree to receive text messages from Scott Lind Electric LLC regarding my service request,
+        appointment scheduling, service updates, and follow-up communications. Message frequency
+        varies. Message and data rates may apply. Reply STOP to unsubscribe or HELP for assistance.
+        Consent is not a condition of purchase.
+      </span>
+    </label>
+    <p class="contact-optional">SMS consent is optional and is unchecked by default.</p>
+
+    <p class="contact-disclosure">
+      By providing your email address, you authorize Scott Lind Electric LLC to email you regarding
+      your service request and related follow-up communications. You may unsubscribe at any time.
+    </p>
+    <p class="contact-disclosure">
+      See our <a href="/privacy-policy/">Privacy Policy</a> and
+      <a href="/terms-and-conditions/">Terms and Conditions</a>.
+    </p>
+
+    <p class="form-error" data-contact-error hidden role="alert"></p>
+    <button type="submit" class="btn btn-primary blueprint btn-lg">
+      <Corners />Request Electrical Service
+    </button>
+  </form>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-contact-service-form]').forEach((form) => {
+    const root = form.closest<HTMLElement>('[data-contact-request]');
+    const success = root?.querySelector<HTMLElement>('[data-contact-success]');
+    const confirmation = root?.querySelector<HTMLElement>('[data-contact-confirmation]');
+    const error = form.querySelector<HTMLElement>('[data-contact-error]');
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = new FormData(form);
+      if (data.get('company')) return;
+      const preferredContact = String(data.get('preferredContact') ?? '');
+      const smsConsent = data.get('smsConsent') === 'on';
+      if (preferredContact === 'text' && !smsConsent) {
+        if (error) {
+          error.textContent = 'To choose Text, check the optional SMS consent box or select Email or Phone.';
+          error.hidden = false;
+        }
+        (form.elements.namedItem('smsConsent') as HTMLInputElement | null)?.focus();
+        return;
+      }
+
+      const originalLabel = submit?.textContent ?? 'Request Electrical Service';
+      if (error) error.hidden = true;
+      if (submit) { submit.disabled = true; submit.textContent = 'Sending…'; }
+      try {
+        const response = await fetch(form.dataset.endpoint ?? '', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'adLead',
+            name: data.get('name'), phone: data.get('phone'), email: data.get('email'),
+            location: data.get('location'), serviceCategory: data.get('serviceCategory'),
+            issue: data.get('issue'), preferredContact, smsConsent, company: data.get('company'),
+            requestId: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-contact`,
+            source: `${form.dataset.source ?? 'Contact page'} — ${location.href}`,
+          }),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error ?? 'Your request could not be sent.');
+        form.hidden = true;
+        if (confirmation) {
+          confirmation.textContent = smsConsent
+            ? 'A confirmation text and email are on the way. Scott will contact you directly.'
+            : 'A confirmation email is on the way. Scott will contact you directly.';
+        }
+        if (success) { success.hidden = false; success.focus(); }
+        (globalThis as typeof globalThis & { gtag?: (...args: unknown[]) => void }).gtag?.(
+          'event', 'generate_lead', { method: 'contact_form' },
+        );
+      } catch (caught) {
+        if (error) {
+          error.textContent = caught instanceof Error ? caught.message : 'That did not send. Please call 208.716.1240.';
+          error.hidden = false;
+        }
+        if (submit) { submit.disabled = false; submit.textContent = originalLabel; }
+      }
+    });
+  });
+</script>
+
+<style>
+  .contact-request .form { display: grid; gap: 18px; }
+  .contact-request .field { margin: 0; }
+  .contact-request .field small { display: block; margin-top: 5px; color: color-mix(in srgb, var(--color-text) 62%, transparent); }
+  .contact-service-types { gap: 8px; }
+  .contact-sms-consent { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; border: 1px solid var(--color-divider); padding: 13px; background: var(--color-accent-100); font-size: 12px; line-height: 1.5; cursor: pointer; }
+  .contact-sms-consent input { width: 18px; height: 18px; margin-top: 1px; accent-color: var(--color-accent-700); }
+  .contact-optional { margin: -12px 0 0; color: color-mix(in srgb, var(--color-text) 62%, transparent); font-size: 11px; }
+  .contact-disclosure { margin: 0; font-size: 12px; line-height: 1.55; }
+  .contact-request .form-error { margin: 0; border-left: 3px solid #b32929; padding: 10px 12px; background: #fff1f1; color: #7d1818; font-weight: 600; }
+  .contact-request .form-status { padding: 18px; border: 1px solid var(--color-accent-700); background: var(--color-accent-100); outline: none; }
+  .contact-request .form-status strong { display: block; margin-bottom: 8px; font: 600 22px var(--font-heading); text-transform: uppercase; }
+  .contact-request .form-status p { margin: 6px 0 0; }
+  @media (max-width: 560px) {
+    .contact-request .form-row { grid-template-columns: 1fr; }
+    .contact-request .radio-row { display: grid; grid-template-columns: 1fr 1fr; }
+  }
+</style>

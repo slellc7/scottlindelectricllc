@@ -143,53 +143,6 @@ const aiChatEnabled = import.meta.env.PUBLIC_AI_CHAT_ENABLED !== 'false';
         });
       }
 
-      document.querySelectorAll<HTMLFormElement>('form[data-estimate-form]').forEach((form) => {
-        const status = form.parentElement?.querySelector<HTMLElement>('[data-form-status]');
-        const error = form.querySelector<HTMLElement>('[data-form-error]');
-        const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-        const endpoint = form.getAttribute('action');
-        if (!endpoint) return;
-
-        form.addEventListener('submit', async (e) => {
-          // Honeypot: bots fill every field they find; a person never sees this one.
-          const company = form.elements.namedItem('company') as HTMLInputElement | null;
-          e.preventDefault();
-          if (company?.value) return;
-
-          if (error) error.hidden = true;
-          const label = submit?.textContent ?? '';
-          if (submit) {
-            submit.disabled = true;
-            submit.textContent = 'Sending…';
-          }
-
-          try {
-            const res = await fetch(endpoint, {
-              method: 'POST',
-              // Netlify Forms: url-encoded body (not JSON, not raw multipart) with
-              // form-name inside it — new FormData(form) carries the hidden
-              // form-name input. Accept:json makes Netlify answer 200 JSON rather
-              // than redirect to an HTML success page.
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json' },
-              body: new URLSearchParams(new FormData(form) as any).toString(),
-            });
-            if (!res.ok) throw new Error(String(res.status));
-            form.hidden = true;
-            if (status) {
-              status.hidden = false;
-              status.setAttribute('tabindex', '-1');
-              status.focus();
-            }
-          } catch {
-            if (submit) {
-              submit.disabled = false;
-              submit.textContent = label;
-            }
-            if (error) error.hidden = false;
-            else form.submit();
-          }
-        });
-      });
     </script>
   </body>
 </html>
