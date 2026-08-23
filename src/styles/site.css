@@ -652,22 +652,30 @@ main { flex: 1; }
 /* ── blog ────────────────────────────────────────────────────────────────── */
 
 /* Posts read better as a vertical index than as equal-height marketing cards.
-   Keep the list to a comfortable desktop measure and give every entry its own
-   frame so the gap between posts stays visible. */
+   Let the list follow the same full content column and left edge as the page
+   heading, while keeping a visible gap between independently framed entries. */
 .post-grid {
   grid-template-columns: minmax(0, 1fr);
   gap: 24px;
-  max-width: 960px;
-  margin-inline: auto;
+  width: 100%;
   background: transparent;
   border: 0;
 }
 
-.post-card { border: 1px solid var(--color-divider); }
-.post-card h2 { font-size: 25px; text-transform: uppercase; margin: 8px 0; }
+.post-card {
+  border: 1px solid var(--color-divider);
+  padding: clamp(28px, 3vw, 36px);
+  text-align: left;
+}
+.post-card h2 {
+  font-size: clamp(25px, 2.4vw, 32px);
+  line-height: 1.08;
+  text-transform: uppercase;
+  margin: 8px 0 12px;
+}
 .post-card h2 a { color: inherit; text-decoration: none; }
 .post-card h2 a:hover { color: var(--color-accent-700); }
-.post-card > p { max-width: 72ch; }
+.post-card > p { max-width: 86ch; font-size: 17px; }
 .post-card .u-num time { font-variant-numeric: tabular-nums; }
 .post-card-tags { margin-top: 14px; }
 
@@ -709,6 +717,7 @@ main { flex: 1; }
   .post-body { font-size: 16px; }
   .post-body h2 { font-size: 26px; }
   .post-card h2 { font-size: 22px; }
+  .post-card > p { font-size: 16px; }
 }
 
 /* .u-num is a kicker, never a title. Several of them sit on real heading
