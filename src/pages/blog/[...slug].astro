@@ -32,7 +32,7 @@ const toc = headings.filter((h) => h.depth === 2);
   ogType="article"
   article={{ title, description, pubDate, updatedDate, image: heroImage?.src }}
 >
-  <Crumb trail={['Blog', title]} />
+  <Crumb trail={[{ label: 'Blog', href: '/blog/' }, title]} />
 
   <article>
     <section class="section section--page">
