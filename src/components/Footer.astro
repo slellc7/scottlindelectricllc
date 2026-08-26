@@ -24,6 +24,16 @@ const services = FOOTER.services.filter((l) => l.href !== '/work/' || hasPhotos)
           {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}<br />
           <a class="foot-tel" href={SITE.telHref}>{SITE.phone}</a>
         </address>
+        <a
+          class="foot-social"
+          href={SITE.social.x}
+          target="_blank"
+          rel="me noopener noreferrer"
+          aria-label="Follow Scott Lind Electric on X"
+        >
+          <span class="foot-social__mark" aria-hidden="true">X</span>
+          Follow us on X
+        </a>
       </div>
 
       <div>

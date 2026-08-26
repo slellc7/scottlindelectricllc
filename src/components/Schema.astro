@@ -56,8 +56,9 @@ const business = {
   ],
   geo: { '@type': 'GeoCoordinates', latitude: SITE.geo.lat, longitude: SITE.geo.lng },
   hasMap: SITE.googleListing,
-  // sameAs is the entity link between this domain and the Business Profile.
-  sameAs: [SITE.googleListing],
+  // sameAs connects the website, Business Profile and official social account
+  // as the same local business entity.
+  sameAs: [SITE.googleListing, SITE.social.x],
   address: {
     '@type': 'PostalAddress',
     streetAddress: SITE.address.street,

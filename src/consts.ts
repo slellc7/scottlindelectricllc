@@ -46,6 +46,10 @@ export const SITE = {
    *  domain and that Business Profile are the same entity. */
   googleListing: 'https://www.google.com/maps?cid=16827192462932853737',
 
+  social: {
+    x: 'https://x.com/SLELLC7',
+  },
+
   /**
    * Business photographs for LocalBusiness.image. Google asks for several
    * high-resolution images at 16:9, 4:3 and 1:1; these are crops of the van

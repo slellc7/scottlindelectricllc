@@ -509,6 +509,17 @@ main { flex: 1; }
 .foot-addr { font-size: 16px; line-height: 1.7; font-style: normal; }
 .foot-addr strong { font-family: var(--font-heading); font-size: 17px; letter-spacing: .02em; }
 .foot-tel { font-family: var(--font-heading); font-size: 19px; letter-spacing: .04em; text-decoration: none; }
+.foot-social {
+  display: inline-flex; align-items: center; gap: 9px; margin-top: 16px;
+  font-family: var(--font-heading); font-size: 14px; letter-spacing: .05em;
+  text-decoration: none;
+}
+.foot-social:hover { text-decoration: underline; }
+.foot-social__mark {
+  display: inline-grid; place-items: center; width: 26px; height: 26px;
+  border: 1px solid currentColor; font-family: Arial, sans-serif; font-size: 14px;
+  font-weight: 700; line-height: 1;
+}
 .foot-links { display: grid; gap: 9px; font-size: 15px; }
 .foot-links a { text-decoration: none; }
 .foot-links a:hover { text-decoration: underline; }
