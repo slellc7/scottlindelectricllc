@@ -47,7 +47,7 @@ export const SITE = {
   googleListing: 'https://www.google.com/maps?cid=16827192462932853737',
 
   social: {
-    x: 'https://x.com/SLELLC7',
+    x: 'https://x.com/scottlindelec',
   },
 
   /**
