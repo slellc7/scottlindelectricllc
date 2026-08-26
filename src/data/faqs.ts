@@ -14,7 +14,7 @@ export type Faq = { q: string; a: string };
 export const homeFaqs: Faq[] = [
   {
     q: 'Do you charge a service-call fee?',
-    a: 'No. There is no service-call fee for any customer within a 30-mile radius of Idaho Falls, which includes Ammon, Ucon, Iona and Shelley. You pay for the work performed.',
+    a: 'No. There is no service-call fee for any customer within a 50-mile radius of Idaho Falls, which includes Ammon, Ucon, Iona and Shelley. You pay for the work performed.',
   },
   {
     q: 'Can an electrician come out today?',
@@ -33,7 +33,7 @@ export const homeFaqs: Faq[] = [
 export const residentialFaqs: Faq[] = [
   {
     q: 'Will you come out for one outlet?',
-    a: 'Yes. One outlet is a normal call, and inside 30 miles of Idaho Falls there is no service-call fee for making the trip.',
+    a: 'Yes. One outlet is a normal call, and inside 50 miles of Idaho Falls there is no service-call fee for making the trip.',
   },
   {
     q: 'Do I need to be home?',
@@ -83,7 +83,7 @@ export const emergencyFaqs: Faq[] = [
   },
   {
     q: 'Which areas do you cover after hours?',
-    a: 'Idaho Falls, Ammon and the surrounding communities within 30 miles — Ucon, Iona, Shelley, Rigby, Ririe and Roberts included — 24 hours a day, Monday to Saturday.',
+    a: 'Idaho Falls, Ammon and the surrounding communities within 50 miles — Ucon, Iona, Shelley, Rigby, Ririe and Roberts included — 24 hours a day, Monday to Saturday.',
   },
   {
     q: 'Should I shut off the main breaker?',
@@ -94,7 +94,7 @@ export const emergencyFaqs: Faq[] = [
 export const ammonFaqs: Faq[] = [
   {
     q: 'Do you charge extra to come to Ammon?',
-    a: 'No. Ammon is well inside the 30-mile radius, so there is no service-call fee — you pay for the work, not the drive.',
+    a: 'No. Ammon is well inside the 50-mile radius, so there is no service-call fee — you pay for the work, not the drive.',
   },
   {
     q: 'How quickly can you get to Ammon?',
@@ -107,7 +107,7 @@ export const ammonFaqs: Faq[] = [
 export const answersHiring: Faq[] = [
   {
     q: 'Do you charge a service-call fee?',
-    a: 'No — there is no service-call fee for any customer within 30 miles of Idaho Falls. That covers Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts. You pay for the work performed, not for us to show up.',
+    a: 'No — there is no service-call fee for any customer within 50 miles of Idaho Falls. That covers Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts. You pay for the work performed, not for us to show up.',
   },
   {
     q: 'Are estimates free?',
@@ -127,7 +127,7 @@ export const answersHiring: Faq[] = [
   },
   {
     q: 'What areas do you serve?',
-    a: 'Idaho Falls, Ammon and everywhere within roughly 30 miles across Bonneville and Jefferson counties. Further out is still possible — call and ask.',
+    a: 'Idaho Falls, Ammon and everywhere within roughly 50 miles across Bonneville and Jefferson counties. Further out is still possible — call and ask.',
   },
 ];
 

@@ -11,7 +11,7 @@ export const SITE = {
   name: 'Scott Lind Electric',
   legalName: 'Scott Lind Electric LLC',
   description:
-    'Licensed Idaho Falls electrician offering same-day residential, commercial and after-hours electrical service, open 24 hours Monday to Saturday. Free estimates and no service-call fee within 30 miles.',
+    'Licensed Idaho Falls electrician offering same-day residential, commercial and after-hours electrical service, open 24 hours Monday to Saturday. Free estimates and no service-call fee within 50 miles.',
 
   slogan: "You've got a friend in the electrical business",
 

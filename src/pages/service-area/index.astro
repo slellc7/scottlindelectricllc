@@ -16,11 +16,11 @@ const rest = towns.filter((t) => !t.primary);
 const areaFaqs: Faq[] = [
   {
     q: 'How far do you travel?',
-    a: 'About 30 miles from Idaho Falls, which covers Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts. Everything inside that radius is a no-service-call-fee trip. Further out is still possible — call and ask.',
+    a: 'About 50 miles from Idaho Falls, which covers Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts. Everything inside that radius is a no-service-call-fee trip. Further out is still possible — call and ask.',
   },
   {
     q: 'Is there a fee for coming out to my town?',
-    a: 'No. There is no service-call fee anywhere inside the 30-mile radius. You pay for the work performed, not for the drive.',
+    a: 'No. There is no service-call fee anywhere inside the 50-mile radius. You pay for the work performed, not for the drive.',
   },
   {
     q: 'Do the outer towns still get same-day service?',
@@ -34,8 +34,8 @@ const areaFaqs: Faq[] = [
 ---
 
 <Base
-  title="Service Area — Idaho Falls & 30 Miles | Scott Lind Electric"
-  description="Scott Lind Electric covers Idaho Falls, Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts — no service-call fee anywhere inside 30 miles of Idaho Falls."
+  title="Service Area — Idaho Falls & 50 Miles | Scott Lind Electric"
+  description="Scott Lind Electric covers Idaho Falls, Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts — no service-call fee anywhere inside 50 miles of Idaho Falls."
   breadcrumb="Service area"
   faqs={areaFaqs}
 >
@@ -44,11 +44,11 @@ const areaFaqs: Faq[] = [
   <section class="section section--page">
     <div class="grid-lead grid-lead--even">
       <div>
-        <PageHeading kicker={`Idaho Falls & 30 miles · Eastern Idaho`} size="h-page--sm" tight>
+        <PageHeading kicker={`Idaho Falls & 50 miles · Eastern Idaho`} size="h-page--sm" tight>
           Where we work
         </PageHeading>
         <p class="lead lead--narrow">
-          Everything within about 30 miles of Idaho Falls, and every one of those miles is free —
+          Everything within about 50 miles of Idaho Falls, and every one of those miles is free —
           there is no service-call fee anywhere inside the radius. You pay for the work, not the
           drive.
         </p>
@@ -61,7 +61,7 @@ const areaFaqs: Faq[] = [
           <caption class="visually-hidden">Service area terms</caption>
           <tbody>
             <tr><td class="t-label">Based in</td><td class="t-val">{SITE.address.city}, {SITE.address.region}</td></tr>
-            <tr><td class="t-label">Radius</td><td class="t-val">About 30 miles</td></tr>
+            <tr><td class="t-label">Radius</td><td class="t-val">About 50 miles</td></tr>
             <tr><td class="t-label">Service-call fee</td><td class="t-val">None inside it</td></tr>
             <tr><td class="t-label">Same-day repair</td><td class="t-val">Typical</td></tr>
             <tr><td class="t-label">After hours</td><td class="t-val">24 hours, Mon&ndash;Sat</td></tr>

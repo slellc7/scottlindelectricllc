@@ -86,6 +86,6 @@ mention that.
 
 ---
 
-If you are in Idaho Falls, Ammon or anywhere within about 30 miles and would rather have
+If you are in Idaho Falls, Ammon or anywhere within about 50 miles and would rather have
 someone trace it properly, that is a normal call — there is no service-call fee inside
 that radius and estimates are free.

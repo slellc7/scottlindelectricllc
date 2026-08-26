@@ -607,10 +607,10 @@ main { flex: 1; }
   /* At phone width a 720-unit viewBox renders 20px labels at about 8px on
      screen. Enlarging the type would re-collide the labels the generator spaced
      at 20px, so the map zooms into the populated middle instead — every town is
-     inside 17 miles, and the copy beside it states the 30-mile radius. */
+     inside 17 miles, and the copy beside it states the 50-mile radius. */
   .map-frame > svg { transform: scale(1.45); }
   .map-frame .town-mi { display: none; }
-  /* The zoom crops the corners, where the 30-mile label, north arrow, scale bar
+  /* The zoom crops the corners, where the 50-mile label, north arrow, scale bar
      and credit live. Half-cut furniture reads as a rendering bug. */
   .map-frame .ring-label--outer,
   .map-frame .compass,
