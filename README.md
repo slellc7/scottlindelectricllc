@@ -107,6 +107,35 @@ Two things worth building in from the start: keep `draft: true` on generated
 posts until reviewed, and check the slug against existing filenames before
 writing — unattended generators repeat themselves quickly.
 
+### Scheduled X posts
+
+The Firebase function `publishScheduledXPost` creates and publishes one original
+post at 8:00 AM Mountain Time every Monday and Thursday. It uses the existing
+OpenAI configuration for the copy and X API v2 for publishing, records each run
+in the Firestore `socialPosts` collection, and skips duplicate invocations for
+the same date.
+
+In the X Developer Console, configure the app for read-and-write access and
+generate OAuth 1.0a user tokens for `@scottlindelec`. Store the four values in
+Firebase Secret Manager; never add them to an `.env` file or commit them:
+
+```bash
+./functions/node_modules/.bin/firebase functions:secrets:set X_API_KEY
+./functions/node_modules/.bin/firebase functions:secrets:set X_API_SECRET
+./functions/node_modules/.bin/firebase functions:secrets:set X_ACCESS_TOKEN
+./functions/node_modules/.bin/firebase functions:secrets:set X_ACCESS_TOKEN_SECRET
+```
+
+Deploy the function after the secrets are set:
+
+```bash
+./functions/node_modules/.bin/firebase deploy --only functions:publishScheduledXPost
+```
+
+Scheduled functions require a Firebase project on a billing plan that supports
+Cloud Scheduler. Check the first run in Firebase logs and confirm the resulting
+post on X before leaving the job unattended.
+
 If you'd rather not touch git for routine edits, **Sveltia CMS** (or Decap) is
 git-backed, reads a `config.yml`, and edits the same markdown files. Sveltia is
 the better-maintained of the two.

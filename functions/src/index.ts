@@ -1,8 +1,9 @@
-import { randomUUID } from 'node:crypto';
+import { createHmac, randomUUID } from 'node:crypto';
 import { initializeApp } from 'firebase-admin/app';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { defineSecret, defineString } from 'firebase-functions/params';
 import { onRequest } from 'firebase-functions/v2/https';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
 import OpenAI from 'openai';
 
 initializeApp();
@@ -12,6 +13,10 @@ const openaiApiKey = defineSecret('OPENAI_API_KEY');
 const resendApiKey = defineSecret('RESEND_API_KEY');
 const twilioAccountSid = defineSecret('TWILIO_ACCOUNT_SID');
 const twilioAuthToken = defineSecret('TWILIO_AUTH_TOKEN');
+const xApiKey = defineSecret('X_API_KEY');
+const xApiSecret = defineSecret('X_API_SECRET');
+const xAccessToken = defineSecret('X_ACCESS_TOKEN');
+const xAccessTokenSecret = defineSecret('X_ACCESS_TOKEN_SECRET');
 
 const openaiModel = defineString('OPENAI_MODEL', { default: 'gpt-5.6' });
 const allowedOrigins = defineString('ALLOWED_ORIGINS', {
@@ -21,6 +26,36 @@ const resendFromEmail = defineString('RESEND_FROM_EMAIL');
 const businessEmailTo = defineString('BUSINESS_EMAIL_TO');
 const twilioFromNumber = defineString('TWILIO_FROM_NUMBER');
 const businessSmsTo = defineString('BUSINESS_SMS_TO');
+
+const SOCIAL_POST_PROMPT = `You write social posts for Scott Lind Electric LLC, a licensed electrician in Idaho Falls, Idaho.
+
+Create one original X post. Alternate naturally between helpful electrical education and promotion of the business. Use only these verified facts:
+- Residential and commercial electrical service
+- After-hours service Monday through Saturday
+- Idaho Falls, Ammon, and nearby eastern Idaho communities
+- Free estimates and no service-call fee within 50 miles
+- Phone: 208-716-1240
+- Website: https://scottlindelectric.com
+- Services include troubleshooting, panels, lighting, remodels, parking-lot and security lighting, illuminated signs, building maintenance, and LED conversions
+
+Requirements:
+- Maximum 280 characters, including hashtags and links
+- Friendly, capable, plainspoken tone
+- No emoji and no more than two relevant hashtags
+- No fabricated projects, testimonials, discounts, guarantees, or availability claims
+- Do not give risky do-it-yourself electrical instructions
+- Do not use trending-topic bait, mentions, replies, or substantially repeat a recent post
+- Include a natural call to action only when it fits`;
+
+const socialPostSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['text', 'theme'],
+  properties: {
+    text: { type: 'string', maxLength: 280 },
+    theme: { type: 'string', enum: ['education', 'promotion'] },
+  },
+} as const;
 
 type Lead = {
   name: string | null;
@@ -443,5 +478,139 @@ export const googleReviews = onRequest({
   } catch (error) {
     console.error('googleReviews failed', error);
     response.status(502).json({ error: 'Google reviews are temporarily unavailable.' });
+  }
+});
+
+type SocialPost = { text: string; theme: 'education' | 'promotion' };
+
+function oauthEncode(value: string) {
+  return encodeURIComponent(value).replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
+}
+
+function xAuthorizationHeader(method: string, url: string) {
+  const oauthParams: Record<string, string> = {
+    oauth_consumer_key: xApiKey.value(),
+    oauth_nonce: randomUUID().replaceAll('-', ''),
+    oauth_signature_method: 'HMAC-SHA1',
+    oauth_timestamp: String(Math.floor(Date.now() / 1000)),
+    oauth_token: xAccessToken.value(),
+    oauth_version: '1.0',
+  };
+  const parameterString = Object.entries(oauthParams)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, value]) => `${oauthEncode(key)}=${oauthEncode(value)}`)
+    .join('&');
+  const signatureBase = [method.toUpperCase(), oauthEncode(url), oauthEncode(parameterString)].join('&');
+  const signingKey = `${oauthEncode(xApiSecret.value())}&${oauthEncode(xAccessTokenSecret.value())}`;
+  oauthParams.oauth_signature = createHmac('sha1', signingKey).update(signatureBase).digest('base64');
+  return `OAuth ${Object.entries(oauthParams)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, value]) => `${oauthEncode(key)}="${oauthEncode(value)}"`)
+    .join(', ')}`;
+}
+
+async function publishToX(text: string) {
+  const endpoint = 'https://api.x.com/2/tweets';
+  const providerResponse = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      Authorization: xAuthorizationHeader('POST', endpoint),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text, made_with_ai: true }),
+  });
+  const data = await providerResponse.json() as {
+    data?: { id?: string; text?: string };
+    detail?: string;
+    title?: string;
+    errors?: Array<{ detail?: string; message?: string }>;
+  };
+  if (!providerResponse.ok || !data.data?.id) {
+    const providerMessage = data.detail || data.title || data.errors?.[0]?.detail || data.errors?.[0]?.message;
+    throw new Error(`X API returned ${providerResponse.status}${providerMessage ? `: ${providerMessage}` : ''}`);
+  }
+  return { id: data.data.id, text: data.data.text ?? text };
+}
+
+function mountainDateKey(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Boise', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(date);
+  const value = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? '';
+  return `${value('year')}-${value('month')}-${value('day')}`;
+}
+
+async function createSocialPost(
+  recentPosts: string[],
+  targetTheme: SocialPost['theme'],
+): Promise<SocialPost> {
+  const client = new OpenAI({ apiKey: openaiApiKey.value() });
+  const aiResponse = await client.responses.create({
+    model: openaiModel.value(),
+    store: false,
+    instructions: SOCIAL_POST_PROMPT,
+    input: `The required theme for this post is ${targetTheme}.\n${recentPosts.length
+      ? `Recent posts to avoid repeating:\n${recentPosts.map((post, index) => `${index + 1}. ${post}`).join('\n')}`
+      : 'There are no recent automated posts.'}`,
+    text: { format: { type: 'json_schema', name: 'social_post', strict: true, schema: socialPostSchema } },
+  });
+  const result = JSON.parse(aiResponse.output_text) as SocialPost;
+  const text = result.text.trim();
+  if (!text || Array.from(text).length > 280) throw new Error('Generated X post was empty or exceeded 280 characters');
+  if (result.theme !== targetTheme) throw new Error(`Generated X post used ${result.theme} instead of ${targetTheme}`);
+  if (recentPosts.some((recent) => recent.trim().toLowerCase() === text.toLowerCase())) {
+    throw new Error('Generated X post duplicated a recent post');
+  }
+  return { text, theme: result.theme };
+}
+
+export const publishScheduledXPost = onSchedule({
+  schedule: '0 8 * * 1,4',
+  timeZone: 'America/Boise',
+  region: 'us-central1',
+  timeoutSeconds: 120,
+  secrets: [openaiApiKey, xApiKey, xApiSecret, xAccessToken, xAccessTokenSecret],
+}, async () => {
+  const dateKey = mountainDateKey();
+  const postRef = db.collection('socialPosts').doc(dateKey);
+  const shouldRun = await db.runTransaction(async (transaction) => {
+    const existing = await transaction.get(postRef);
+    const status = existing.get('status');
+    if (status && status !== 'failed') return false;
+    transaction.set(postRef, {
+      status: 'generating', attemptStartedAt: FieldValue.serverTimestamp(), error: FieldValue.delete(),
+    }, { merge: true });
+    return true;
+  });
+  if (!shouldRun) {
+    console.log(`X post job already started for ${dateKey}; skipping duplicate run`);
+    return;
+  }
+
+  try {
+    const recentSnapshot = await db.collection('socialPosts')
+      .orderBy('createdAt', 'desc')
+      .limit(30)
+      .get();
+    const postedDocs = recentSnapshot.docs.filter((doc) => doc.get('status') === 'posted');
+    const recentPosts = postedDocs.flatMap((doc) => {
+      const text = doc.get('text');
+      return typeof text === 'string' ? [text] : [];
+    }).slice(0, 12);
+    const previousTheme = postedDocs[0]?.get('theme');
+    const targetTheme: SocialPost['theme'] = previousTheme === 'education' ? 'promotion' : 'education';
+    const post = await createSocialPost(recentPosts, targetTheme);
+    await postRef.set({ ...post, status: 'drafted', createdAt: FieldValue.serverTimestamp() }, { merge: true });
+    const published = await publishToX(post.text);
+    await postRef.set({
+      status: 'posted', xPostId: published.id, text: published.text,
+      postedAt: FieldValue.serverTimestamp(), error: FieldValue.delete(),
+    }, { merge: true });
+    console.log(`Published X post ${published.id}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    await postRef.set({ status: 'failed', error: message, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    console.error('publishScheduledXPost failed', error);
+    throw error;
   }
 });
