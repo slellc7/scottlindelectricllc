@@ -146,6 +146,9 @@ const endpoint = import.meta.env.PUBLIC_FIREBASE_AGENT_URL
         (globalThis as typeof globalThis & { gtag?: (...args: unknown[]) => void }).gtag?.(
           'event', 'generate_lead', { method: 'contact_form' },
         );
+        (globalThis as typeof globalThis & { gtag?: (...args: unknown[]) => void }).gtag?.(
+          'event', 'conversion', { send_to: 'AW-18401059514/LDyOCK-JpeocELrFp8ZE' },
+        );
       } catch (caught) {
         if (error) {
           error.textContent = caught instanceof Error ? caught.message : 'That did not send. Please call 208.716.1240.';
