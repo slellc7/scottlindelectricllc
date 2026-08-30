@@ -34,7 +34,12 @@ export const SITE = {
     country: 'US',
   },
 
-  areaServed: ['Idaho Falls', 'Ammon', 'Ucon', 'Iona', 'Shelley', 'Rigby', 'Ririe', 'Roberts'],
+  areaServed: [
+    'Idaho Falls', 'Ammon', 'Ucon', 'Iona', 'Shelley', 'Firth', 'Basalt', 'Blackfoot',
+    'Fort Hall', 'Pocatello', 'Rigby', 'Menan', 'Lewisville', 'Ririe', 'Roberts',
+    'Swan Valley', 'Irwin', 'Rexburg', 'Sugar City', 'St. Anthony', 'Ashton', 'Hamer',
+    'Mud Lake', 'Terreton', 'Driggs', 'Victor',
+  ],
 
   /** Geocoded from the shop address. Feeds LocalBusiness.geo — Google uses it
    *  for proximity matching, and it is one of the few properties a small local

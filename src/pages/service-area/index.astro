@@ -16,7 +16,7 @@ const rest = towns.filter((t) => !t.primary);
 const areaFaqs: Faq[] = [
   {
     q: 'How far do you travel?',
-    a: 'About 50 miles from Idaho Falls, which covers Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts. Everything inside that radius is a no-service-call-fee trip. Further out is still possible — call and ask.',
+    a: 'About 50 miles from Idaho Falls, including communities from Blackfoot and Pocatello to Rexburg, St. Anthony, Driggs and Victor. Everything inside that radius is a no-service-call-fee trip. Further out is still possible — call and ask.',
   },
   {
     q: 'Is there a fee for coming out to my town?',
@@ -35,7 +35,7 @@ const areaFaqs: Faq[] = [
 
 <Base
   title="Service Area — Idaho Falls & 50 Miles | Scott Lind Electric"
-  description="Scott Lind Electric covers Idaho Falls, Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts — no service-call fee anywhere inside 50 miles of Idaho Falls."
+  description="Scott Lind Electric serves communities within about 50 miles of Idaho Falls, including Blackfoot, Pocatello, Rexburg, Driggs and Victor, with no service-call fee."
   breadcrumb="Service area"
   faqs={areaFaqs}
 >
@@ -105,7 +105,8 @@ const areaFaqs: Faq[] = [
       <div class="panel-half">
         <h2>Also inside the radius</h2>
         <p class="prose">
-          Same terms in every one of these: free estimate, no service-call fee, after-hours covered.
+          Same terms throughout the approximately 50-mile radius: free estimate, no service-call
+          fee, and after-hours coverage Monday through Saturday.
         </p>
         <div class="tag-row tag-row--spaced">
           {home.map((t) => <span class="tag tag-accent">{t.name}</span>)}

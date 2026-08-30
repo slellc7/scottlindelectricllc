@@ -7,6 +7,7 @@ import CtaBand from '../../components/CtaBand.astro';
 import ServiceMap from '../../components/ServiceMap.astro';
 import { SITE } from '../../consts';
 import { ammonFaqs } from '../../data/faqs';
+import { towns } from '../../data/serviceArea';
 
 const glance = [
   ['Distance from our shop', 'Under 10 min'],
@@ -22,10 +23,6 @@ const work = [
   ['Business service', 'Ammon storefronts, offices and lots — service calls, LED conversions, lot light repair.'],
 ];
 
-const towns = [
-  ['Idaho Falls', true], ['Ammon', true], ['Ucon', false], ['Iona', false],
-  ['Shelley', false], ['Rigby', false], ['Ririe', false], ['Roberts', false],
-] as const;
 ---
 
 <Base
@@ -106,8 +103,8 @@ const towns = [
         <p class="prose">Every town below is a no-service-call-fee trip from Idaho Falls.</p>
         <div class="tag-row">
           {
-            towns.map(([name, home]) => (
-              <span class:list={['tag', home ? 'tag-accent' : 'tag-outline']}>{name}</span>
+            towns.map(({ name, primary }) => (
+              <span class:list={['tag', primary ? 'tag-accent' : 'tag-outline']}>{name}</span>
             ))
           }
         </div>

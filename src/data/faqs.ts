@@ -14,7 +14,7 @@ export type Faq = { q: string; a: string };
 export const homeFaqs: Faq[] = [
   {
     q: 'Do you charge a service-call fee?',
-    a: 'No. There is no service-call fee for any customer within a 50-mile radius of Idaho Falls, which includes Ammon, Ucon, Iona and Shelley. You pay for the work performed.',
+    a: 'No. There is no service-call fee for customers within the approximately 50-mile radius of Idaho Falls, including communities such as Ammon, Blackfoot, Pocatello, Rexburg, Driggs and Victor. You pay for the work performed.',
   },
   {
     q: 'Can an electrician come out today?',
@@ -83,7 +83,7 @@ export const emergencyFaqs: Faq[] = [
   },
   {
     q: 'Which areas do you cover after hours?',
-    a: 'Idaho Falls, Ammon and the surrounding communities within 50 miles — Ucon, Iona, Shelley, Rigby, Ririe and Roberts included — 24 hours a day, Monday to Saturday.',
+    a: 'Idaho Falls, Ammon and surrounding communities within about 50 miles — including Blackfoot, Pocatello, Rexburg, Driggs and Victor — 24 hours a day, Monday to Saturday.',
   },
   {
     q: 'Should I shut off the main breaker?',
@@ -107,7 +107,7 @@ export const ammonFaqs: Faq[] = [
 export const answersHiring: Faq[] = [
   {
     q: 'Do you charge a service-call fee?',
-    a: 'No — there is no service-call fee for any customer within 50 miles of Idaho Falls. That covers Ammon, Ucon, Iona, Shelley, Rigby, Ririe and Roberts. You pay for the work performed, not for us to show up.',
+    a: 'No — there is no service-call fee for customers within the approximately 50-mile radius of Idaho Falls. That includes communities such as Ammon, Blackfoot, Pocatello, Rexburg, Driggs and Victor. You pay for the work performed, not for us to show up.',
   },
   {
     q: 'Are estimates free?',

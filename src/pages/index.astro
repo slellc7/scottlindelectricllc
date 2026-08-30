@@ -8,6 +8,7 @@ import LiveReviews from '../components/LiveReviews.astro';
 import { SITE } from '../consts';
 import { homeFaqs } from '../data/faqs';
 import { homeReviews } from '../data/reviews';
+import { towns } from '../data/serviceArea';
 
 const services = [
   {
@@ -51,10 +52,6 @@ const capabilities = [
   'Parking lot & security lighting', 'Signs & canopies', 'LED conversions', 'Troubleshooting',
 ];
 
-const towns = [
-  ['Idaho Falls', true], ['Ammon', true], ['Ucon', false], ['Iona', false],
-  ['Shelley', false], ['Rigby', false], ['Ririe', false], ['Roberts', false],
-] as const;
 ---
 
 <Base
@@ -203,12 +200,12 @@ const towns = [
         <h2>50 miles from<br />Idaho Falls</h2>
         <p class="prose prose--mid">
           Everything inside the radius is a no-service-call-fee call. Idaho Falls and Ammon are home
-          ground; the surrounding Bonneville County towns are a short drive.
+          ground; the surrounding eastern Idaho communities are within the wider service radius.
         </p>
         <div class="tag-row tag-row--spaced">
           {
-            towns.map(([name, home]) => (
-              <span class:list={['tag', home ? 'tag-accent' : 'tag-outline']}>{name}</span>
+            towns.map(({ name, primary }) => (
+              <span class:list={['tag', primary ? 'tag-accent' : 'tag-outline']}>{name}</span>
             ))
           }
         </div>
