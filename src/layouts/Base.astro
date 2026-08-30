@@ -59,6 +59,34 @@ const aiChatEnabled = import.meta.env.PUBLIC_AI_CHAT_ENABLED !== 'false';
 
       gtag('config', 'G-HG5NEEE2Y6');
       gtag('config', 'AW-18401059514');
+
+      // Report clicks on any telephone link as a secondary Google Ads conversion.
+      // Wait briefly for the event callback, then continue to the phone dialer.
+      function gtag_report_phone_click(url) {
+        var navigated = false;
+        var openDialer = function () {
+          if (navigated) return;
+          navigated = true;
+          window.location.href = url;
+        };
+
+        gtag('event', 'conversion', {
+          'send_to': 'AW-18401059514/o0WPCLa7qeocELrFp8ZE',
+          'event_callback': openDialer,
+          'event_timeout': 1000
+        });
+        window.setTimeout(openDialer, 1100);
+        return false;
+      }
+
+      document.addEventListener('click', function (event) {
+        var target = event.target;
+        var phoneLink = target instanceof Element ? target.closest('a[href^="tel:"]') : null;
+        if (!phoneLink) return;
+
+        event.preventDefault();
+        gtag_report_phone_click(phoneLink.href);
+      });
     </script>
 
     <title>{title}</title>
