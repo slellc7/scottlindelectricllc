@@ -113,7 +113,10 @@ The Firebase function `publishScheduledXPost` creates and publishes one original
 post at 8:00 AM Mountain Time every Monday and Thursday. It uses the existing
 OpenAI configuration for the copy and X API v2 for publishing, records each run
 in the Firestore `socialPosts` collection, and skips duplicate invocations for
-the same date.
+the same date. Each post ends with three controlled hashtags: the business
+name, a tag matching the education or promotion theme, and one randomly chosen
+city from the verified service area. Cities used in the six most recent posts
+are avoided when possible.
 
 In the X Developer Console, configure the app for read-and-write access and
 generate OAuth 1.0a user tokens for `@scottlindelec`. Store the four values in

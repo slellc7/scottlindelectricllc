@@ -1,4 +1,4 @@
-import { createHmac, randomUUID } from 'node:crypto';
+import { createHmac, randomInt, randomUUID } from 'node:crypto';
 import { initializeApp } from 'firebase-admin/app';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { defineSecret, defineString } from 'firebase-functions/params';
@@ -27,6 +27,35 @@ const businessEmailTo = defineString('BUSINESS_EMAIL_TO');
 const twilioFromNumber = defineString('TWILIO_FROM_NUMBER');
 const businessSmsTo = defineString('BUSINESS_SMS_TO');
 
+const SOCIAL_CITY_TAGS = [
+  { city: 'Idaho Falls', hashtag: '#IdahoFalls' },
+  { city: 'Ammon', hashtag: '#AmmonIdaho' },
+  { city: 'Ucon', hashtag: '#UconIdaho' },
+  { city: 'Iona', hashtag: '#IonaIdaho' },
+  { city: 'Shelley', hashtag: '#ShelleyIdaho' },
+  { city: 'Firth', hashtag: '#FirthIdaho' },
+  { city: 'Basalt', hashtag: '#BasaltIdaho' },
+  { city: 'Blackfoot', hashtag: '#BlackfootIdaho' },
+  { city: 'Fort Hall', hashtag: '#FortHallIdaho' },
+  { city: 'Pocatello', hashtag: '#PocatelloIdaho' },
+  { city: 'Rigby', hashtag: '#RigbyIdaho' },
+  { city: 'Menan', hashtag: '#MenanIdaho' },
+  { city: 'Lewisville', hashtag: '#LewisvilleIdaho' },
+  { city: 'Ririe', hashtag: '#RirieIdaho' },
+  { city: 'Roberts', hashtag: '#RobertsIdaho' },
+  { city: 'Swan Valley', hashtag: '#SwanValleyIdaho' },
+  { city: 'Irwin', hashtag: '#IrwinIdaho' },
+  { city: 'Rexburg', hashtag: '#RexburgIdaho' },
+  { city: 'Sugar City', hashtag: '#SugarCityIdaho' },
+  { city: 'St. Anthony', hashtag: '#StAnthonyIdaho' },
+  { city: 'Ashton', hashtag: '#AshtonIdaho' },
+  { city: 'Hamer', hashtag: '#HamerIdaho' },
+  { city: 'Mud Lake', hashtag: '#MudLakeIdaho' },
+  { city: 'Terreton', hashtag: '#TerretonIdaho' },
+  { city: 'Driggs', hashtag: '#DriggsIdaho' },
+  { city: 'Victor', hashtag: '#VictorIdaho' },
+] as const;
+
 const SOCIAL_POST_PROMPT = `You write social posts for Scott Lind Electric LLC, a licensed electrician in Idaho Falls, Idaho.
 
 Create one original X post. Alternate naturally between helpful electrical education and promotion of the business. Use only these verified facts:
@@ -39,9 +68,9 @@ Create one original X post. Alternate naturally between helpful electrical educa
 - Services include troubleshooting, panels, lighting, remodels, parking-lot and security lighting, illuminated signs, building maintenance, and LED conversions
 
 Requirements:
-- Maximum 280 characters, including hashtags and links
+- Maximum 210 characters, including links; the system adds hashtags afterward
 - Friendly, capable, plainspoken tone
-- No emoji and no more than two relevant hashtags
+- No emoji and no hashtags in the generated text
 - No fabricated projects, testimonials, discounts, guarantees, or availability claims
 - Do not give risky do-it-yourself electrical instructions
 - Do not use trending-topic bait, mentions, replies, or substantially repeat a recent post
@@ -52,7 +81,7 @@ const socialPostSchema = {
   additionalProperties: false,
   required: ['text', 'theme'],
   properties: {
-    text: { type: 'string', maxLength: 280 },
+    text: { type: 'string', maxLength: 210 },
     theme: { type: 'string', enum: ['education', 'promotion'] },
   },
 } as const;
@@ -482,6 +511,31 @@ export const googleReviews = onRequest({
 });
 
 type SocialPost = { text: string; theme: 'education' | 'promotion' };
+type TaggedSocialPost = SocialPost & { city: string };
+
+function comparableSocialText(text: string) {
+  return text
+    .replace(/(?:^|\s)#[\p{L}\p{N}_]+/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function addSocialHashtags(post: SocialPost, recentPosts: string[]): TaggedSocialPost {
+  const recentlyUsed = recentPosts.slice(0, 6).map((text) => text.toLowerCase());
+  const unusedCities = SOCIAL_CITY_TAGS.filter(({ hashtag }) =>
+    !recentlyUsed.some((text) => text.includes(hashtag.toLowerCase()))
+  );
+  const candidates = unusedCities.length ? unusedCities : SOCIAL_CITY_TAGS;
+  const location = candidates[randomInt(candidates.length)];
+  const themeTag = post.theme === 'education' ? '#ElectricalSafety' : '#IdahoElectrician';
+  const text = `${post.text}\n\n#ScottLindElectric ${themeTag} ${location.hashtag}`;
+
+  if (Array.from(text).length > 280) {
+    throw new Error('Generated X post exceeded 280 characters after hashtags were added');
+  }
+  return { ...post, text, city: location.city };
+}
 
 function oauthEncode(value: string) {
   return encodeURIComponent(value).replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
@@ -556,9 +610,10 @@ async function createSocialPost(
   });
   const result = JSON.parse(aiResponse.output_text) as SocialPost;
   const text = result.text.trim();
-  if (!text || Array.from(text).length > 280) throw new Error('Generated X post was empty or exceeded 280 characters');
+  if (!text || Array.from(text).length > 210) throw new Error('Generated X post was empty or exceeded 210 characters before hashtags');
+  if (/(?:^|\s)#[\p{L}\p{N}_]+/u.test(text)) throw new Error('Generated X post included a hashtag reserved for the publishing system');
   if (result.theme !== targetTheme) throw new Error(`Generated X post used ${result.theme} instead of ${targetTheme}`);
-  if (recentPosts.some((recent) => recent.trim().toLowerCase() === text.toLowerCase())) {
+  if (recentPosts.some((recent) => comparableSocialText(recent) === comparableSocialText(text))) {
     throw new Error('Generated X post duplicated a recent post');
   }
   return { text, theme: result.theme };
@@ -599,7 +654,8 @@ export const publishScheduledXPost = onSchedule({
     }).slice(0, 12);
     const previousTheme = postedDocs[0]?.get('theme');
     const targetTheme: SocialPost['theme'] = previousTheme === 'education' ? 'promotion' : 'education';
-    const post = await createSocialPost(recentPosts, targetTheme);
+    const generatedPost = await createSocialPost(recentPosts, targetTheme);
+    const post = addSocialHashtags(generatedPost, recentPosts);
     await postRef.set({ ...post, status: 'drafted', createdAt: FieldValue.serverTimestamp() }, { merge: true });
     const published = await publishToX(post.text);
     await postRef.set({
