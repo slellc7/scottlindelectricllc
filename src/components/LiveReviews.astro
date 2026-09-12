@@ -72,7 +72,8 @@ const initial = mode === 'page' ? fallback.slice(0, 6) : fallback.slice(0, 3);
         data.reviews.forEach((review) => list.append(makeCard(review)));
         nextPageToken = data.nextPageToken || '';
         if (more) more.hidden = !nextPageToken;
-        status.textContent = `${data.totalReviewCount || data.reviews.length} Google reviews · ${data.averageRating || '5.0'} average rating`;
+        const averageRating = Number(data.averageRating || 5).toFixed(1);
+        status.textContent = `${data.totalReviewCount || data.reviews.length} Google reviews · ${averageRating} average rating`;
       } catch {
         status.textContent = 'Showing verified Google reviews. View Google for the latest.';
       }
