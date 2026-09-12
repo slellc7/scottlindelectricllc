@@ -58,8 +58,10 @@ const initial = mode === 'page' ? fallback.slice(0, 6) : fallback.slice(0, 3);
     const endpoint = root.dataset.endpoint;
     const mode = root.dataset.mode;
     let nextPageToken = '';
+    let loading = false;
     const load = async (append = false) => {
-      if (!endpoint) return;
+      if (!endpoint || loading || (append && !nextPageToken)) return false;
+      loading = true;
       try {
         const url = new URL(endpoint);
         url.searchParams.set('pageSize', mode === 'page' ? '6' : '12');
@@ -74,20 +76,42 @@ const initial = mode === 'page' ? fallback.slice(0, 6) : fallback.slice(0, 3);
         if (more) more.hidden = !nextPageToken;
         const averageRating = Number(data.averageRating || 5).toFixed(1);
         status.textContent = `${data.totalReviewCount || data.reviews.length} Google reviews · ${averageRating} average rating`;
+        return true;
       } catch {
         status.textContent = 'Showing verified Google reviews. View Google for the latest.';
+        return false;
+      } finally {
+        loading = false;
       }
     };
     more?.addEventListener('click', () => load(true));
     root.querySelector('[data-review-prev]')?.addEventListener('click', () => list.scrollBy({ left: -list.clientWidth * .85, behavior: 'smooth' }));
-    root.querySelector('[data-review-next]')?.addEventListener('click', () => list.scrollBy({ left: list.clientWidth * .85, behavior: 'smooth' }));
+    const moveNext = async () => {
+      const atEnd = list.scrollLeft + list.clientWidth >= list.scrollWidth - 8;
+      if (atEnd && nextPageToken) {
+        const previousWidth = list.scrollWidth;
+        await load(true);
+        if (list.scrollWidth > previousWidth) {
+          list.scrollBy({ left: list.clientWidth * .85, behavior: 'smooth' });
+          return;
+        }
+      }
+      list.scrollTo({ left: atEnd ? 0 : list.scrollLeft + list.clientWidth * .85, behavior: 'smooth' });
+    };
+    root.querySelector('[data-review-next]')?.addEventListener('click', () => void moveNext());
     if (mode === 'home' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const timer = window.setInterval(() => {
-        const atEnd = list.scrollLeft + list.clientWidth >= list.scrollWidth - 8;
-        list.scrollTo({ left: atEnd ? 0 : list.scrollLeft + list.clientWidth * .85, behavior: 'smooth' });
-      }, 6500);
-      root.addEventListener('mouseenter', () => window.clearInterval(timer), { once: true });
+      let timer: number | undefined;
+      const start = () => {
+        if (timer === undefined) timer = window.setInterval(() => void moveNext(), 6500);
+      };
+      const stop = () => {
+        if (timer !== undefined) window.clearInterval(timer);
+        timer = undefined;
+      };
+      root.addEventListener('mouseenter', stop);
+      root.addEventListener('mouseleave', start);
+      start();
     }
-    load();
+    void load();
   });
 </script>
