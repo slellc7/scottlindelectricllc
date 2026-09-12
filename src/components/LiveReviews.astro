@@ -4,7 +4,8 @@ import type { Review } from '../data/reviews';
 
 type Props = { fallback: Review[]; mode: 'home' | 'page' };
 const { fallback, mode } = Astro.props;
-const endpoint = import.meta.env.PUBLIC_GOOGLE_REVIEWS_URL || '';
+const endpoint = import.meta.env.PUBLIC_GOOGLE_REVIEWS_URL
+  || 'https://us-central1-scott-lind-electric.cloudfunctions.net/googleReviews';
 const initial = mode === 'page' ? fallback.slice(0, 6) : fallback.slice(0, 3);
 ---
 
