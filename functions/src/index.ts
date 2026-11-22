@@ -1,4 +1,4 @@
-import { createHmac, randomInt, randomUUID } from 'node:crypto';
+import { createHash, createHmac, randomInt, randomUUID } from 'node:crypto';
 import { initializeApp } from 'firebase-admin/app';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { defineSecret, defineString } from 'firebase-functions/params';
@@ -17,6 +17,7 @@ const xApiKey = defineSecret('X_API_KEY');
 const xApiSecret = defineSecret('X_API_SECRET');
 const xAccessToken = defineSecret('X_ACCESS_TOKEN');
 const xAccessTokenSecret = defineSecret('X_ACCESS_TOKEN_SECRET');
+const githubToken = defineSecret('GITHUB_TOKEN');
 
 const openaiModel = defineString('OPENAI_MODEL', { default: 'gpt-5.6' });
 const allowedOrigins = defineString('ALLOWED_ORIGINS', {
@@ -26,6 +27,9 @@ const resendFromEmail = defineString('RESEND_FROM_EMAIL');
 const businessEmailTo = defineString('BUSINESS_EMAIL_TO');
 const twilioFromNumber = defineString('TWILIO_FROM_NUMBER');
 const businessSmsTo = defineString('BUSINESS_SMS_TO');
+const githubOwner = defineString('GITHUB_OWNER', { default: 'slellc7' });
+const githubRepo = defineString('GITHUB_REPO', { default: 'scottlindelectricllc' });
+const githubBranch = defineString('GITHUB_BRANCH', { default: 'main' });
 
 const SOCIAL_CITY_TAGS = [
   { city: 'Idaho Falls', hashtag: '#IdahoFalls' },
@@ -85,6 +89,65 @@ const socialPostSchema = {
     theme: { type: 'string', enum: ['education', 'promotion'] },
   },
 } as const;
+
+const BLOG_CATEGORIES = [
+  'residential troubleshooting',
+  'electrical safety',
+  'seasonal needs',
+  'commercial maintenance',
+  'lighting',
+  'panels and service',
+  'remodels and additions',
+] as const;
+
+const BLOG_POST_PROMPT = `You write practical, safety-first SEO articles for Scott Lind Electric LLC.
+
+Choose one useful topic with clear search intent for a homeowner or business in southeastern Idaho. Avoid duplicating the existing posts supplied in the request. Rotate naturally among the allowed categories and prefer a specific question or maintenance need over a broad survey article.
+
+Use only business facts found in the supplied repository excerpts. Never invent a project, customer story, review, credential, price, warranty, availability claim, statistic, code requirement, utility fact, or local fact. Do not imply that generated copy is based on an inspection or completed job.
+
+Requirements:
+- 900 to 1,400 words in body
+- title no longer than 70 characters
+- description between 80 and 165 characters
+- a lowercase hyphenated slug that does not contain a date
+- 3 to 5 concise tags
+- a concise introduction followed by at least four descriptive H2 sections
+- actionable observations and preparation steps that do not involve opening electrical equipment, touching wiring, testing live parts, or performing hazardous electrical work
+- tell readers to stop and seek professional or emergency help when heat, smoke, fire, sparking, shock, water, or damaged energized equipment is involved
+- natural southeastern Idaho context only where it helps the reader; do not keyword-stuff or create city-by-city doorway copy
+- at least two natural internal Markdown links chosen from the allowed links in the request
+- a restrained final call to action
+
+Return the article body as Markdown without frontmatter, an H1, HTML, code fences, or external links. Do not mention SEO, keywords, AI, the prompt, or the source excerpts.`;
+
+const blogPostSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['title', 'description', 'slug', 'category', 'searchIntent', 'tags', 'body'],
+  properties: {
+    title: { type: 'string', minLength: 10, maxLength: 70 },
+    description: { type: 'string', minLength: 80, maxLength: 165 },
+    slug: { type: 'string', minLength: 10, maxLength: 80, pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$' },
+    category: { type: 'string', enum: BLOG_CATEGORIES },
+    searchIntent: { type: 'string', minLength: 20, maxLength: 180 },
+    tags: {
+      type: 'array', minItems: 3, maxItems: 5,
+      items: { type: 'string', minLength: 2, maxLength: 40 },
+    },
+    body: { type: 'string', minLength: 4000, maxLength: 14000 },
+  },
+} as const;
+
+type GeneratedBlogPost = {
+  title: string;
+  description: string;
+  slug: string;
+  category: typeof BLOG_CATEGORIES[number];
+  searchIntent: string;
+  tags: string[];
+  body: string;
+};
 
 type Lead = {
   name: string | null;
@@ -594,6 +657,246 @@ function mountainDateKey(date = new Date()) {
   return `${value('year')}-${value('month')}-${value('day')}`;
 }
 
+function mountainPublicationTimestamp(date = new Date()) {
+  const dateKey = mountainDateKey(date);
+  const offsetName = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Boise', timeZoneName: 'longOffset',
+  }).formatToParts(date).find((part) => part.type === 'timeZoneName')?.value;
+  const offset = offsetName?.replace('GMT', '');
+  if (!offset || !/^[+-]\d{2}:\d{2}$/.test(offset)) {
+    throw new Error(`Could not determine the America/Boise UTC offset for ${dateKey}`);
+  }
+  return `${dateKey}T12:00:00${offset}`;
+}
+
+type GitHubFile = {
+  type: 'file';
+  path: string;
+  name: string;
+  sha: string;
+  encoding?: string;
+  content?: string;
+};
+
+type BlogContext = {
+  existingCoverage: string;
+  verifiedSources: string;
+  allowedLinks: string[];
+};
+
+function githubContentsPath(repoPath: string) {
+  return repoPath.split('/').map(encodeURIComponent).join('/');
+}
+
+async function githubRequest<T>(
+  apiPath: string,
+  options: { method?: string; body?: string } = {},
+  allowNotFound = false,
+): Promise<T | null> {
+  const response = await fetch(`https://api.github.com${apiPath}`, {
+    method: options.method ?? 'GET',
+    headers: {
+      Accept: 'application/vnd.github+json',
+      Authorization: `Bearer ${githubToken.value()}`,
+      'Content-Type': 'application/json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'User-Agent': 'Scott-Lind-Electric-weekly-blog-publisher',
+    },
+    body: options.body,
+  });
+  if (response.status === 404 && allowNotFound) return null;
+  const data = await response.json() as { message?: string };
+  if (!response.ok) {
+    throw new Error(`GitHub API returned ${response.status}${data.message ? `: ${data.message}` : ''}`);
+  }
+  return data as T;
+}
+
+function repoApiPrefix() {
+  return `/repos/${encodeURIComponent(githubOwner.value())}/${encodeURIComponent(githubRepo.value())}`;
+}
+
+async function getGithubFile(repoPath: string): Promise<GitHubFile | null> {
+  const result = await githubRequest<GitHubFile | GitHubFile[]>(
+    `${repoApiPrefix()}/contents/${githubContentsPath(repoPath)}?ref=${encodeURIComponent(githubBranch.value())}`,
+    {},
+    true,
+  );
+  return result && !Array.isArray(result) && result.type === 'file' ? result : null;
+}
+
+async function getGithubDirectory(repoPath: string): Promise<GitHubFile[]> {
+  const result = await githubRequest<GitHubFile[]>(
+    `${repoApiPrefix()}/contents/${githubContentsPath(repoPath)}?ref=${encodeURIComponent(githubBranch.value())}`,
+  );
+  if (!Array.isArray(result)) throw new Error(`${repoPath} was not a GitHub directory`);
+  return result.filter((item) => item.type === 'file');
+}
+
+function decodeGithubFile(file: GitHubFile) {
+  if (file.encoding !== 'base64' || !file.content) {
+    throw new Error(`GitHub did not return base64 content for ${file.path}`);
+  }
+  return Buffer.from(file.content.replace(/\s/g, ''), 'base64').toString('utf8');
+}
+
+async function getRepoText(repoPath: string) {
+  const file = await getGithubFile(repoPath);
+  if (!file) throw new Error(`Required repository source ${repoPath} was not found`);
+  return decodeGithubFile(file);
+}
+
+function summarizeExistingPost(path: string, content: string) {
+  const usefulLines = content.split('\n').filter((line) =>
+    /^(title|description|pubDate|tags):/i.test(line.trim()) || /^##\s+/.test(line.trim())
+  );
+  return `File: ${path}\n${usefulLines.join('\n')}`;
+}
+
+async function getBlogContext(): Promise<BlogContext> {
+  const blogFiles = (await getGithubDirectory('src/content/blog'))
+    .filter((file) => /\.mdx?$/.test(file.name))
+    .sort((left, right) => left.name.localeCompare(right.name));
+  const postContents = await Promise.all(blogFiles.map(async (file) => ({
+    file,
+    content: await getRepoText(file.path),
+  })));
+  const sourcePaths = [
+    'src/consts.ts',
+    'src/pages/residential.astro',
+    'src/pages/commercial.astro',
+    'src/pages/after-hours.astro',
+    'src/pages/service-area/index.astro',
+  ];
+  const sourceContents = await Promise.all(sourcePaths.map(async (path) => ({
+    path,
+    content: await getRepoText(path),
+  })));
+  return {
+    existingCoverage: postContents
+      .map(({ file, content }) => summarizeExistingPost(file.path, content))
+      .join('\n\n'),
+    verifiedSources: sourceContents
+      .map(({ path, content }) => `--- ${path} ---\n${content}`)
+      .join('\n\n'),
+    allowedLinks: [
+      '/residential/', '/commercial/', '/after-hours/', '/answers/', '/service-area/',
+      '/service-area/idaho-falls/', '/service-area/ammon/', '/contact/', '/blog/',
+      ...blogFiles.map((file) => `/blog/${file.name.replace(/\.mdx?$/, '')}/`),
+    ],
+  };
+}
+
+function wordCount(markdown: string) {
+  return markdown.match(/[\p{L}\p{N}][\p{L}\p{N}’'-]*/gu)?.length ?? 0;
+}
+
+function validateBlogPost(post: GeneratedBlogPost, context: BlogContext) {
+  post.title = post.title.trim().replace(/\s+/g, ' ');
+  post.description = post.description.trim().replace(/\s+/g, ' ');
+  post.slug = post.slug.trim().toLowerCase();
+  post.searchIntent = post.searchIntent.trim().replace(/\s+/g, ' ');
+  post.tags = [...new Set(post.tags.map((tag) => tag.trim()).filter(Boolean))];
+  post.body = post.body.trim();
+
+  if (post.title.length > 70) throw new Error('Generated blog title exceeded 70 characters');
+  if (post.description.length < 80 || post.description.length > 165) {
+    throw new Error('Generated blog description was outside 80 to 165 characters');
+  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(post.slug)) throw new Error('Generated blog slug was invalid');
+  if (!BLOG_CATEGORIES.includes(post.category)) throw new Error('Generated blog category was invalid');
+  if (post.tags.length < 3 || post.tags.length > 5 || post.tags.some((tag) => tag.length > 40)) {
+    throw new Error('Generated blog tags were invalid');
+  }
+  const words = wordCount(post.body);
+  if (words < 900 || words > 1400) throw new Error(`Generated blog body contained ${words} words`);
+  if ((post.body.match(/^##\s+.+$/gm) ?? []).length < 4) {
+    throw new Error('Generated blog body did not contain at least four H2 sections');
+  }
+  if (/^#\s+/m.test(post.body)) throw new Error('Generated blog body included an H1');
+  if (/^---\s*$/m.test(post.body) || /```|<\/?[a-z][^>]*>/i.test(post.body)) {
+    throw new Error('Generated blog body included disallowed frontmatter, HTML, or code fences');
+  }
+  const links = [...post.body.matchAll(/\[[^\]]+\]\(([^)\s]+)\)/g)].map((match) => match[1]);
+  const internalLinks = links.filter((link) => link.startsWith('/'));
+  if (internalLinks.length < 2) throw new Error('Generated blog body did not include two internal links');
+  const allowedLinks = new Set(context.allowedLinks);
+  if (links.some((link) => !allowedLinks.has(link))) {
+    throw new Error('Generated blog body included an external or unapproved link');
+  }
+  const existingTitleLines = context.existingCoverage.match(/^title:\s*['"]?(.+?)['"]?\s*$/gim) ?? [];
+  if (existingTitleLines.some((line) => line.replace(/^title:\s*['"]?|['"]?\s*$/gi, '').toLowerCase() === post.title.toLowerCase())) {
+    throw new Error('Generated blog title duplicated an existing post');
+  }
+  return post;
+}
+
+async function createBlogPost(context: BlogContext, dateKey: string, correction = '') {
+  const client = new OpenAI({ apiKey: openaiApiKey.value() });
+  const aiResponse = await client.responses.create({
+    model: openaiModel.value(),
+    store: false,
+    instructions: BLOG_POST_PROMPT,
+    input: `Publication date in America/Boise: ${dateKey}
+
+Allowed categories: ${BLOG_CATEGORIES.join(', ')}
+
+Allowed internal links (use exact URLs):
+${context.allowedLinks.map((link) => `- ${link}`).join('\n')}
+
+Existing blog coverage to avoid duplicating:
+${context.existingCoverage}
+
+Verified repository sources. These are the only allowed source of business facts:
+${context.verifiedSources}
+${correction ? `\nThe prior draft was rejected. Correct this issue in a fresh draft: ${correction}` : ''}`,
+    text: { format: { type: 'json_schema', name: 'weekly_blog_post', strict: true, schema: blogPostSchema } },
+  });
+  return validateBlogPost(JSON.parse(aiResponse.output_text) as GeneratedBlogPost, context);
+}
+
+function buildBlogMarkdown(post: GeneratedBlogPost, publicationTimestamp: string) {
+  return [
+    '---',
+    `title: ${JSON.stringify(post.title)}`,
+    `description: ${JSON.stringify(post.description)}`,
+    `pubDate: ${publicationTimestamp}`,
+    `tags: ${JSON.stringify(post.tags)}`,
+    'draft: false',
+    '---',
+    '',
+    post.body,
+    '',
+  ].join('\n');
+}
+
+function contentHash(content: string) {
+  return createHash('sha256').update(content).digest('hex');
+}
+
+async function commitNewGithubFile(repoPath: string, content: string, message: string) {
+  const existing = await getGithubFile(repoPath);
+  if (existing) {
+    const existingContent = decodeGithubFile(existing);
+    if (existingContent === content) return { sha: existing.sha, alreadyExisted: true };
+    throw new Error(`Refusing to overwrite existing GitHub file ${repoPath}`);
+  }
+  const result = await githubRequest<{ commit?: { sha?: string } }>(
+    `${repoApiPrefix()}/contents/${githubContentsPath(repoPath)}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({
+        message,
+        content: Buffer.from(content, 'utf8').toString('base64'),
+        branch: githubBranch.value(),
+      }),
+    },
+  );
+  const sha = result?.commit?.sha;
+  if (!sha) throw new Error('GitHub did not return a commit identifier for the new blog post');
+  return { sha, alreadyExisted: false };
+}
+
 async function createSocialPost(
   recentPosts: string[],
   targetTheme: SocialPost['theme'],
@@ -667,6 +970,116 @@ export const publishScheduledXPost = onSchedule({
     const message = error instanceof Error ? error.message : String(error);
     await postRef.set({ status: 'failed', error: message, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
     console.error('publishScheduledXPost failed', error);
+    throw error;
+  }
+});
+
+export const publishScheduledBlogPost = onSchedule({
+  schedule: '0 19 * * 0',
+  timeZone: 'America/Boise',
+  region: 'us-central1',
+  timeoutSeconds: 540,
+  memory: '512MiB',
+  retryCount: 2,
+  minBackoffSeconds: 60,
+  maxBackoffSeconds: 300,
+  maxRetrySeconds: 900,
+  secrets: [openaiApiKey, githubToken],
+}, async () => {
+  const dateKey = mountainDateKey();
+  const runRef = db.collection('blogPublisherRuns').doc(dateKey);
+
+  try {
+    const priorRun = await runRef.get();
+    if (priorRun.get('status') === 'posted') {
+      console.log(`Blog post already published for ${dateKey}; skipping duplicate run`);
+      return;
+    }
+
+    const priorPath = priorRun.get('filePath');
+    const priorHash = priorRun.get('contentHash');
+    if (typeof priorPath === 'string' && typeof priorHash === 'string') {
+      const existingFile = await getGithubFile(priorPath);
+      if (existingFile && contentHash(decodeGithubFile(existingFile)) === priorHash) {
+        await runRef.set({
+          status: 'posted', githubCommit: priorRun.get('githubCommit') ?? existingFile.sha,
+          recoveredAfterCommit: true, postedAt: FieldValue.serverTimestamp(), error: FieldValue.delete(),
+        }, { merge: true });
+        console.log(`Recovered completed blog publication for ${priorPath}`);
+        return;
+      }
+    }
+
+    const shouldRun = await db.runTransaction(async (transaction) => {
+      const current = await transaction.get(runRef);
+      const status = current.get('status');
+      if (status === 'posted') return false;
+      const attemptStartedAt = current.get('attemptStartedAt') as { toMillis?: () => number } | undefined;
+      const startedMillis = attemptStartedAt?.toMillis?.() ?? 0;
+      if ((status === 'generating' || status === 'committing') && startedMillis > Date.now() - 30 * 60 * 1000) {
+        return false;
+      }
+      transaction.set(runRef, {
+        status: 'generating',
+        attemptStartedAt: FieldValue.serverTimestamp(),
+        error: FieldValue.delete(),
+      }, { merge: true });
+      return true;
+    });
+    if (!shouldRun) {
+      console.log(`Blog post job is already running for ${dateKey}; skipping duplicate invocation`);
+      return;
+    }
+
+    const context = await getBlogContext();
+    let post: GeneratedBlogPost | undefined;
+    let correction = '';
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      try {
+        post = await createBlogPost(context, dateKey, correction);
+        break;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        if (attempt === 2) throw error;
+        correction = message;
+        console.warn(`Rejected generated blog draft on attempt ${attempt}: ${message}`);
+      }
+    }
+    if (!post) throw new Error('Blog generation completed without a valid post');
+
+    const publicationTimestamp = mountainPublicationTimestamp();
+    const markdown = buildBlogMarkdown(post, publicationTimestamp);
+    const filePath = `src/content/blog/${post.slug}.md`;
+    const markdownHash = contentHash(markdown);
+    await runRef.set({
+      status: 'committing',
+      title: post.title,
+      slug: post.slug,
+      category: post.category,
+      searchIntent: post.searchIntent,
+      tags: post.tags,
+      filePath,
+      publicationTimestamp,
+      contentHash: markdownHash,
+      wordCount: wordCount(post.body),
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    const committed = await commitNewGithubFile(filePath, markdown, `Publish weekly blog: ${post.title}`);
+    await runRef.set({
+      status: 'posted',
+      githubCommit: committed.sha,
+      alreadyExisted: committed.alreadyExisted,
+      postedAt: FieldValue.serverTimestamp(),
+      error: FieldValue.delete(),
+    }, { merge: true });
+    console.log(`Published weekly blog post ${filePath} in commit ${committed.sha}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    await runRef.set({
+      status: 'failed', error: message.slice(0, 2000), updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    console.error('publishScheduledBlogPost failed', error);
     throw error;
   }
 });

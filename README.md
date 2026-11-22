@@ -96,16 +96,36 @@ schema, and an RSS entry.
 
 ### AI publishing loop
 
-The intended flow, once you wire it up:
+The Firebase function `publishScheduledBlogPost` runs at 7:00 PM Mountain Time
+every Sunday. It reads the current business facts, service pages, and existing
+blog metadata from GitHub before asking OpenAI for a new article. The function
+validates the title, description, slug, word count, headings, tags, and internal
+links; refuses to overwrite an existing file; and records each run in the
+Firestore `blogPublisherRuns` collection.
 
-1. A scheduled GitHub Action calls the Anthropic API and writes a `.md` file.
-2. It opens a **pull request** rather than pushing to `main`.
-3. Netlify builds a deploy preview from the PR.
-4. You read it, then merge.
+After validation, it commits exactly one new Markdown post to `main` with
+`draft: false`. Netlify's existing Git integration then builds and publishes the
+site. A run is keyed to the Mountain Time publication date, so scheduler retries
+cannot intentionally publish a second article for the same week.
 
-Two things worth building in from the start: keep `draft: true` on generated
-posts until reviewed, and check the slug against existing filenames before
-writing — unattended generators repeat themselves quickly.
+Create a fine-grained GitHub personal access token with **Contents: Read and
+write** access to this repository only. Store it in Firebase Secret Manager;
+never add it to an `.env` file or commit it:
+
+```bash
+./functions/node_modules/.bin/firebase functions:secrets:set GITHUB_TOKEN
+```
+
+Deploy the publisher after the secret is set:
+
+```bash
+./functions/node_modules/.bin/firebase deploy --only functions:publishScheduledBlogPost
+```
+
+The publisher also uses the existing `OPENAI_API_KEY` and `OPENAI_MODEL`
+configuration. Scheduled functions require a Firebase project on a billing plan
+that supports Cloud Scheduler. Review the first run in Firebase logs and verify
+the resulting Netlify deploy before leaving the job unattended.
 
 ### Scheduled X posts
 
