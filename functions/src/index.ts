@@ -27,9 +27,9 @@ const resendFromEmail = defineString('RESEND_FROM_EMAIL');
 const businessEmailTo = defineString('BUSINESS_EMAIL_TO');
 const twilioFromNumber = defineString('TWILIO_FROM_NUMBER');
 const businessSmsTo = defineString('BUSINESS_SMS_TO');
-const githubOwner = defineString('GITHUB_OWNER', { default: 'slellc7' });
-const githubRepo = defineString('GITHUB_REPO', { default: 'scottlindelectricllc' });
-const githubBranch = defineString('GITHUB_BRANCH', { default: 'main' });
+const GITHUB_OWNER = 'slellc7';
+const GITHUB_REPO = 'scottlindelectricllc';
+const GITHUB_BRANCH = 'main';
 
 const SOCIAL_CITY_TAGS = [
   { city: 'Idaho Falls', hashtag: '#IdahoFalls' },
@@ -713,12 +713,12 @@ async function githubRequest<T>(
 }
 
 function repoApiPrefix() {
-  return `/repos/${encodeURIComponent(githubOwner.value())}/${encodeURIComponent(githubRepo.value())}`;
+  return `/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}`;
 }
 
 async function getGithubFile(repoPath: string): Promise<GitHubFile | null> {
   const result = await githubRequest<GitHubFile | GitHubFile[]>(
-    `${repoApiPrefix()}/contents/${githubContentsPath(repoPath)}?ref=${encodeURIComponent(githubBranch.value())}`,
+    `${repoApiPrefix()}/contents/${githubContentsPath(repoPath)}?ref=${encodeURIComponent(GITHUB_BRANCH)}`,
     {},
     true,
   );
@@ -727,7 +727,7 @@ async function getGithubFile(repoPath: string): Promise<GitHubFile | null> {
 
 async function getGithubDirectory(repoPath: string): Promise<GitHubFile[]> {
   const result = await githubRequest<GitHubFile[]>(
-    `${repoApiPrefix()}/contents/${githubContentsPath(repoPath)}?ref=${encodeURIComponent(githubBranch.value())}`,
+    `${repoApiPrefix()}/contents/${githubContentsPath(repoPath)}?ref=${encodeURIComponent(GITHUB_BRANCH)}`,
   );
   if (!Array.isArray(result)) throw new Error(`${repoPath} was not a GitHub directory`);
   return result.filter((item) => item.type === 'file');
@@ -888,7 +888,7 @@ async function commitNewGithubFile(repoPath: string, content: string, message: s
       body: JSON.stringify({
         message,
         content: Buffer.from(content, 'utf8').toString('base64'),
-        branch: githubBranch.value(),
+        branch: GITHUB_BRANCH,
       }),
     },
   );
